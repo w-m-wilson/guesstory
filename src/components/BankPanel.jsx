@@ -69,10 +69,10 @@ export default function BankPanel({
         <form onSubmit={handleSubmit} className="flex gap-2">
           <input
             ref={inputRef}
-            type="text"
+            type="search"
             value={query}
             onChange={e => setQuery(e.target.value)}
-            placeholder={pendingMatch ? 'Confirm or cancel below…' : 'Guess a name…'}
+            placeholder={pendingMatch ? 'Confirm or cancel below…' : 'Submit a guess for the bank…'}
             disabled={!!pendingMatch}
             className="flex-1 rounded-lg px-3 py-2 text-sm outline-none"
             style={{
