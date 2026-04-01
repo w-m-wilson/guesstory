@@ -4,49 +4,50 @@ const { bank, category, ranking, hints } = GAME_CONFIG
 
 const SECTIONS = [
   {
-    heading: 'Goal',
-    body: 'Discover items from a hidden ranked list, then arrange the top 5 in the correct order.',
+    heading: 'What is this?',
+    body: 'There\'s a secret ranked list. Your job is to figure out what\'s on it — and then put the top 5 in the right order.',
   },
   {
-    heading: 'Guess names',
+    heading: 'Step 1 — Find the items',
     items: [
-      `Type any name — fuzzy matching will find it if it's in the list`,
-      `You get ${bank.freeMisses} free misses; after that each wrong guess costs ${bank.missCost} coin`,
-      'Tap a discovered item to place it in your ranking',
+      'Type a name into the box and submit it',
+      'If it\'s on the list, it gets added to your collection',
+      `You get ${bank.freeMisses} wrong guesses for free — after that, misses cost coins`,
     ],
   },
   {
-    heading: 'Submit a ranking',
+    heading: 'Step 2 — Rank the top 5',
     items: [
-      'Arrange items in your best guess of the correct order, then hit Submit',
-      'Each wrong submission costs coins',
-      'Read the Mastermind feedback to refine your next attempt:',
+      'Tap any item you\'ve found to add it to your ranking',
+      'Arrange 5 items in order from #1 to #5, then hit Submit',
+      'After each attempt you\'ll see dots that hint at what\'s right:',
     ],
     feedback: [
-      { symbol: '●', label: 'Correct position' },
-      { symbol: '○', label: 'In the top 5, but wrong position' },
-      { symbol: '—', label: 'None of your picks are in the top 5' },
+      { symbol: '●', label: 'Right item, right spot' },
+      { symbol: '○', label: 'Right item, wrong spot' },
+      { symbol: '—', label: 'That item isn\'t in the top 5' },
     ],
   },
   {
     heading: 'Guess the category',
     items: [
-      'Tap "Guess category" in the header to reveal the theme',
-      `Guess correctly and earn +${category.correctGuessBonus} bonus coins`,
+      'Not sure what the list is about? Tap the category button at the top',
+      `Guess it right and earn +${category.correctGuessBonus} bonus coins`,
       `You get ${category.freeMisses} free tries before wrong guesses cost coins`,
     ],
   },
   {
     heading: 'Hints',
     items: [
-      `Reveal category — ${hints.revealCategory} coins`,
-      `Reveal a bank item — ${hints.revealBankItem} coins`,
-      `Pin an item to its correct rank — ${hints.revealRankPosition} coins`,
+      `Stuck? Spend coins to get help`,
+      `Show the category — ${hints.revealCategory} coins`,
+      `Reveal a hidden item — ${hints.revealBankItem} coins`,
+      `Lock an item into its correct spot — ${hints.revealRankPosition} coins`,
     ],
   },
   {
     heading: 'Coins',
-    body: `You start with ${GAME_CONFIG.startingCoins} coins. Spend them on guesses and hints. Run out and it's game over — so play smart.`,
+    body: `You start with ${GAME_CONFIG.startingCoins} coins. Wrong guesses and hints spend them. Hit zero and the game ends — so spend wisely.`,
   },
 ]
 
