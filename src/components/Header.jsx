@@ -4,11 +4,12 @@ import { GAME_CONFIG } from '../config.js'
 // Fade only the LEFT edge — right side stays sharp so text end is always readable
 const LEFT_FADE = 'linear-gradient(to right, transparent 0%, black 20%, black 100%)'
 
-export default function Header({ categoryText, onGuessCategory, onOpenIntro }) {
+export default function Header({ categoryText, categoryHint, onGuessCategory, onOpenIntro }) {
   const [guessing, setGuessing] = useState(false)
   const [query, setQuery] = useState('')
   const [missCount, setMissCount] = useState(0)
-  const [lastCloseness, setLastCloseness] = useState(null)
+  const [lastHint, setLastHint] = useState(null)  // { text, warm } | null
+  const [loading, setLoading] = useState(false)
   const inputRef = useRef(null)
 
   // Close input when category is revealed (by hint or correct guess)
@@ -16,7 +17,7 @@ export default function Header({ categoryText, onGuessCategory, onOpenIntro }) {
     if (categoryText) {
       setGuessing(false)
       setQuery('')
-      setLastCloseness(null)
+      setLastHint(null)
     }
   }, [categoryText])
 
@@ -25,15 +26,23 @@ export default function Header({ categoryText, onGuessCategory, onOpenIntro }) {
     if (guessing) inputRef.current?.focus()
   }, [guessing])
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     const q = query.trim()
     if (!q) return
-    const result = onGuessCategory(q)
+    setLoading(true)
+    const result = await onGuessCategory(q)
+    setLoading(false)
     setQuery('')
     if (result.outcome === 'miss') {
       setMissCount(c => c + 1)
-      setLastCloseness(result.closeness ?? null)
+      if (result.warm && (result.hint || categoryHint)) {
+        setLastHint({ text: result.hint ?? categoryHint, warm: true })
+      } else if (result.cold && result.hint) {
+        setLastHint({ text: result.hint, warm: false })
+      } else {
+        setLastHint(null)
+      }
     }
     // 'hit' will trigger the categoryText prop to populate → useEffect closes the input
   }
@@ -117,11 +126,11 @@ export default function Header({ categoryText, onGuessCategory, onOpenIntro }) {
             />
             <button
               type="submit"
-              disabled={!query.trim()}
+              disabled={!query.trim() || loading}
               className="px-3 py-1.5 rounded-lg text-sm font-medium shrink-0 disabled:opacity-40"
               style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
             >
-              →
+              {loading ? '…' : '→'}
             </button>
             <button
               type="button"
@@ -142,9 +151,9 @@ export default function Header({ categoryText, onGuessCategory, onOpenIntro }) {
                   : `Not quite — −1 coin per miss`}
             </p>
           )}
-          {lastCloseness >= 0.5 && (
-            <p className="text-xs mt-1 fade-in" style={{ color: 'var(--color-text-faint)' }}>
-              {lastCloseness >= 0.75 ? "You're very close — just a bit more specific!" : "You're on the right track — try to be more specific."}
+          {lastHint && (
+            <p key={lastHint.text} className="text-xs mt-1 fade-in" style={{ color: 'var(--color-text-faint)' }}>
+              {lastHint.text}
             </p>
           )}
         </div>

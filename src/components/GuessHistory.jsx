@@ -14,22 +14,34 @@ export default function GuessHistory({ rankHistory, keyMap }) {
 
   return (
     <div
-      className="shrink-0 overflow-y-auto px-4 py-2"
-      style={{
-        borderBottom: '1px solid var(--color-border)',
-        maxHeight: '7rem',
-      }}
+      className="shrink-0 px-4 py-2 relative"
+      style={{ borderBottom: '1px solid var(--color-border)' }}
     >
-      <div className="flex flex-col gap-1">
-        {rankHistory.map(({ slots, feedback }, attemptIndex) => (
-          <AttemptRow
-            key={attemptIndex}
-            slots={slots}
-            feedback={feedback}
-            keyMap={keyMap}
-            attemptNumber={attemptIndex + 1}
-          />
-        ))}
+      {/* Top fade — only appears once enough attempts push older ones out of view */}
+      {rankHistory.length > 5 && (
+        <div
+          className="absolute top-0 left-0 right-0 z-10 pointer-events-none"
+          style={{
+            height: '2rem',
+            background: 'linear-gradient(to bottom, var(--color-bg), transparent)',
+          }}
+        />
+      )}
+      <div
+        className="overflow-y-auto"
+        style={{ maxHeight: '9rem' }}
+      >
+        <div className="flex flex-col gap-1">
+          {rankHistory.map(({ slots, feedback }, attemptIndex) => (
+            <AttemptRow
+              key={attemptIndex}
+              slots={slots}
+              feedback={feedback}
+              keyMap={keyMap}
+              attemptNumber={attemptIndex + 1}
+            />
+          ))}
+        </div>
       </div>
     </div>
   )

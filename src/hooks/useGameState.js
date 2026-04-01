@@ -298,16 +298,34 @@ export function useGameState(puzzle) {
     return { feedback, won };
   }, []);
 
-  const guessCategory = useCallback((query) => {
+  const guessCategory = useCallback(async (query) => {
     const s = stateRef.current;
-    const { matched, closeness } = matchCategory(query, puzzle.category);
+
+    // Try LLM evaluation; fall back to local Fuse matcher if unavailable
+    let matched = false, warm = false, cold = false, hint = null;
+    try {
+      const res = await fetch('/api/check-category', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, category: puzzle.category }),
+      });
+      if (res.ok) {
+        ({ matched, warm, cold, hint } = await res.json());
+      } else {
+        throw new Error('non-ok response');
+      }
+    } catch {
+      // Fallback: local fuzzy matcher
+      ({ matched } = matchCategory(query, puzzle.category));
+    }
+
     if (matched) {
       dispatch({ type: 'CATEGORY_HIT' });
       return { outcome: 'hit' };
     }
     const cost = getCategoryMissCost(s.categoryMisses);
     dispatch({ type: 'CATEGORY_MISS' });
-    return { outcome: 'miss', cost, closeness };
+    return { outcome: 'miss', cost, warm, cold, hint };
   }, [puzzle.category]);
 
   const purchaseHint = useCallback((hintType) => {

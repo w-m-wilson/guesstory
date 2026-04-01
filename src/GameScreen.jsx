@@ -36,6 +36,7 @@ export default function GameScreen({ puzzle, onOpenIntro }) {
     <div className="flex flex-col h-full" style={{ background: 'var(--color-bg)' }}>
       <Header
         categoryText={state.categoryGuessed ? puzzle.category : null}
+        categoryHint={puzzle.hint ?? null}
         onGuessCategory={guessCategory}
         onOpenIntro={onOpenIntro}
       />

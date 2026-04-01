@@ -1,6 +1,7 @@
 {
   "id": "2026-04-01",
   "category": "Ivy League Universities By Undergrad Population Size",
+  "hint": "Right group — but what are you actually ranking them by?",
   "seed": [
     { "rank": 3, "name": "Brown", "aliases": ["Brown University"] }
   ],
