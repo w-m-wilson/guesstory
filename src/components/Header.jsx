@@ -62,17 +62,13 @@ export default function Header({ categoryText, onGuessCategory, onOpenIntro }) {
         </button>
 
         {categoryText ? (
-          /* Revealed: show category with left-only fade */
+          /* Revealed: show category, wrapping allowed for long names */
           <div
             key={categoryText}
-            className="flex-1 overflow-hidden ml-4 fade-in"
-            style={{
-              WebkitMaskImage: LEFT_FADE,
-              maskImage: LEFT_FADE,
-            }}
+            className="flex-1 ml-4 fade-in"
           >
             <p
-              className="text-xs text-right whitespace-nowrap pr-1"
+              className="text-xs text-right pr-1 leading-snug"
               style={{ color: 'var(--color-text-faint)' }}
             >
               {categoryText}
