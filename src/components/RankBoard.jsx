@@ -1,7 +1,4 @@
-import FeedbackDots from './FeedbackDots.jsx'
-
 export default function RankBoard({ rankSlots, rankHistory, onRemoveSlot, onSubmit }) {
-  const lastAttempt = rankHistory[rankHistory.length - 1] ?? null
   const hasAnySlot = rankSlots.some(Boolean)
 
   return (
@@ -9,30 +6,19 @@ export default function RankBoard({ rankSlots, rankHistory, onRemoveSlot, onSubm
       className="shrink-0 px-4 pt-3 pb-2"
       style={{ borderTop: '1px solid var(--color-border)' }}
     >
-      {/* Attempt counter */}
-      <div className="flex items-center justify-between mb-2">
+      {/* Attempt label */}
+      <div className="mb-2">
         <span className="text-xs font-medium" style={{ color: 'var(--color-text-faint)' }}>
-          {rankHistory.length === 0
-            ? 'Arrange your ranking'
-            : `Attempt ${rankHistory.length + 1}`}
+          {rankHistory.length === 0 ? 'Arrange your ranking' : `Attempt ${rankHistory.length + 1}`}
         </span>
-        {lastAttempt && (
-          <div className="flex items-center gap-1.5">
-            <span className="text-xs" style={{ color: 'var(--color-text-faint)' }}>Last:</span>
-            <FeedbackDots feedback={lastAttempt.feedback} />
-          </div>
-        )}
       </div>
 
-      {/* Slots */}
+      {/* Slots — no per-slot feedback dots */}
       <div className="flex flex-col gap-1">
         {rankSlots.map((item, index) => {
           const position = index + 1
-          const slotFeedback = lastAttempt?.feedback?.[index]
-
           return (
             <div key={index} className="flex items-center gap-2">
-              {/* Position number */}
               <span
                 className="text-sm font-medium w-4 text-right shrink-0"
                 style={{ color: 'var(--color-text-faint)' }}
@@ -40,7 +26,6 @@ export default function RankBoard({ rankSlots, rankHistory, onRemoveSlot, onSubm
                 {position}.
               </span>
 
-              {/* Slot content */}
               <div
                 className="flex-1 flex items-center justify-between rounded-lg px-3 py-1.5 min-w-0"
                 style={{
@@ -69,19 +54,12 @@ export default function RankBoard({ rankSlots, rankHistory, onRemoveSlot, onSubm
                   </span>
                 )}
               </div>
-
-              {/* Per-slot feedback dot from last attempt */}
-              <div className="w-4 shrink-0">
-                {slotFeedback && (
-                  <FeedbackDots feedback={[slotFeedback]} />
-                )}
-              </div>
             </div>
           )
         })}
       </div>
 
-      {/* Submit button */}
+      {/* Submit */}
       <button
         onClick={onSubmit}
         disabled={!hasAnySlot}

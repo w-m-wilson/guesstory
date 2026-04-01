@@ -1,4 +1,4 @@
-import FeedbackDots from './FeedbackDots.jsx'
+import GuessHistory from './GuessHistory.jsx'
 
 const GRADES = [
   { min: 100, label: 'Perfect' },
@@ -26,7 +26,7 @@ function buildShareText(puzzleId, coins, rankHistory) {
   return lines.join('\n')
 }
 
-export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus }) {
+export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, keyMap }) {
   const won = gameStatus === 'won'
   const grade = getGrade(coins)
 
@@ -35,7 +35,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus }) 
     try {
       await navigator.clipboard.writeText(text)
     } catch {
-      // fallback: do nothing silently for now
+      // silent fallback
     }
   }
 
@@ -66,22 +66,17 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus }) 
           </p>
         </div>
 
-        {/* Rank history summary (spoiler-free dots) */}
+        {/* Attempt history reusing GuessHistory (spoiler-free, key-based) */}
         {rankHistory.length > 0 && (
-          <div className="flex flex-col gap-1.5">
-            <p className="text-xs font-medium" style={{ color: 'var(--color-text-faint)' }}>
+          <div>
+            <p className="text-xs font-medium mb-2" style={{ color: 'var(--color-text-faint)' }}>
               Ranking attempts
             </p>
-            {rankHistory.map(({ feedback }, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <span className="text-xs w-4" style={{ color: 'var(--color-text-faint)' }}>{i + 1}.</span>
-                <FeedbackDots feedback={feedback} spoilerFree />
-              </div>
-            ))}
+            <GuessHistory rankHistory={rankHistory} keyMap={keyMap} />
           </div>
         )}
 
-        {/* Share button */}
+        {/* Share */}
         <button
           onClick={handleShare}
           className="w-full py-2.5 rounded-xl text-sm font-semibold"
