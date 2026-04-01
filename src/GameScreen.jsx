@@ -49,6 +49,7 @@ export default function GameScreen({ puzzle, onOpenIntro }) {
         onConfirm={confirmPending}
         onCancel={cancelPending}
         onPlaceItem={placeItem}
+        onRemoveSlot={removeSlot}
       />
 
       <GuessHistory

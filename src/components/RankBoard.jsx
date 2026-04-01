@@ -30,23 +30,32 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
 
               <div
                 className="flex-1 flex items-center justify-between rounded-lg px-3 py-1.5 min-w-0"
-                onDoubleClick={() => !locked && item && onRemoveSlot(index)}
                 style={{
                   background: locked ? 'var(--color-border)' : 'var(--color-bg-elevated)',
                   border: `1px solid ${locked ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
                   minHeight: '36px',
-                  cursor: item && !locked ? 'pointer' : 'default',
-                  userSelect: 'none',
                 }}
               >
                 {item ? (
-                  <span
-                    className="text-sm truncate"
-                    style={{ color: locked ? 'var(--color-text-strong)' : 'var(--color-text)' }}
-                  >
-                    {item.name}
-                    {locked && <span className="ml-1.5 text-xs opacity-50">★</span>}
-                  </span>
+                  <>
+                    <span
+                      className="text-sm truncate"
+                      style={{ color: locked ? 'var(--color-text-strong)' : 'var(--color-text)' }}
+                    >
+                      {item.name}
+                      {locked && <span className="ml-1.5 text-xs opacity-50">★</span>}
+                    </span>
+                    {!locked && (
+                      <button
+                        onClick={() => onRemoveSlot(index)}
+                        className="ml-2 shrink-0 text-xs opacity-30 hover:opacity-80"
+                        style={{ color: 'var(--color-text-faint)' }}
+                        aria-label={`Remove ${item.name}`}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </>
                 ) : (
                   <span className="text-sm" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
                     —

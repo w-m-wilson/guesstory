@@ -13,6 +13,7 @@ export default function BankPanel({
   onConfirm,
   onCancel,
   onPlaceItem,
+  onRemoveSlot,
 }) {
   const [query, setQuery] = useState('')
   const [feedback, setFeedback] = useState(null) // { type, message }
@@ -56,8 +57,10 @@ export default function BankPanel({
     else if (result?.outcome === 'known') showFeedback('known', 'Already discovered')
   }
 
-  // Which slots are currently filled (to mark placed items in chip list)
-  const placedRanks = new Set(rankSlots.filter(Boolean).map(i => i.rank))
+  // Map rank → slot index for placed items (used for toggle-removal)
+  const rankToSlotIndex = {}
+  rankSlots.forEach((item, i) => { if (item) rankToSlotIndex[item.rank] = i })
+  const placedRanks = new Set(Object.keys(rankToSlotIndex).map(Number))
 
   const freeMissesLeft = Math.max(0, FREE_MISSES - bankMisses)
   const burningCoins = bankMisses >= FREE_MISSES
@@ -163,9 +166,11 @@ export default function BankPanel({
               return (
                 <button
                   key={item.rank}
-                  onClick={() => onPlaceItem(item)}
-                  disabled={placed}
-                  className="fade-in flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium disabled:opacity-50"
+                  onClick={() => {
+                    if (placed) onRemoveSlot(rankToSlotIndex[item.rank])
+                    else onPlaceItem(item)
+                  }}
+                  className="fade-in flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium"
                   style={{
                     background: placed ? 'var(--color-text-strong)' : 'var(--color-bg-elevated)',
                     color: placed ? 'var(--color-bg)' : 'var(--color-text)',
@@ -182,7 +187,7 @@ export default function BankPanel({
                     </span>
                   )}
                   {item.name}
-                  {placed && <span className="text-xs opacity-70">✓</span>}
+                  {placed && <span className="text-xs opacity-70">✕</span>}
                 </button>
               )
             })}
