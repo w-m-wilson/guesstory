@@ -9,7 +9,7 @@ import ScoreBar from './components/ScoreBar.jsx'
 import HintModal from './components/HintModal.jsx'
 import EndScreen from './components/EndScreen.jsx'
 
-export default function GameScreen({ puzzle }) {
+export default function GameScreen({ puzzle, onOpenIntro }) {
   const [hintsOpen, setHintsOpen] = useState(false)
   const [endScreenDismissed, setEndScreenDismissed] = useState(false)
 
@@ -37,6 +37,7 @@ export default function GameScreen({ puzzle }) {
       <Header
         categoryText={state.categoryGuessed ? puzzle.category : null}
         onGuessCategory={guessCategory}
+        onOpenIntro={onOpenIntro}
       />
 
       <BankPanel
