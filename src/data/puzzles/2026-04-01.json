@@ -1,20 +1,18 @@
 {
   "id": "2026-04-01",
-  "category": "Most followed accounts on Instagram",
+  "category": "Ivy League Universities By Undergrad Population Size",
   "seed": [
-    { "rank": 3, "name": "Cristiano Ronaldo", "aliases": ["CR7", "Ronaldo", "cristiano"] }
+    { "rank": 3, "name": "Brown", "aliases": ["Brown University"] }
   ],
   "bank": [
-    { "rank": 1,  "name": "Instagram",        "aliases": ["instagram official", "ig"] },
-    { "rank": 2,  "name": "Lionel Messi",     "aliases": ["Messi", "Leo Messi", "leo"] },
-    { "rank": 3,  "name": "Cristiano Ronaldo","aliases": ["CR7", "Ronaldo", "cristiano"] },
-    { "rank": 4,  "name": "Selena Gomez",     "aliases": ["Selena", "selenagomez"] },
-    { "rank": 5,  "name": "Kylie Jenner",     "aliases": ["Kylie"] },
-    { "rank": 6,  "name": "Dwayne Johnson",   "aliases": ["The Rock", "rock", "dwayne"] },
-    { "rank": 7,  "name": "Ariana Grande",    "aliases": ["Ari", "ariana"] },
-    { "rank": 8,  "name": "Kim Kardashian",   "aliases": ["Kim K", "kim"] },
-    { "rank": 9,  "name": "Beyoncé",          "aliases": ["Bey", "Queen Bey", "beyonce"] },
-    { "rank": 10, "name": "Khloe Kardashian", "aliases": ["Khloe K", "khloe"] }
+    { "rank": 1, "name": "Cornell",   "aliases": ["Cornell University"] },
+    { "rank": 2, "name": "UPenn",     "aliases": ["University of Pennsylvania", "Penn"] },
+    { "rank": 3, "name": "Brown",     "aliases": ["Brown University"] },
+    { "rank": 4, "name": "Harvard",   "aliases": ["Harvard University"] },
+    { "rank": 5, "name": "Columbia",  "aliases": ["Columbia University"] },
+    { "rank": 6, "name": "Yale",      "aliases": ["Yale University"] },
+    { "rank": 7, "name": "Princeton", "aliases": ["Princeton University"] },
+    { "rank": 8, "name": "Dartmouth", "aliases": ["Dartmouth College"] }
   ],
   "topFive": [1, 2, 3, 4, 5]
 }
