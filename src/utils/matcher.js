@@ -84,5 +84,16 @@ export function matchCategory(query, categoryString) {
   const matched = queryWords.filter(qw => wordFuse.search(qw).length > 0);
 
   // Require at least 60% of query words to match, minimum 1
-  return matched.length >= Math.max(1, Math.ceil(queryWords.length * 0.6));
+  if (matched.length < Math.max(1, Math.ceil(queryWords.length * 0.6))) return false;
+
+  // Also require at least 60% of category words to be covered by the query
+  // (prevents short vague guesses like "Ivy League universities" matching
+  //  "Ivy League Universities By Undergrad Population Size")
+  const queryFuse = new Fuse(queryWords.map(w => ({ w })), {
+    keys: ['w'],
+    threshold: 0.35,
+    isCaseSensitive: false,
+  });
+  const catCovered = catWords.filter(cw => queryFuse.search(cw).length > 0);
+  return catCovered.length >= Math.ceil(catWords.length * 0.6);
 }
