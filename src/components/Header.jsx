@@ -1,15 +1,138 @@
-export default function Header() {
+import { useState, useEffect, useRef } from 'react'
+import { GAME_CONFIG } from '../config.js'
+
+// Fade only the LEFT edge — right side stays sharp so text end is always readable
+const LEFT_FADE = 'linear-gradient(to right, transparent 0%, black 20%, black 100%)'
+
+export default function Header({ categoryText, onGuessCategory }) {
+  const [guessing, setGuessing] = useState(false)
+  const [query, setQuery] = useState('')
+  const [missCount, setMissCount] = useState(0)
+  const inputRef = useRef(null)
+
+  // Close input when category is revealed (by hint or correct guess)
+  useEffect(() => {
+    if (categoryText) {
+      setGuessing(false)
+      setQuery('')
+    }
+  }, [categoryText])
+
+  // Auto-focus input when guess mode opens
+  useEffect(() => {
+    if (guessing) inputRef.current?.focus()
+  }, [guessing])
+
+  function handleSubmit(e) {
+    e.preventDefault()
+    const q = query.trim()
+    if (!q) return
+    const result = onGuessCategory(q)
+    setQuery('')
+    if (result.outcome === 'miss') {
+      setMissCount(c => c + 1)
+    }
+    // 'hit' will trigger the categoryText prop to populate → useEffect closes the input
+  }
+
   return (
     <header
-      className="flex items-center px-4 py-3 shrink-0"
+      className="shrink-0"
       style={{ borderBottom: '1px solid var(--color-border)' }}
     >
-      <span
-        className="font-black italic text-xl tracking-tight"
-        style={{ color: 'var(--color-text-strong)' }}
-      >
-        Rankie
-      </span>
+      {/* Row 1: Rankie wordmark + category text OR guess button */}
+      <div className="flex items-center px-4 py-3">
+        <span
+          className="font-black italic text-xl tracking-tight shrink-0"
+          style={{ color: 'var(--color-text-strong)' }}
+        >
+          Rankie
+        </span>
+
+        {categoryText ? (
+          /* Revealed: show category with left-only fade */
+          <div
+            key={categoryText}
+            className="flex-1 overflow-hidden ml-4 fade-in"
+            style={{
+              WebkitMaskImage: LEFT_FADE,
+              maskImage: LEFT_FADE,
+            }}
+          >
+            <p
+              className="text-xs text-right whitespace-nowrap pr-1"
+              style={{ color: 'var(--color-text-faint)' }}
+            >
+              {categoryText}
+            </p>
+          </div>
+        ) : (
+          /* Not revealed: show guess button (hidden while input row is open) */
+          <div className="flex-1 flex justify-end ml-4">
+            {!guessing && (
+              <button
+                onClick={() => { setGuessing(true); setMissCount(0) }}
+                className="text-xs px-2 py-1 rounded-lg"
+                style={{ color: 'var(--color-text-faint)' }}
+              >
+                Guess category
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Row 2: guess input (only when actively guessing + not yet revealed) */}
+      {guessing && !categoryText && (
+        <div className="px-4 pb-3 slide-down">
+          <form onSubmit={handleSubmit} className="flex gap-2">
+            <input
+              ref={inputRef}
+              type="text"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="What's the theme?"
+              className="flex-1 rounded-lg px-3 py-1.5 text-sm outline-none"
+              style={{
+                background: 'var(--color-bg-elevated)',
+                color: 'var(--color-text)',
+                border: '1px solid var(--color-border)',
+                fontSize: '16px',
+              }}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
+            />
+            <button
+              type="submit"
+              disabled={!query.trim()}
+              className="px-3 py-1.5 rounded-lg text-sm font-medium shrink-0 disabled:opacity-40"
+              style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+            >
+              →
+            </button>
+            <button
+              type="button"
+              onClick={() => setGuessing(false)}
+              className="px-2 py-1.5 text-sm"
+              style={{ color: 'var(--color-text-faint)' }}
+            >
+              ✕
+            </button>
+          </form>
+
+          {missCount > 0 && (
+            <p className="text-xs mt-1.5 fade-in" style={{ color: 'var(--color-text-faint)' }}>
+              {missCount === 1
+                ? `Not quite — ${GAME_CONFIG.category.freeMisses} free tries`
+                : missCount <= GAME_CONFIG.category.freeMisses
+                  ? 'Not quite — keep trying'
+                  : `Not quite — −1 coin per miss`}
+            </p>
+          )}
+        </div>
+      )}
     </header>
   )
 }

@@ -26,7 +26,7 @@ function buildShareText(puzzleId, coins, rankHistory) {
   return lines.join('\n')
 }
 
-export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, keyMap }) {
+export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, keyMap, onClose }) {
   const won = gameStatus === 'won'
   const grade = getGrade(coins)
 
@@ -43,10 +43,12 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, ke
     <div
       className="fixed inset-0 z-50 flex items-center justify-center px-6"
       style={{ background: 'rgba(0,0,0,0.5)' }}
+      onClick={onClose}
     >
       <div
         className="w-full max-w-sm rounded-2xl p-6 flex flex-col gap-5"
         style={{ background: 'var(--color-bg)' }}
+        onClick={e => e.stopPropagation()}
       >
         {/* Headline */}
         <div className="text-center">

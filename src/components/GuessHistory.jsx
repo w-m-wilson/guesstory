@@ -1,23 +1,28 @@
 /**
- * GuessHistory — horizontal scroller showing all past ranking submissions.
+ * GuessHistory — vertical list of past ranking submissions.
  *
- * Each card:
- *   Top row: spoiler-free dots (● in-top-5, ○ not-top-5, ✗ empty)
- *   Bottom row: 2-letter item keys aligned under their dot
- *
- * Dots are fact-of only — no positional info is communicated.
+ * Two-column layout per row:
+ *   Left:  5 two-letter item keys in submission order
+ *   Right: Mastermind feedback dots
+ *            ● = in top 5, correct position  ('correct')
+ *            ○ = in top 5, wrong position    ('present')
+ *            nothing = not in top 5          ('absent' / 'empty')
+ *            — = shown when ALL slots give nothing
  */
 export default function GuessHistory({ rankHistory, keyMap }) {
   if (rankHistory.length === 0) return null
 
   return (
     <div
-      className="shrink-0 overflow-x-auto px-4 py-2"
-      style={{ borderBottom: '1px solid var(--color-border)' }}
+      className="shrink-0 overflow-y-auto px-4 py-2"
+      style={{
+        borderBottom: '1px solid var(--color-border)',
+        maxHeight: '7rem',
+      }}
     >
-      <div className="flex gap-3 w-max">
+      <div className="flex flex-col gap-1">
         {rankHistory.map(({ slots, feedback }, attemptIndex) => (
-          <AttemptCard
+          <AttemptRow
             key={attemptIndex}
             slots={slots}
             feedback={feedback}
@@ -30,69 +35,64 @@ export default function GuessHistory({ rankHistory, keyMap }) {
   )
 }
 
-function AttemptCard({ slots, feedback, keyMap, attemptNumber }) {
+function AttemptRow({ slots, feedback, keyMap, attemptNumber }) {
+  const hasAnyHit = feedback.some(f => f === 'correct' || f === 'present')
+
   return (
-    <div className="flex flex-col items-center gap-1">
+    <div className="flex items-center gap-2 fade-in">
+      {/* Attempt number */}
       <span
-        className="text-[10px] font-medium mb-0.5"
+        className="text-[10px] font-medium w-5 shrink-0 tabular-nums"
         style={{ color: 'var(--color-text-faint)' }}
       >
         #{attemptNumber}
       </span>
 
-      {/* Dots + keys: one column per slot */}
-      <div className="flex gap-2">
+      {/* Left column: submitted keys in order */}
+      <div className="flex items-center gap-1.5 flex-1 min-w-0">
         {slots.map((item, i) => {
-          const f = feedback[i]
-          const key = item ? (keyMap[item.rank] ?? '??') : null
-
+          const key = item ? (keyMap[item.rank] ?? '??') : '—'
           return (
-            <div key={i} className="flex flex-col items-center gap-0.5 w-6">
-              <SpoilerDot value={f} />
-              <span
-                className="text-[11px] font-semibold leading-none tabular-nums"
-                style={{ color: key ? 'var(--color-text-strong)' : 'var(--color-text-faint)' }}
-              >
-                {key ?? '—'}
-              </span>
-            </div>
+            <span
+              key={i}
+              className="text-[11px] font-semibold tabular-nums"
+              style={{ color: 'var(--color-text)' }}
+            >
+              {key}
+            </span>
           )
         })}
       </div>
-    </div>
-  )
-}
 
-function SpoilerDot({ value }) {
-  if (value === 'correct' || value === 'present') {
-    return (
-      <span
-        className="text-sm leading-none"
-        style={{ color: 'var(--color-dot-correct)' }}
-        aria-label="in top 5"
-      >
-        ●
-      </span>
-    )
-  }
-  if (value === 'absent') {
-    return (
-      <span
-        className="text-sm leading-none"
-        style={{ color: 'var(--color-dot-present)' }}
-        aria-label="not in top 5"
-      >
-        ○
-      </span>
-    )
-  }
-  return (
-    <span
-      className="text-sm leading-none"
-      style={{ color: 'var(--color-dot-absent)', opacity: 0.4 }}
-      aria-label="empty"
-    >
-      ✗
-    </span>
+      {/* Right column: Mastermind feedback — ● always before ○, nothing for absent */}
+      <div className="flex items-center gap-0.5 shrink-0 justify-end" style={{ minWidth: '3.5rem' }}>
+        {!hasAnyHit ? (
+          <span className="text-xs" style={{ color: 'var(--color-text-faint)' }}>—</span>
+        ) : (
+          [...feedback]
+            .sort((a, b) => {
+              const order = { correct: 0, present: 1 }
+              return (order[a] ?? 2) - (order[b] ?? 2)
+            })
+            .map((f, i) => {
+              if (f === 'correct') {
+                return (
+                  <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-dot-correct)' }}>
+                    ●
+                  </span>
+                )
+              }
+              if (f === 'present') {
+                return (
+                  <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-dot-present)' }}>
+                    ○
+                  </span>
+                )
+              }
+              return null
+            })
+        )}
+      </div>
+    </div>
   )
 }

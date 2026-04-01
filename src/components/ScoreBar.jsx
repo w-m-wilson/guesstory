@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 
 const COIN_EMOJI = '🪙'
 
-export default function ScoreBar({ coins, onHintsOpen }) {
+export default function ScoreBar({ coins, onHintsOpen, onReset }) {
   const prevCoins = useRef(coins)
   const [deductions, setDeductions] = useState([]) // [{ id, amount }]
 
@@ -11,7 +11,6 @@ export default function ScoreBar({ coins, onHintsOpen }) {
     if (delta > 0) {
       const id = Date.now()
       setDeductions(prev => [...prev, { id, amount: delta }])
-      // Remove after animation finishes
       setTimeout(() => {
         setDeductions(prev => prev.filter(d => d.id !== id))
       }, 950)
@@ -45,6 +44,16 @@ export default function ScoreBar({ coins, onHintsOpen }) {
           </span>
         ))}
       </div>
+
+      {/* Reset button — center */}
+      <button
+        onClick={onReset}
+        className="text-xs font-medium px-2 py-1 rounded-lg"
+        style={{ color: 'var(--color-text-faint)' }}
+        aria-label="Reset session"
+      >
+        ↺ Reset
+      </button>
 
       {/* Hints button */}
       <button

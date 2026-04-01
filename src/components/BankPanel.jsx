@@ -79,6 +79,7 @@ export default function BankPanel({
               background: 'var(--color-bg-elevated)',
               color: 'var(--color-text)',
               border: '1px solid var(--color-border)',
+              fontSize: '16px',  /* prevents iOS Safari zoom on focus */
             }}
             autoComplete="off"
             autoCorrect="off"
@@ -124,17 +125,20 @@ export default function BankPanel({
 
         {/* Confirm match prompt */}
         {pendingMatch && (
-          <ConfirmMatch
-            item={pendingMatch.item}
-            onConfirm={handleConfirm}
-            onCancel={onCancel}
-          />
+          <div className="slide-down">
+            <ConfirmMatch
+              item={pendingMatch.item}
+              onConfirm={handleConfirm}
+              onCancel={onCancel}
+            />
+          </div>
         )}
 
         {/* Inline feedback (hidden when confirm prompt is showing) */}
         {!pendingMatch && feedback && (
           <p
-            className="text-xs mt-1"
+            key={feedback.message}
+            className="text-xs mt-1 fade-in"
             style={{
               color: feedback.type === 'hit'
                 ? 'var(--color-text-strong)'
@@ -161,7 +165,7 @@ export default function BankPanel({
                   key={item.rank}
                   onClick={() => onPlaceItem(item)}
                   disabled={placed}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium disabled:opacity-50"
+                  className="fade-in flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium disabled:opacity-50"
                   style={{
                     background: placed ? 'var(--color-text-strong)' : 'var(--color-bg-elevated)',
                     color: placed ? 'var(--color-bg)' : 'var(--color-text)',

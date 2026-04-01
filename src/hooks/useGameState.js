@@ -37,6 +37,7 @@ function initState(puzzle) {
     categoryMisses: 0,
     discoveredItems,          // { [rank]: item }
     rankSlots: [null, null, null, null, null],  // index 0 = rank position 1
+    lockedSlots: [],          // slot indices locked by revealRankPosition hint
     rankHistory: [],          // [{ slots: [...], feedback: [...] }]
     categoryGuessed: false,
     gameStatus: 'playing',    // 'playing' | 'won' | 'abandoned'
@@ -50,7 +51,7 @@ function initState(puzzle) {
 
 function reducer(state, action) {
   // Block all actions (except END_GAME) once the game is over
-  if (state.gameStatus !== 'playing' && action.type !== 'END_GAME') {
+  if (state.gameStatus !== 'playing' && action.type !== 'END_GAME' && action.type !== 'RESET') {
     return state;
   }
 
@@ -97,6 +98,7 @@ function reducer(state, action) {
     }
 
     case 'REMOVE_SLOT': {
+      if (state.lockedSlots.includes(action.slotIndex)) return state;
       const newSlots = [...state.rankSlots];
       newSlots[action.slotIndex] = null;
       return { ...state, rankSlots: newSlots };
@@ -105,19 +107,30 @@ function reducer(state, action) {
     case 'SUBMIT_RANKING': {
       const { feedback } = action;
       const won = isWin(feedback);
-      const cost = won ? 0 : getRankingMissCost();
+      const rankingCost = getRankingMissCost();
+      // If under the full cost, treat as final guess — wipe remaining coins
+      const cost = won ? 0 : Math.min(state.coins, rankingCost);
+      const newCoins = Math.max(0, state.coins - cost);
+      const newStatus = won ? 'won' : (newCoins === 0 ? 'abandoned' : 'playing');
+      // On wrong submission, preserve locked slots and clear the rest
+      const clearedSlots = state.rankSlots.map((slot, i) =>
+        state.lockedSlots.includes(i) ? slot : null
+      );
       return {
         ...state,
-        coins: Math.max(0, state.coins - cost),
+        coins: newCoins,
         rankHistory: [...state.rankHistory, { slots: [...state.rankSlots], feedback }],
-        // Clear the board on a wrong submission so the player can try again
-        rankSlots: won ? state.rankSlots : [null, null, null, null, null],
-        gameStatus: won ? 'won' : 'playing',
+        rankSlots: won ? state.rankSlots : clearedSlots,
+        gameStatus: newStatus,
       };
     }
 
     case 'CATEGORY_HIT': {
-      return { ...state, categoryGuessed: true };
+      return {
+        ...state,
+        categoryGuessed: true,
+        coins: state.coins + GAME_CONFIG.category.correctGuessBonus,
+      };
     }
 
     case 'CATEGORY_MISS': {
@@ -144,11 +157,28 @@ function reducer(state, action) {
       if (action.hintType === 'revealCategory') {
         newState.categoryGuessed = true;
       }
+      if (action.hintType === 'revealRankPosition' && action.item != null && action.slotIndex != null) {
+        const newSlots = [...newState.rankSlots];
+        newSlots[action.slotIndex] = action.item;
+        newState.rankSlots = newSlots;
+        newState.lockedSlots = [...newState.lockedSlots, action.slotIndex];
+        // Also surface the item in the discovered bank
+        if (!newState.discoveredItems[action.item.rank]) {
+          newState.discoveredItems = {
+            ...newState.discoveredItems,
+            [action.item.rank]: action.item,
+          };
+        }
+      }
       return newState;
     }
 
     case 'END_GAME': {
       return { ...state, gameStatus: 'abandoned' };
+    }
+
+    case 'RESET': {
+      return action.initialState;
     }
 
     default:
@@ -278,23 +308,39 @@ export function useGameState(puzzle) {
   const purchaseHint = useCallback((hintType) => {
     const s = stateRef.current;
     let item = null;
+    let slotIndex = null;
+
     if (hintType === 'revealBankItem') {
       item = puzzle.bank.find(b => !s.discoveredItems[b.rank]) ?? null;
-      if (!item) return { item: null }; // nothing left to reveal
+      if (!item) return { item: null };
     }
-    dispatch({ type: 'PURCHASE_HINT', hintType, item });
+
+    if (hintType === 'revealRankPosition') {
+      const topFiveItems = puzzle.bank.filter(b => puzzle.topFive.includes(b.rank));
+      item = topFiveItems.find(b => !s.lockedSlots.includes(b.rank - 1)) ?? null;
+      if (!item) return { item: null };
+      slotIndex = item.rank - 1;
+    }
+
+    dispatch({ type: 'PURCHASE_HINT', hintType, item, slotIndex });
     return { item };
-  }, [puzzle.bank]);
+  }, [puzzle.bank, puzzle.topFive]);
 
   const endGame = useCallback(() => {
     dispatch({ type: 'END_GAME' });
   }, []);
+
+  const resetGame = useCallback(() => {
+    localStorage.removeItem(storageKey(puzzle.id));
+    dispatch({ type: 'RESET', initialState: initState(puzzle) });
+  }, [puzzle]);
 
   return {
     state,
     // Sorted array of discovered bank items for easy rendering
     discoveredList: Object.values(state.discoveredItems).sort((a, b) => a.rank - b.rank),
     // Actions
+    resetGame,
     guessBankItem,
     confirmPending,
     cancelPending,

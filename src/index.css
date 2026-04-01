@@ -59,6 +59,19 @@ body {
   overflow: hidden;
 }
 
+/* ── Micro-animations ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.22s ease-out; }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.slide-down { animation: slideDown 0.18s ease-out; }
+
 /* ── Coin deduction float animation ── */
 @keyframes floatUp {
   0%   { opacity: 1; transform: translateY(0); }

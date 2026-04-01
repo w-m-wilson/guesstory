@@ -9,6 +9,7 @@ export const GAME_CONFIG = {
   category: {
     freeMisses: 2,
     missCost: 1,      // coins per miss after free misses exhausted
+    correctGuessBonus: 15, // coins awarded for guessing the category correctly
   },
 
   ranking: {
@@ -24,8 +25,8 @@ export const GAME_CONFIG = {
   matcher: {
     // Fuse.js scores: 0 = perfect match, 1 = no match at all.
     // threshold = maximum score to include as a result (lower = stricter).
-    bankThreshold: 0.4,
-    bankConfidentThreshold: 0.15,   // below this score → auto-accept, no confirmation needed
-    categoryThreshold: 0.4,
+    bankThreshold: 0.3,
+    bankConfidentThreshold: 0.1,    // below this score → auto-accept, no confirmation needed
+    categoryThreshold: 0.35,
   },
 };
