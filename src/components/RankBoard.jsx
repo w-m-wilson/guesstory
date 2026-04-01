@@ -1,10 +1,5 @@
-import { GAME_CONFIG } from '../config.js'
-
-const RANKING_COST = GAME_CONFIG.ranking.missCost
-
-export default function RankBoard({ rankSlots, lockedSlots, rankHistory, coins, onRemoveSlot, onSubmit }) {
+export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemoveSlot, onSubmit }) {
   const hasAnySlot = rankSlots.some(Boolean)
-  const isFinalGuess = hasAnySlot && coins < RANKING_COST
 
   return (
     <div
@@ -50,9 +45,7 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, coins, 
                     style={{ color: locked ? 'var(--color-text-strong)' : 'var(--color-text)' }}
                   >
                     {item.name}
-                    {locked && (
-                      <span className="ml-1.5 text-xs opacity-50">★</span>
-                    )}
+                    {locked && <span className="ml-1.5 text-xs opacity-50">★</span>}
                   </span>
                 ) : (
                   <span className="text-sm" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
@@ -73,10 +66,9 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, coins, 
         style={{
           background: hasAnySlot ? 'var(--color-text-strong)' : 'var(--color-bg-elevated)',
           color: hasAnySlot ? 'var(--color-bg)' : 'var(--color-text-faint)',
-          opacity: isFinalGuess ? 0.75 : undefined,
         }}
       >
-        {isFinalGuess ? 'Final Guess' : 'Submit Ranking'}
+        Submit Ranking
       </button>
     </div>
   )

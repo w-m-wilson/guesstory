@@ -13,7 +13,7 @@ export const GAME_CONFIG = {
   },
 
   ranking: {
-    missCost: 10,     // flat cost per wrong ranking submission; formula TBD
+    absentCost: 1,    // coins per item placed that isn't in the top 5
   },
 
   hints: {
@@ -25,8 +25,8 @@ export const GAME_CONFIG = {
   matcher: {
     // Fuse.js scores: 0 = perfect match, 1 = no match at all.
     // threshold = maximum score to include as a result (lower = stricter).
-    bankThreshold: 0.3,
-    bankConfidentThreshold: 0.1,    // below this score → auto-accept, no confirmation needed
+    bankThreshold: 0.25,
+    bankConfidentThreshold: 0.08,   // below this score → auto-accept, no confirmation needed
     categoryThreshold: 0.35,
   },
 };

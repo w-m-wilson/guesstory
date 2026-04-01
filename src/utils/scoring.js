@@ -18,11 +18,6 @@ export function getCategoryMissCost(missCount) {
   return GAME_CONFIG.category.missCost;
 }
 
-/** Returns the coin cost for a wrong ranking submission. */
-export function getRankingMissCost() {
-  return GAME_CONFIG.ranking.missCost;
-}
-
 /** Returns the coin cost for a given hint type. */
 export function getHintCost(hintType) {
   return GAME_CONFIG.hints[hintType] ?? 0;

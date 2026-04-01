@@ -1,7 +1,7 @@
 import { useReducer, useCallback, useEffect, useRef } from 'react';
 import { createBankMatcher, matchCategory } from '../utils/matcher.js';
 import { generateFeedback, isWin } from '../utils/mastermind.js';
-import { getBankMissCost, getCategoryMissCost, getRankingMissCost, getHintCost } from '../utils/scoring.js';
+import { getBankMissCost, getCategoryMissCost, getHintCost } from '../utils/scoring.js';
 import { GAME_CONFIG } from '../config.js';
 
 // ---------------------------------------------------------------------------
@@ -107,9 +107,9 @@ function reducer(state, action) {
     case 'SUBMIT_RANKING': {
       const { feedback } = action;
       const won = isWin(feedback);
-      const rankingCost = getRankingMissCost();
-      // If under the full cost, treat as final guess — wipe remaining coins
-      const cost = won ? 0 : Math.min(state.coins, rankingCost);
+      // Cost = 1 coin per item placed that isn't in the top 5 ('absent')
+      const absentCount = feedback.filter(f => f === 'absent').length;
+      const cost = won ? 0 : Math.min(state.coins, absentCount * GAME_CONFIG.ranking.absentCost);
       const newCoins = Math.max(0, state.coins - cost);
       const newStatus = won ? 'won' : (newCoins === 0 ? 'abandoned' : 'playing');
       // On wrong submission, preserve locked slots and clear the rest

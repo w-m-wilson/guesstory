@@ -1,16 +1,42 @@
-# React + Vite
+# Rankie
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A daily mobile-first word game. Discover items from a hidden ranked list, then arrange the top 5 in the correct order. Think Wordle × Mastermind × trivia.
 
-Currently, two official plugins are available:
+## How it works
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Each day has a new puzzle — a ranked list of 8–10 real-world items with a hidden category (e.g. "Most followed accounts on Instagram"). You start with one item revealed and 100 coins.
 
-## React Compiler
+**Discover items** by typing names into the guess bar. Fuzzy matching handles nicknames and typos. You get 3 free misses before wrong guesses start costing coins.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Rank them** by tapping discovered items into 5 numbered slots and hitting Submit. You get Mastermind-style feedback:
+- `●` correct position
+- `○` in the top 5 but wrong position
+- (nothing) not in the top 5
 
-## Expanding the ESLint configuration
+Each absent item in a wrong submission costs 1 coin. All-top-5 guesses cost nothing.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**Guess the category** for a +15 coin bonus. Or spend coins in the hint shop to reveal items, pin a rank position, or unlock the category.
+
+Run out of coins and it's game over. Final score = coins remaining.
+
+## Stack
+
+- React 19 + Vite 8
+- Tailwind v4 (via `@tailwindcss/vite`, no PostCSS config)
+- Solarized palette, system dark/light mode
+- Fuse.js for fuzzy matching
+- `useReducer` + `localStorage` for state (no backend)
+
+## Puzzle format
+
+Puzzles are static JSON files in `src/data/puzzles/YYYY-MM-DD.json`. See `agent.md` for the full schema and game design reference.
+
+## Dev
+
+```bash
+npm install
+npm run dev      # localhost:5173
+npm run build    # production build → dist/
+```
+
+All game parameters (costs, thresholds, hint prices) are in `src/config.js`.

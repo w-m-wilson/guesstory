@@ -4,16 +4,17 @@ const COIN_EMOJI = '🪙'
 
 export default function ScoreBar({ coins, onHintsOpen, onReset }) {
   const prevCoins = useRef(coins)
-  const [deductions, setDeductions] = useState([]) // [{ id, amount }]
+  // { id, amount, positive }
+  const [deltas, setDeltas] = useState([])
 
   useEffect(() => {
     const delta = prevCoins.current - coins
-    if (delta > 0) {
+    if (delta !== 0) {
       const id = Date.now()
-      setDeductions(prev => [...prev, { id, amount: delta }])
+      setDeltas(prev => [...prev, { id, amount: Math.abs(delta), positive: delta < 0 }])
       setTimeout(() => {
-        setDeductions(prev => prev.filter(d => d.id !== id))
-      }, 950)
+        setDeltas(prev => prev.filter(d => d.id !== id))
+      }, 1000)
     }
     prevCoins.current = coins
   }, [coins])
@@ -26,21 +27,27 @@ export default function ScoreBar({ coins, onHintsOpen, onReset }) {
       {/* Coin display */}
       <div className="flex items-center gap-2 relative">
         <span className="text-base">{COIN_EMOJI}</span>
+
+        {/* Pulse on every change by remounting via key */}
         <span
-          className="text-lg font-semibold tabular-nums"
+          key={coins}
+          className="coin-pulse text-xl font-bold tabular-nums"
           style={{ color: 'var(--color-text-strong)' }}
         >
           {coins}
         </span>
 
-        {/* Floating deduction animations */}
-        {deductions.map(({ id, amount }) => (
+        {/* Floating delta labels */}
+        {deltas.map(({ id, amount, positive }) => (
           <span
             key={id}
-            className="coin-deduct absolute left-6 text-sm font-medium"
-            style={{ color: 'var(--color-text-faint)', top: '-4px' }}
+            className="coin-float absolute left-6 text-base font-bold"
+            style={{
+              color: 'var(--color-text-strong)',
+              top: '-6px',
+            }}
           >
-            −{amount}
+            {positive ? `+${amount}` : `−${amount}`}
           </span>
         ))}
       </div>

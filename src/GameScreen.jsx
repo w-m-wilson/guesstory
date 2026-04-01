@@ -60,7 +60,6 @@ export default function GameScreen({ puzzle, onOpenIntro }) {
         rankSlots={state.rankSlots}
         lockedSlots={state.lockedSlots}
         rankHistory={state.rankHistory}
-        coins={state.coins}
         onRemoveSlot={removeSlot}
         onSubmit={submitRanking}
       />
