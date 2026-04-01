@@ -44,12 +44,15 @@ export function createBankMatcher(items) {
 }
 
 /**
- * Returns true if the query approximately matches the puzzle's category string.
+ * Returns { matched: boolean, closeness: number 0–1 } for a category guess.
  *
  * Two-pass strategy:
  *   1. Fuse.js — catches typos when word order is similar
  *   2. Word-set overlap — catches reordered phrases ("Instagram most followed"
  *      vs "most followed accounts on Instagram")
+ *
+ * closeness reflects what fraction of category words the query covered,
+ * useful for showing a "getting warm" hint even on a miss.
  */
 export function matchCategory(query, categoryString) {
   const q = query.trim();
@@ -61,7 +64,7 @@ export function matchCategory(query, categoryString) {
     isCaseSensitive: false,
     ignoreLocation: true,
   });
-  if (fuse.search(q).length > 0) return true;
+  if (fuse.search(q).length > 0) return { matched: true, closeness: 1 };
 
   // Pass 2: word-set overlap with per-word fuzzy matching (order-insensitive).
   // Handles morphological variants like "followers" ↔ "followed".
@@ -73,7 +76,7 @@ export function matchCategory(query, categoryString) {
 
   const catWords = tokenize(categoryString);
   const queryWords = tokenize(q);
-  if (queryWords.length === 0) return false;
+  if (queryWords.length === 0) return { matched: false, closeness: 0 };
 
   const wordFuse = new Fuse(catWords.map(w => ({ w })), {
     keys: ['w'],
@@ -81,19 +84,21 @@ export function matchCategory(query, categoryString) {
     isCaseSensitive: false,
   });
 
-  const matched = queryWords.filter(qw => wordFuse.search(qw).length > 0);
+  const matchedQueryWords = queryWords.filter(qw => wordFuse.search(qw).length > 0);
 
-  // Require at least 60% of query words to match, minimum 1
-  if (matched.length < Math.max(1, Math.ceil(queryWords.length * 0.6))) return false;
-
-  // Also require at least 60% of category words to be covered by the query
-  // (prevents short vague guesses like "Ivy League universities" matching
-  //  "Ivy League Universities By Undergrad Population Size")
+  // Reverse coverage: how many category words does the query touch?
   const queryFuse = new Fuse(queryWords.map(w => ({ w })), {
     keys: ['w'],
     threshold: 0.35,
     isCaseSensitive: false,
   });
   const catCovered = catWords.filter(cw => queryFuse.search(cw).length > 0);
-  return catCovered.length >= Math.ceil(catWords.length * 0.6);
+  const closeness = catWords.length > 0 ? catCovered.length / catWords.length : 0;
+
+  // Require ≥60% of query words to match AND ≥50% of category words covered
+  // (relaxed from 60% → 50% on category side to accept near-complete guesses)
+  const queryOk = matchedQueryWords.length >= Math.max(1, Math.ceil(queryWords.length * 0.6));
+  const categoryOk = catCovered.length >= Math.ceil(catWords.length * 0.5);
+
+  return { matched: queryOk && categoryOk, closeness };
 }

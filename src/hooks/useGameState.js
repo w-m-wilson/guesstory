@@ -300,14 +300,14 @@ export function useGameState(puzzle) {
 
   const guessCategory = useCallback((query) => {
     const s = stateRef.current;
-    const matched = matchCategory(query, puzzle.category);
+    const { matched, closeness } = matchCategory(query, puzzle.category);
     if (matched) {
       dispatch({ type: 'CATEGORY_HIT' });
       return { outcome: 'hit' };
     }
     const cost = getCategoryMissCost(s.categoryMisses);
     dispatch({ type: 'CATEGORY_MISS' });
-    return { outcome: 'miss', cost };
+    return { outcome: 'miss', cost, closeness };
   }, [puzzle.category]);
 
   const purchaseHint = useCallback((hintType) => {

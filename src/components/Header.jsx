@@ -8,6 +8,7 @@ export default function Header({ categoryText, onGuessCategory, onOpenIntro }) {
   const [guessing, setGuessing] = useState(false)
   const [query, setQuery] = useState('')
   const [missCount, setMissCount] = useState(0)
+  const [lastCloseness, setLastCloseness] = useState(null)
   const inputRef = useRef(null)
 
   // Close input when category is revealed (by hint or correct guess)
@@ -15,6 +16,7 @@ export default function Header({ categoryText, onGuessCategory, onOpenIntro }) {
     if (categoryText) {
       setGuessing(false)
       setQuery('')
+      setLastCloseness(null)
     }
   }, [categoryText])
 
@@ -31,6 +33,7 @@ export default function Header({ categoryText, onGuessCategory, onOpenIntro }) {
     setQuery('')
     if (result.outcome === 'miss') {
       setMissCount(c => c + 1)
+      setLastCloseness(result.closeness ?? null)
     }
     // 'hit' will trigger the categoryText prop to populate → useEffect closes the input
   }
@@ -68,8 +71,8 @@ export default function Header({ categoryText, onGuessCategory, onOpenIntro }) {
             className="flex-1 ml-4 fade-in"
           >
             <p
-              className="text-xs text-right pr-1 leading-snug"
-              style={{ color: 'var(--color-text-faint)' }}
+              className="text-xs text-right leading-snug"
+              style={{ color: 'var(--color-text-faint)', textWrap: 'balance' }}
             >
               {categoryText}
             </p>
@@ -137,6 +140,11 @@ export default function Header({ categoryText, onGuessCategory, onOpenIntro }) {
                 : missCount <= GAME_CONFIG.category.freeMisses
                   ? 'Not quite — keep trying'
                   : `Not quite — −1 coin per miss`}
+            </p>
+          )}
+          {lastCloseness >= 0.5 && (
+            <p className="text-xs mt-1 fade-in" style={{ color: 'var(--color-text-faint)' }}>
+              {lastCloseness >= 0.75 ? "You're very close — just a bit more specific!" : "You're on the right track — try to be more specific."}
             </p>
           )}
         </div>
