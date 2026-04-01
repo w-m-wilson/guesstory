@@ -219,7 +219,12 @@ export function useGameState(puzzle) {
   const [state, dispatch] = useReducer(
     reducer,
     undefined,
-    () => loadSavedState(puzzle.id) ?? initState(puzzle)
+    () => {
+      const saved = loadSavedState(puzzle.id);
+      // Merge saved state over a fresh initState so any newly added fields
+      // (e.g. lockedSlots) are always present even for old saves.
+      return saved ? { ...initState(puzzle), ...saved } : initState(puzzle);
+    }
   );
 
   stateRef.current = state;
