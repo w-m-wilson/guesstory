@@ -18,13 +18,15 @@ export default function BankPanel({
   onRemoveSlot,
 }) {
   const [query, setQuery] = useState('')
-  const [feedback, setFeedback] = useState(null) // { type, message }
+  const [feedback, setFeedback] = useState(null) // { type, message, ts }
+  const [animatingCircleIdx, setAnimatingCircleIdx] = useState(null)
+  const [penaltyKey, setPenaltyKey] = useState(0)
   const feedbackTimer = useRef(null)
   const inputRef = useRef(null)
 
   function showFeedback(type, message) {
     clearTimeout(feedbackTimer.current)
-    setFeedback({ type, message })
+    setFeedback({ type, message, ts: Date.now() })
     feedbackTimer.current = setTimeout(() => setFeedback(null), 2500)
   }
 
@@ -45,10 +47,16 @@ export default function BankPanel({
     } else if (result.outcome === 'known') {
       showFeedback('known', `Already discovered`)
     } else if (result.outcome === 'miss') {
-      const remaining = Math.max(0, FREE_MISSES - bankMisses - 1)
-      if (remaining > 0) {
-        showFeedback('miss', `Not in the bank — ${remaining} free ${remaining === 1 ? 'miss' : 'misses'} left`)
+      if (!burningCoins) {
+        setAnimatingCircleIdx(bankMisses)
+        const remaining = Math.max(0, FREE_MISSES - bankMisses - 1)
+        if (remaining > 0) {
+          showFeedback('miss', `Not in the bank — ${remaining} free ${remaining === 1 ? 'miss' : 'misses'} left`)
+        } else {
+          showFeedback('miss', `Not in the bank — last free miss used`)
+        }
       } else {
+        setPenaltyKey(k => k + 1)
         showFeedback('miss', `Not in the bank — −${result.cost} coin`)
       }
     }
@@ -107,26 +115,45 @@ export default function BankPanel({
         </form>
 
         {/* Free-miss indicator or coin cost notice */}
-        <div className="mt-1.5 flex items-center gap-1.5 h-5">
+        <div className="mt-1.5 flex items-center gap-1.5 h-5" style={{ position: 'relative' }}>
           {!burningCoins ? (
             <>
               <span className="text-xs" style={{ color: 'var(--color-text-faint)' }}>
                 Free misses:
               </span>
-              {Array.from({ length: FREE_MISSES }).map((_, i) => (
-                <span
-                  key={i}
-                  className="text-xs"
-                  style={{ color: i < bankMisses ? 'var(--color-text-faint)' : 'var(--color-text-strong)' }}
-                >
-                  {i < bankMisses ? '○' : '●'}
-                </span>
-              ))}
+              {Array.from({ length: FREE_MISSES }).map((_, i) => {
+                const consumed = i < bankMisses
+                const isAnimating = i === animatingCircleIdx
+                return (
+                  <span
+                    key={i}
+                    className={`text-xs${isAnimating ? ' circle-drain' : ''}`}
+                    onAnimationEnd={isAnimating ? () => setAnimatingCircleIdx(null) : undefined}
+                    style={{
+                      color: consumed && !isAnimating ? 'var(--color-text-faint)' : 'var(--color-text-strong)',
+                      display: 'inline-block',
+                    }}
+                  >
+                    {consumed && !isAnimating ? '○' : '●'}
+                  </span>
+                )
+              })}
             </>
           ) : (
-            <span className="text-xs" style={{ color: 'var(--color-text-faint)' }}>
-              −1 coin per miss
-            </span>
+            <>
+              <span className="text-xs" style={{ color: 'var(--color-text-faint)' }}>
+                −1 coin per miss
+              </span>
+              {penaltyKey > 0 && (
+                <span
+                  key={penaltyKey}
+                  className="penalty-float absolute text-xs font-bold"
+                  style={{ color: 'var(--color-text-strong)', left: 0, top: '-2px' }}
+                >
+                  −1
+                </span>
+              )}
+            </>
           )}
           <span className="ml-auto text-xs" style={{ color: 'var(--color-text-faint)' }}>
             {discoveredList.length}/{bankTotal} found
@@ -147,8 +174,8 @@ export default function BankPanel({
         {/* Inline feedback (hidden when confirm prompt is showing) */}
         {!pendingMatch && feedback && (
           <p
-            key={feedback.message}
-            className="text-xs mt-1 fade-in"
+            key={feedback.ts}
+            className={`text-xs mt-1 ${feedback.type === 'miss' ? 'shake-fade-in' : 'fade-in'}`}
             style={{
               color: feedback.type === 'hit'
                 ? 'var(--color-text-strong)'
