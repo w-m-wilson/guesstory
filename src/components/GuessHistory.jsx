@@ -9,8 +9,9 @@
  *            nothing = not in top 5          ('absent' / 'empty')
  *            — = shown when ALL slots give nothing
  */
-export default function GuessHistory({ rankHistory, keyMap }) {
-  if (rankHistory.length === 0) return null
+export default function GuessHistory({ rankHistory, rankSlots, keyMap }) {
+  const hasLiveSlot = rankSlots?.some(Boolean)
+  if (rankHistory.length === 0 && !hasLiveSlot) return null
 
   return (
     <div
@@ -41,7 +42,37 @@ export default function GuessHistory({ rankHistory, keyMap }) {
               attemptNumber={attemptIndex + 1}
             />
           ))}
+          {hasLiveSlot && (
+            <LiveRow slots={rankSlots} keyMap={keyMap} />
+          )}
         </div>
+      </div>
+    </div>
+  )
+}
+
+function LiveRow({ slots, keyMap }) {
+  return (
+    <div className="flex items-center gap-2" style={{ opacity: 0.4 }}>
+      <span
+        className="text-[10px] font-medium w-5 shrink-0"
+        style={{ color: 'var(--color-text-faint)' }}
+      >
+        →
+      </span>
+      <div className="flex items-center gap-1.5 flex-1 min-w-0">
+        {slots.map((item, i) => {
+          const key = item ? (keyMap[item.rank] ?? '??') : '—'
+          return (
+            <span
+              key={i}
+              className="text-[11px] font-semibold tabular-nums"
+              style={{ color: item ? 'var(--color-text)' : 'var(--color-text-faint)' }}
+            >
+              {key}
+            </span>
+          )
+        })}
       </div>
     </div>
   )
