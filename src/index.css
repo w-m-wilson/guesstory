@@ -202,6 +202,15 @@ body {
   pointer-events: none;
 }
 
+/* ── Category button glow ── */
+@keyframes categoryGlow {
+  0%, 100% { color: var(--color-text-faint); }
+  50%       { color: var(--color-text); }
+}
+.category-glow {
+  animation: categoryGlow 8s ease-in-out infinite;
+}
+
 @keyframes coinPulse {
   0%   { transform: scale(1); }
   35%  { transform: scale(1.3); }

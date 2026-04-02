@@ -82,17 +82,19 @@ export default function Header({ categoryText, categoryHint, categoryMisses, onG
           Reckon
         </span>
 
-        <button
-          onClick={onOpenIntro}
-          className="ml-2 shrink-0 text-xs w-5 h-5 rounded-full flex items-center justify-center opacity-50 hover:opacity-100"
-          style={{
-            border: '1px solid var(--color-text-faint)',
-            color: 'var(--color-text-faint)',
-          }}
-          aria-label="How to play"
-        >
-          ?
-        </button>
+        {onOpenIntro && (
+          <button
+            onClick={onOpenIntro}
+            className="ml-2 shrink-0 text-xs w-5 h-5 rounded-full flex items-center justify-center opacity-50 hover:opacity-100"
+            style={{
+              border: '1px solid var(--color-text-faint)',
+              color: 'var(--color-text-faint)',
+            }}
+            aria-label="How to play"
+          >
+            ?
+          </button>
+        )}
         <button
           onClick={onOpenSettings}
           className="ml-1.5 shrink-0 text-xs w-5 h-5 rounded-full flex items-center justify-center opacity-50 hover:opacity-100"
@@ -122,9 +124,8 @@ export default function Header({ categoryText, categoryHint, categoryMisses, onG
               <button
                 onClick={() => setGuessing(true)}
                 className="text-xs px-2 py-1 rounded-lg"
-                style={{ color: 'var(--color-text-faint)' }}
               >
-                Guess category
+                <span className="category-glow">Guess category</span>
               </button>
             )}
             {!guessing && categoryMisses > 0 && (

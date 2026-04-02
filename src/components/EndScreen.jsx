@@ -26,7 +26,7 @@ function buildShareText(puzzleId, coins, rankHistory) {
   return lines.join('\n')
 }
 
-export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, categoryText, hailMaryTaken, keyMap, onClose }) {
+export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, categoryText, categorySource, hailMaryTaken, keyMap, onClose, onComplete }) {
   const won = gameStatus === 'won'
   const showHailMary = gameStatus === 'abandoned' && !hailMaryTaken
   const grade = getGrade(coins)
@@ -74,6 +74,20 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, ca
               <span style={{ color: 'var(--color-text-strong)', fontStyle: 'italic' }}>
                 {categoryText}
               </span>
+              {categorySource && (
+                <>
+                  {' '}
+                  <a
+                    href={categorySource}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs"
+                    style={{ color: 'var(--color-text-faint)', textDecoration: 'underline' }}
+                  >
+                    source
+                  </a>
+                </>
+              )}
             </p>
           )}
         </div>
@@ -98,7 +112,15 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, ca
           </div>
         )}
 
-        {showHailMary ? (
+        {onComplete ? (
+          <button
+            onClick={() => { onClose(); onComplete(); }}
+            className="w-full py-2.5 rounded-xl text-sm font-semibold"
+            style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+          >
+            Play today's puzzle →
+          </button>
+        ) : showHailMary ? (
           <button
             onClick={onClose}
             className="w-full py-2.5 rounded-xl text-sm font-semibold"

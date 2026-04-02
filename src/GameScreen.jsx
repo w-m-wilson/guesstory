@@ -9,7 +9,7 @@ import ScoreBar from './components/ScoreBar.jsx'
 import HintModal from './components/HintModal.jsx'
 import EndScreen from './components/EndScreen.jsx'
 
-export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings }) {
+export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComplete, isTutorial }) {
   const [hintsOpen, setHintsOpen] = useState(false)
   const [endScreenDismissed, setEndScreenDismissed] = useState(false)
 
@@ -46,6 +46,20 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings }) {
         onOpenIntro={onOpenIntro}
         onOpenSettings={onOpenSettings}
       />
+
+      {isTutorial && (
+        <div
+          className="shrink-0 px-4 py-2.5 text-center text-xs"
+          style={{
+            background: 'var(--color-bg-elevated)',
+            borderBottom: '1px solid var(--color-border)',
+            color: 'var(--color-text-faint)',
+          }}
+        >
+          <span style={{ color: 'var(--color-text-strong)', fontWeight: 600 }}>Tutorial</span>
+          {' '}— type guesses into the bank, then drag items into your ranking
+        </div>
+      )}
 
       <BankPanel
         discoveredList={discoveredList}
@@ -98,9 +112,11 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings }) {
           rankHistory={state.rankHistory}
           gameStatus={state.gameStatus}
           categoryText={gameStatus === 'abandoned' || !state.categoryGuessed ? puzzle.category : null}
+          categorySource={puzzle.source ?? null}
           hailMaryTaken={hailMaryTaken}
           keyMap={keyMap}
           onClose={() => setEndScreenDismissed(true)}
+          onComplete={onComplete}
         />
       )}
     </div>
