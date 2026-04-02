@@ -20,8 +20,8 @@ export default async function handler(req, res) {
           `Reply with JSON only — no other text:\n` +
           `{"verdict":"yes|warm|cold","hint":"string or null"}\n\n` +
           `Rules:\n` +
-          `- "yes": guess correctly captures what is being ranked. hint: null\n` +
-          `- "warm": right general subject, missing the specific ranking dimension. hint: one short sentence nudging toward what's missing without revealing it\n` +
+          `- "yes": the guess captures the right subject AND the right general ranking dimension, even if phrased loosely or abbreviated. Be permissive — if they clearly get the idea, accept it. hint: null\n` +
+          `- "warm": they have the right subject but are missing the ranking dimension entirely. hint: a vague nudge in the right direction — do NOT mention the specific metric, unit, or answer. One short sentence.\n` +
           `- "cold": off track. hint: a short punchy dismissal like "Pretty off-base" or "Not even close"\n`,
       }],
     })
