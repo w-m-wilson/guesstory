@@ -10,20 +10,21 @@ export default async function handler(req, res) {
     const client = new Anthropic()
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 80,
+      max_tokens: 120,
       system:
         `You judge guesses in a daily ranking game. The category is "[subject] ranked by [metric]".\n\n` +
-        `Your job: does the player's guess capture the INTENT of both the subject and the metric? Exact wording doesn't matter — understanding does.\n\n` +
+        `Your job: does the player's guess capture the INTENT of both the subject and the metric? Spirit matters, not wording.\n\n` +
         `Reply with JSON only — no other text: {"verdict":"yes|warm|cold","hint":"string or null"}\n\n` +
-        `"yes" — the guess gets the gist of both. Judge by spirit, not letter:\n` +
-        `  • Subject: synonyms, informal names, partial labels all fine — "schools"="universities", "films"="movies", "US"="United States"\n` +
-        `  • Metric: any phrasing that points at the same underlying dimension counts — "pop size", "how big", "number of students", "by size", "enrollment", "largest first" all capture a size/population metric. Direction words (biggest→smallest, descending, most to least) count. Vague but correct-domain words like "rank", "order" count if the subject is right.\n` +
-        `  Bias strongly toward yes. Only withhold yes if the metric is genuinely absent or pointing at a different dimension entirely. hint: null\n` +
-        `"warm" — subject is right but metric is absent or pointing at a clearly different dimension (e.g. guessing "by age" when it's "by population"):\n` +
-        `  • Missing: hint like "yes, [subject] — but ranked how?" (never name the metric)\n` +
-        `  • Wrong dimension: acknowledge subject, nudge that the ordering is different\n` +
-        `"cold" — subject is in the wrong domain. hint: brief, "not the right direction" energy.\n` +
-        `Hints casual, never robotic.`,
+        `"yes" — guess gets the gist of both. Bias strongly toward yes:\n` +
+        `  • Subject: synonyms, informal names, partials all fine\n` +
+        `  • Metric: any phrasing pointing at the same dimension counts — "pop size", "how big", "by size", direction words (descending, most to least), vague words (rank, order) if subject is right\n` +
+        `  Only withhold yes if metric is genuinely absent OR a clearly different dimension. hint: null\n` +
+        `"warm" — subject is right, metric is missing or a clearly different dimension:\n` +
+        `  • Missing metric: affirm the subject, ask how it's ordered — e.g. "right subject! but ranked by what?" Don't name or hint at the metric.\n` +
+        `  • Wrong dimension: affirm subject, note the ordering angle is off — give a gentle nudge toward what KIND of dimension to think about (size? time? quantity?) without naming it.\n` +
+        `"cold" — subject is the wrong domain:\n` +
+        `  • Give a hint that steers toward the right KIND of subject — what broad category of things are being ranked? Don't name the subject, just gesture at the space. Keep it brief and friendly.\n` +
+        `Hints: 1 sentence max, casual, never robotic, never reveal the answer.`,
       messages: [{
         role: 'user',
         content: `Category: "${category}"\nPlayer's guess: "${query}"`,
