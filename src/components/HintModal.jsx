@@ -14,10 +14,16 @@ const HINTS = [
     cost: `${GAME_CONFIG.hints.revealBankItem}`,
   },
   {
-    key: 'revealRankPosition',
-    label: 'Lock an item to its slot',
-    description: 'Pins one item to its correct position',
-    cost: `${GAME_CONFIG.hints.revealRankPositionKnown}–${GAME_CONFIG.hints.revealRankPositionUnknown}`,
+    key: 'revealRankPositionKnown',
+    label: 'Pin a discovered item',
+    description: 'Lock one item you've already found to its correct slot',
+    cost: `${GAME_CONFIG.hints.revealRankPositionKnown}`,
+  },
+  {
+    key: 'revealRankPositionUnknown',
+    label: 'Pin an undiscovered item',
+    description: 'Reveal and lock an item you haven't found yet to its correct slot',
+    cost: `${GAME_CONFIG.hints.revealRankPositionUnknown}`,
   },
 ]
 
@@ -56,7 +62,11 @@ export default function HintModal({ coins, onPurchase, onClose }) {
             return (
               <button
                 key={key}
-                onClick={() => { onPurchase(key); onClose() }}
+                onClick={() => {
+                  const purchaseKey = key.startsWith('revealRankPosition') ? 'revealRankPosition' : key
+                  onPurchase(purchaseKey)
+                  onClose()
+                }}
                 disabled={!canAfford}
                 className="flex items-center justify-between w-full rounded-xl px-4 py-3 text-left disabled:opacity-40"
                 style={{
