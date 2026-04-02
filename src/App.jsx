@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { usePuzzle } from './hooks/usePuzzle.js'
 import { useAppearance } from './hooks/useAppearance.js'
 import GameScreen from './GameScreen.jsx'
@@ -8,24 +8,6 @@ import SettingsModal from './components/SettingsModal.jsx'
 const INTRO_SEEN_KEY = 'rankie-intro-seen'
 
 export default function App() {
-  useEffect(() => {
-    const vv = window.visualViewport
-    const root = document.getElementById('root')
-    if (!vv || !root) return
-    function update() {
-      root.style.top = `${vv.offsetTop}px`
-      root.style.height = `${vv.height}px`
-      root.style.bottom = 'auto'
-    }
-    update()
-    vv.addEventListener('resize', update)
-    vv.addEventListener('scroll', update)
-    return () => {
-      vv.removeEventListener('resize', update)
-      vv.removeEventListener('scroll', update)
-    }
-  }, [])
-
   const { puzzle, error } = usePuzzle()
   const { scheme, mode, setScheme, setMode } = useAppearance()
   const [introOpen, setIntroOpen] = useState(() => !localStorage.getItem(INTRO_SEEN_KEY))
