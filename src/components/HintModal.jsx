@@ -28,13 +28,15 @@ const HINTS = [
   },
 ]
 
-export default function HintModal({ coins, onPurchase, onClose }) {
+export default function HintModal({ coins, allBankFound, onPurchase, onClose }) {
   const [feedback, setFeedback] = useState(null)
 
   function handlePurchase(key) {
     const result = onPurchase(key)
     if (result?.noneFound) {
       setFeedback("None of your discovered items are in the top 5.")
+    } else if (result?.fellBackToKnown) {
+      setFeedback(`No undiscovered items left to pin — pinned a discovered one instead (${GAME_CONFIG.hints.revealRankPositionKnown} coins).`)
     } else {
       onClose()
     }
@@ -82,11 +84,12 @@ export default function HintModal({ coins, onPurchase, onClose }) {
           {HINTS.map(({ key, label, description, cost }) => {
             const minCost = parseInt(cost)
             const canAfford = coins >= minCost
+            const unavailable = key === 'revealBankItem' && allBankFound
             return (
               <button
                 key={key}
                 onClick={() => handlePurchase(key)}
-                disabled={!canAfford}
+                disabled={!canAfford || unavailable}
                 className="flex items-center justify-between w-full rounded-xl px-4 py-3 text-left disabled:opacity-40"
                 style={{
                   background: 'var(--color-bg-elevated)',

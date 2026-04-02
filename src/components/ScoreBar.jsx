@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 
 const COIN_EMOJI = '🪙'
 
-export default function ScoreBar({ coins, onHintsOpen, onReset }) {
+export default function ScoreBar({ coins, gameOver, onHintsOpen, onShowResults, onReset }) {
   const prevCoins = useRef(coins)
   // { id, amount, positive }
   const [deltas, setDeltas] = useState([])
@@ -62,18 +62,32 @@ export default function ScoreBar({ coins, onHintsOpen, onReset }) {
         ↺ Reset
       </button>
 
-      {/* Hints button */}
-      <button
-        onClick={onHintsOpen}
-        className="flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium"
-        style={{
-          background: 'var(--color-bg-elevated)',
-          color: 'var(--color-text)',
-          border: '1px solid var(--color-border)',
-        }}
-      >
-        Hints
-      </button>
+      {/* Results button (post-game) or Hints button (during game) */}
+      {gameOver ? (
+        <button
+          onClick={onShowResults}
+          className="flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium"
+          style={{
+            background: 'var(--color-bg-elevated)',
+            color: 'var(--color-text)',
+            border: '1px solid var(--color-border)',
+          }}
+        >
+          Results
+        </button>
+      ) : (
+        <button
+          onClick={onHintsOpen}
+          className="flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium"
+          style={{
+            background: 'var(--color-bg-elevated)',
+            color: 'var(--color-text)',
+            border: '1px solid var(--color-border)',
+          }}
+        >
+          Hints
+        </button>
+      )}
     </div>
   )
 }

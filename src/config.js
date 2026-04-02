@@ -28,6 +28,6 @@ export const GAME_CONFIG = {
     // threshold = maximum score to include as a result (lower = stricter).
     bankThreshold: 0.25,
     bankConfidentThreshold: 0.08,   // below this score → auto-accept, no confirmation needed
-    categoryThreshold: 0.35,
+    categoryThreshold: 0.15,
   },
 };

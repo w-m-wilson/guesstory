@@ -95,10 +95,9 @@ export function matchCategory(query, categoryString) {
   const catCovered = catWords.filter(cw => queryFuse.search(cw).length > 0);
   const closeness = catWords.length > 0 ? catCovered.length / catWords.length : 0;
 
-  // Require ≥60% of query words to match AND ≥50% of category words covered
-  // (relaxed from 60% → 50% on category side to accept near-complete guesses)
-  const queryOk = matchedQueryWords.length >= Math.max(1, Math.ceil(queryWords.length * 0.6));
-  const categoryOk = catCovered.length >= Math.ceil(catWords.length * 0.5);
+  // Require ≥80% of query words to match AND ≥75% of category words covered
+  const queryOk = matchedQueryWords.length >= Math.max(1, Math.ceil(queryWords.length * 0.8));
+  const categoryOk = catCovered.length >= Math.ceil(catWords.length * 0.75);
 
   return { matched: queryOk && categoryOk, closeness };
 }

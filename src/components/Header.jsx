@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { GAME_CONFIG } from '../config.js'
 
-// Fade only the LEFT edge — right side stays sharp so text end is always readable
-const LEFT_FADE = 'linear-gradient(to right, transparent 0%, black 20%, black 100%)'
 
 function MissTracker({ misses }) {
   const free = GAME_CONFIG.category.freeMisses
@@ -81,7 +79,7 @@ export default function Header({ categoryText, categoryHint, categoryMisses, onG
           className="font-black italic text-xl tracking-tight shrink-0"
           style={{ color: 'var(--color-text-strong)' }}
         >
-          Rankie
+          Reckon
         </span>
 
         <button

@@ -13,7 +13,7 @@ function getGrade(coins) {
 }
 
 function buildShareText(puzzleId, coins, rankHistory) {
-  const lines = [`Rankie ${puzzleId}`, `Score: ${coins}/100`, '', 'Ranking attempts:']
+  const lines = [`Reckon ${puzzleId}`, `Score: ${coins}/100`, '', 'Ranking attempts:']
   for (const { feedback } of rankHistory) {
     lines.push(
       feedback.map(v => {
@@ -26,8 +26,9 @@ function buildShareText(puzzleId, coins, rankHistory) {
   return lines.join('\n')
 }
 
-export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, keyMap, onClose }) {
+export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, categoryText, hailMaryTaken, keyMap, onClose }) {
   const won = gameStatus === 'won'
+  const showHailMary = gameStatus === 'abandoned' && !hailMaryTaken
   const grade = getGrade(coins)
 
   async function handleShare() {
@@ -56,6 +57,14 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, ke
           <h2 className="text-xl font-bold" style={{ color: 'var(--color-text-strong)' }}>
             {won ? 'You got it!' : 'Game over'}
           </h2>
+          {categoryText && (
+            <p className="text-sm mt-2" style={{ color: 'var(--color-text-faint)' }}>
+              The category was{' '}
+              <span style={{ color: 'var(--color-text-strong)', fontStyle: 'italic' }}>
+                {categoryText}
+              </span>
+            </p>
+          )}
         </div>
 
         {/* Score */}
@@ -78,17 +87,23 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, ke
           </div>
         )}
 
-        {/* Share */}
-        <button
-          onClick={handleShare}
-          className="w-full py-2.5 rounded-xl text-sm font-semibold"
-          style={{
-            background: 'var(--color-text-strong)',
-            color: 'var(--color-bg)',
-          }}
-        >
-          Copy result
-        </button>
+        {showHailMary ? (
+          <button
+            onClick={onClose}
+            className="w-full py-2.5 rounded-xl text-sm font-semibold"
+            style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+          >
+            Take your Hail Mary →
+          </button>
+        ) : (
+          <button
+            onClick={handleShare}
+            className="w-full py-2.5 rounded-xl text-sm font-semibold"
+            style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+          >
+            Copy result
+          </button>
+        )}
       </div>
     </div>
   )

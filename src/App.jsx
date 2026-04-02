@@ -45,7 +45,7 @@ export default function App() {
           Please rotate to portrait
         </p>
         <p className="text-xs" style={{ color: 'var(--color-text-faint)' }}>
-          Rankie is designed for portrait mode
+          Reckon is designed for portrait mode
         </p>
       </div>
 

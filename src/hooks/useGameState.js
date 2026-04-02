@@ -42,6 +42,7 @@ function initState(puzzle) {
     categoryGuessed: false,
     gameStatus: 'playing',    // 'playing' | 'won' | 'abandoned'
     pendingMatch: null,       // { item, query } | null — awaiting player confirmation
+    hailMaryTaken: false,     // one free ranking attempt after going abandoned
   };
 }
 
@@ -50,8 +51,11 @@ function initState(puzzle) {
 // ---------------------------------------------------------------------------
 
 function reducer(state, action) {
-  // Block all actions (except END_GAME) once the game is over
-  if (state.gameStatus !== 'playing' && action.type !== 'END_GAME' && action.type !== 'RESET') {
+  // Block all actions once the game is over, with two exceptions:
+  // - END_GAME and RESET always pass through
+  // - SUBMIT_RANKING passes through once when abandoned and hail mary not yet taken
+  const hailMarySubmit = state.gameStatus === 'abandoned' && !state.hailMaryTaken && action.type === 'SUBMIT_RANKING';
+  if (state.gameStatus !== 'playing' && !hailMarySubmit && action.type !== 'END_GAME' && action.type !== 'RESET') {
     return state;
   }
 
@@ -114,10 +118,20 @@ function reducer(state, action) {
 
     case 'SUBMIT_RANKING': {
       const { feedback } = action;
+
+      // Hail Mary: free final attempt after going abandoned — no coin change
+      if (state.gameStatus === 'abandoned' && !state.hailMaryTaken) {
+        return {
+          ...state,
+          rankHistory: [...state.rankHistory, { slots: [...state.rankSlots], feedback }],
+          hailMaryTaken: true,
+        };
+      }
+
       const won = isWin(feedback);
-      // Cost = 1 coin per item placed that isn't in the top 5 ('absent')
-      const absentCount = feedback.filter(f => f === 'absent').length;
-      const cost = won ? 0 : Math.min(state.coins, absentCount * GAME_CONFIG.ranking.absentCost);
+      // Cost = 1 coin per slot that's wrong or empty
+      const wrongCount = feedback.filter(f => f === 'absent' || f === 'empty').length;
+      const cost = won ? 0 : Math.min(state.coins, wrongCount * GAME_CONFIG.ranking.absentCost);
       const newCoins = Math.max(0, state.coins - cost);
       const newStatus = won ? 'won' : (newCoins === 0 ? 'abandoned' : 'playing');
       return {
@@ -126,6 +140,8 @@ function reducer(state, action) {
         rankHistory: [...state.rankHistory, { slots: [...state.rankSlots], feedback }],
         rankSlots: state.rankSlots,
         gameStatus: newStatus,
+        // Auto-reveal category when going abandoned so player sees it during Hail Mary
+        categoryGuessed: newStatus === 'abandoned' ? true : state.categoryGuessed,
       };
     }
 
@@ -247,6 +263,7 @@ export function useGameState(puzzle) {
 
   const guessBankItem = useCallback((query) => {
     const s = stateRef.current;
+    if (s.gameStatus !== 'playing') return null;
     const result = matcherRef.current?.match(query);
 
     if (!result) {
@@ -308,6 +325,7 @@ export function useGameState(puzzle) {
 
   const guessCategory = useCallback(async (query) => {
     const s = stateRef.current;
+    if (s.gameStatus !== 'playing') return null;
 
     // Try LLM evaluation; fall back to local Fuse matcher if unavailable
     let matched = false, warm = false, cold = false, hint = null;
@@ -370,10 +388,20 @@ export function useGameState(puzzle) {
 
     if (hintType === 'revealRankPositionUnknown') {
       const topFiveItems = puzzle.bank.filter(b => puzzle.topFive.includes(b.rank));
-      const candidates = topFiveItems.filter(b => !s.discoveredItems[b.rank] && !s.lockedSlots.includes(b.rank - 1));
-      item = candidates.length ? candidates[Math.floor(Math.random() * candidates.length)] : null;
-      if (!item) return { item: null };
-      slotIndex = item.rank - 1;
+      const unknownCandidates = topFiveItems.filter(b => !s.discoveredItems[b.rank] && !s.lockedSlots.includes(b.rank - 1));
+      if (unknownCandidates.length > 0) {
+        item = unknownCandidates[Math.floor(Math.random() * unknownCandidates.length)];
+        slotIndex = item.rank - 1;
+      } else {
+        // Fall back to pinning a discovered item at the cheaper price
+        const knownCandidates = topFiveItems.filter(b => s.discoveredItems[b.rank] && !s.lockedSlots.includes(b.rank - 1));
+        item = knownCandidates.length ? knownCandidates[Math.floor(Math.random() * knownCandidates.length)] : null;
+        if (!item) return { item: null };
+        slotIndex = item.rank - 1;
+        const cost = getHintCost('revealRankPositionKnown');
+        dispatch({ type: 'PURCHASE_HINT', hintType: 'revealRankPositionKnown', item, slotIndex, cost });
+        return { item, fellBackToKnown: true };
+      }
     }
 
     const cost = getHintCost(hintType);

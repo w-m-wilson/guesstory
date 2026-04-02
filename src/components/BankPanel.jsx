@@ -10,6 +10,7 @@ export default function BankPanel({
   rankSlots,
   bankMisses,
   pendingMatch,
+  gameOver,
   onGuess,
   onConfirm,
   onCancel,
@@ -31,11 +32,13 @@ export default function BankPanel({
 
   function handleSubmit(e) {
     e.preventDefault()
+    if (gameOver) return
     const q = query.trim()
     if (!q) return
 
     const result = onGuess(q)
     setQuery('')
+    if (!result) return
 
     if (result.outcome === 'hit') {
       showFeedback('hit', `✓ Found ${result.item.name}`)
@@ -77,7 +80,7 @@ export default function BankPanel({
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder={pendingMatch ? 'Confirm or cancel below…' : 'Submit a guess for the bank…'}
-            disabled={!!pendingMatch}
+            disabled={!!pendingMatch || gameOver}
             className="flex-1 rounded-lg px-3 py-2 text-sm outline-none"
             style={{
               background: 'var(--color-bg-elevated)',
@@ -92,7 +95,7 @@ export default function BankPanel({
           />
           <button
             type="submit"
-            disabled={!!pendingMatch || !query.trim()}
+            disabled={!!pendingMatch || !query.trim() || gameOver}
             className="px-3 py-2 rounded-lg text-sm font-medium shrink-0 disabled:opacity-40"
             style={{
               background: 'var(--color-text-strong)',
