@@ -27,7 +27,7 @@ function MissTracker({ misses }) {
   )
 }
 
-const TYPEWRITER_FULL   = 'Guess category'
+const TYPEWRITER_FULL   = 'Guess the category'
 const TYPEWRITER_PREFIX = 'Guess '.length
 const TYPE_MS   = 68
 const RETYPE_MS = 110
