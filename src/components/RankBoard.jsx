@@ -87,7 +87,7 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
       </div>
 
       {/* Slots */}
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1" style={{ userSelect: 'none' }}>
         {rankSlots.map((item, index) => {
           const position = index + 1
           const locked = lockedSlots.includes(index)
@@ -128,7 +128,6 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
                   cursor: isDraggable ? 'pointer' : 'default',
                   position: 'relative',
                   zIndex: isDragging ? 10 : 'auto',
-                  userSelect: 'none',
                 }}
                 onPointerDown={isDraggable ? (e) => handleCardPointerDown(e, index) : undefined}
                 onPointerMove={isDraggable ? handleCardPointerMove : undefined}
