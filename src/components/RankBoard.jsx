@@ -1,11 +1,17 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+
+const LONG_PRESS_MS = 275
 
 export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemoveSlot, onMoveSlot, onSubmit }) {
   const hasAnySlot = rankSlots.some(Boolean)
   const [dragIndex, setDragIndex] = useState(null)
+  const [chargingIndex, setChargingIndex] = useState(null)
+  // Tracks in-flight pointer state for long-press detection
+  const pressRef = useRef({ timer: null, startX: 0, startY: 0, dragging: false })
 
-  function startDrag(fromIndex, e) {
-    e.preventDefault()
+  function startDrag(fromIndex) {
+    pressRef.current.dragging = true
+    setChargingIndex(null)
     let currentFrom = fromIndex
     setDragIndex(fromIndex)
 
@@ -23,6 +29,7 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
     }
 
     function onUp() {
+      pressRef.current.dragging = false
       setDragIndex(null)
       document.removeEventListener('pointermove', onMove)
       document.removeEventListener('pointerup', onUp)
@@ -32,6 +39,39 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
     document.addEventListener('pointermove', onMove, { passive: false })
     document.addEventListener('pointerup', onUp)
     document.addEventListener('pointercancel', onUp)
+  }
+
+  function handleCardPointerDown(e, index) {
+    const p = pressRef.current
+    p.startX = e.clientX
+    p.startY = e.clientY
+    p.dragging = false
+    p.timer = setTimeout(() => {
+      p.timer = null
+      startDrag(index)
+    }, LONG_PRESS_MS)
+    setChargingIndex(index)
+  }
+
+  function cancelPress() {
+    const p = pressRef.current
+    if (p.timer) { clearTimeout(p.timer); p.timer = null }
+    setChargingIndex(null)
+  }
+
+  function handleCardPointerMove(e) {
+    if (!pressRef.current.timer) return
+    const dx = e.clientX - pressRef.current.startX
+    const dy = e.clientY - pressRef.current.startY
+    if (Math.abs(dx) > 8 || Math.abs(dy) > 8) cancelPress()
+  }
+
+  function handleCardPointerUp(index) {
+    if (pressRef.current.dragging) return
+    if (pressRef.current.timer) {
+      cancelPress()
+      onRemoveSlot(index)
+    }
   }
 
   return (
@@ -52,6 +92,7 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
           const position = index + 1
           const locked = lockedSlots.includes(index)
           const isDragging = dragIndex === index
+          const isCharging = chargingIndex === index
           const isDraggable = !locked && item !== null
 
           return (
@@ -75,20 +116,24 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
                     ? 'var(--color-bg)'
                     : locked ? 'var(--color-border)' : 'var(--color-bg-elevated)',
                   border: `1px solid ${
-                    isDragging
+                    isDragging || isCharging
                       ? 'var(--color-text)'
                       : locked ? 'var(--color-text-faint)' : 'var(--color-border)'
                   }`,
                   boxShadow: isDragging ? '0 4px 12px rgba(0,0,0,0.25)' : 'none',
                   minHeight: '36px',
-                  opacity: isDragging ? 0.85 : 1,
+                  opacity: isDragging ? 0.85 : isCharging ? 0.65 : 1,
                   transform: isDragging ? 'scale(1.02)' : 'scale(1)',
                   transition: 'box-shadow 0.15s, border-color 0.15s, transform 0.1s, opacity 0.1s',
                   cursor: isDraggable ? 'pointer' : 'default',
-                  zIndex: isDragging ? 10 : 'auto',
                   position: 'relative',
+                  zIndex: isDragging ? 10 : 'auto',
+                  userSelect: 'none',
                 }}
-                onClick={isDraggable ? () => onRemoveSlot(index) : undefined}
+                onPointerDown={isDraggable ? (e) => handleCardPointerDown(e, index) : undefined}
+                onPointerMove={isDraggable ? handleCardPointerMove : undefined}
+                onPointerUp={isDraggable ? () => handleCardPointerUp(index) : undefined}
+                onPointerCancel={isDraggable ? cancelPress : undefined}
               >
                 {item ? (
                   <>
@@ -111,7 +156,7 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
                         aria-hidden="true"
                         onPointerDown={(e) => {
                           e.stopPropagation()
-                          startDrag(index, e)
+                          startDrag(index)
                         }}
                       >⠿</span>
                     )}

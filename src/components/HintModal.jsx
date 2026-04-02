@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { GAME_CONFIG } from '../config.js'
 
 const HINTS = [
@@ -28,6 +29,17 @@ const HINTS = [
 ]
 
 export default function HintModal({ coins, onPurchase, onClose }) {
+  const [feedback, setFeedback] = useState(null)
+
+  function handlePurchase(key) {
+    const result = onPurchase(key)
+    if (result?.noneFound) {
+      setFeedback("None of your discovered items are in the top 5.")
+    } else {
+      onClose()
+    }
+  }
+
   return (
     /* Backdrop */
     <div
@@ -55,6 +67,12 @@ export default function HintModal({ coins, onPurchase, onClose }) {
           </button>
         </div>
 
+        {feedback && (
+          <p className="text-sm mb-3 px-1" style={{ color: 'var(--color-text-faint)' }}>
+            {feedback}
+          </p>
+        )}
+
         <div className="flex flex-col gap-2">
           {HINTS.map(({ key, label, description, cost }) => {
             const minCost = parseInt(cost)
@@ -62,11 +80,7 @@ export default function HintModal({ coins, onPurchase, onClose }) {
             return (
               <button
                 key={key}
-                onClick={() => {
-                  const purchaseKey = key.startsWith('revealRankPosition') ? 'revealRankPosition' : key
-                  onPurchase(purchaseKey)
-                  onClose()
-                }}
+                onClick={() => handlePurchase(key)}
                 disabled={!canAfford}
                 className="flex items-center justify-between w-full rounded-xl px-4 py-3 text-left disabled:opacity-40"
                 style={{

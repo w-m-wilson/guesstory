@@ -161,7 +161,7 @@ function reducer(state, action) {
       if (action.hintType === 'revealCategory') {
         newState.categoryGuessed = true;
       }
-      if (action.hintType === 'revealRankPosition' && action.item != null && action.slotIndex != null) {
+      if ((action.hintType === 'revealRankPositionKnown' || action.hintType === 'revealRankPositionUnknown') && action.item != null && action.slotIndex != null) {
         const newSlots = [...newState.rankSlots];
         newSlots[action.slotIndex] = action.item;
         newState.rankSlots = newSlots;
@@ -354,17 +354,29 @@ export function useGameState(puzzle) {
       if (!item) return { item: null };
     }
 
-    let cost = getHintCost(hintType);
-
-    if (hintType === 'revealRankPosition') {
+    if (hintType === 'revealRankPositionKnown') {
       const topFiveItems = puzzle.bank.filter(b => puzzle.topFive.includes(b.rank));
-      item = topFiveItems.find(b => !s.lockedSlots.includes(b.rank - 1)) ?? null;
-      if (!item) return { item: null };
+      // Only consider items the player has already discovered and that aren't locked
+      const candidates = topFiveItems.filter(b => s.discoveredItems[b.rank] && !s.lockedSlots.includes(b.rank - 1));
+      item = candidates.length ? candidates[Math.floor(Math.random() * candidates.length)] : null;
+      if (!item) {
+        // Charge the fee but don't pin anything — player has no discovered top-5 items
+        const cost = getHintCost(hintType);
+        dispatch({ type: 'PURCHASE_HINT', hintType, item: null, slotIndex: null, cost });
+        return { item: null, noneFound: true };
+      }
       slotIndex = item.rank - 1;
-      const isKnown = !!s.discoveredItems[item.rank];
-      cost = getHintCost(hintType, { isKnown });
     }
 
+    if (hintType === 'revealRankPositionUnknown') {
+      const topFiveItems = puzzle.bank.filter(b => puzzle.topFive.includes(b.rank));
+      const candidates = topFiveItems.filter(b => !s.discoveredItems[b.rank] && !s.lockedSlots.includes(b.rank - 1));
+      item = candidates.length ? candidates[Math.floor(Math.random() * candidates.length)] : null;
+      if (!item) return { item: null };
+      slotIndex = item.rank - 1;
+    }
+
+    const cost = getHintCost(hintType);
     dispatch({ type: 'PURCHASE_HINT', hintType, item, slotIndex, cost });
     return { item };
   }, [puzzle.bank, puzzle.topFive]);
