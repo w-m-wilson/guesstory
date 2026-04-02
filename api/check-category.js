@@ -1,7 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
 
-const client = new Anthropic()
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
@@ -9,6 +7,7 @@ export default async function handler(req, res) {
   if (!query || !category) return res.status(400).json({ error: 'Missing fields' })
 
   try {
+    const client = new Anthropic()
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 60,
@@ -35,8 +34,8 @@ export default async function handler(req, res) {
       cold    = parsed.verdict === 'cold'
       hint    = parsed.hint ?? null
     } catch {
-      // Unparseable — treat as cold
       cold = true
+      hint = 'Not quite'
     }
 
     res.json({ matched, warm, cold, hint })

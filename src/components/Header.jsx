@@ -36,10 +36,10 @@ export default function Header({ categoryText, categoryHint, onGuessCategory, on
     setQuery('')
     if (result.outcome === 'miss') {
       setMissCount(c => c + 1)
-      if (result.warm && (result.hint || categoryHint)) {
-        setLastHint({ text: result.hint ?? categoryHint, warm: true })
-      } else if (result.cold && result.hint) {
-        setLastHint({ text: result.hint, warm: false })
+      if (result.warm) {
+        setLastHint({ text: result.hint ?? categoryHint ?? 'Getting warmer…', warm: true })
+      } else if (result.cold) {
+        setLastHint({ text: result.hint ?? 'Not quite', warm: false })
       } else {
         setLastHint(null)
       }

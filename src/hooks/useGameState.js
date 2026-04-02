@@ -310,17 +310,21 @@ export function useGameState(puzzle) {
         body: JSON.stringify({ query, category: puzzle.category }),
       });
       if (res.ok) {
-        ({ matched, warm, cold, hint } = await res.json());
+        const data = await res.json();
+        console.log('[category]', data);
+        ({ matched, warm, cold, hint } = data);
       } else {
+        console.warn('[category] non-ok response:', res.status);
         throw new Error('non-ok response');
       }
-    } catch {
+    } catch (err) {
+      console.warn('[category] falling back to local matcher:', err?.message);
       // Fallback: local fuzzy matcher with closeness-based warm/cold
       const local = matchCategory(query, puzzle.category);
       matched = local.matched;
       warm    = !matched && local.closeness >= 0.45;
       cold    = !matched && !warm;
-      hint    = warm ? (puzzle.hint ?? null) : null;
+      hint    = warm ? (puzzle.hint ?? null) : 'Not quite';
     }
 
     if (matched) {
