@@ -57,7 +57,7 @@ export default function BankPanel({
         }
       } else {
         setPenaltyKey(k => k + 1)
-        showFeedback('miss', `Not in the bank — −${result.cost} coin`)
+        showFeedback('miss', `Not in the bank`)
       }
     }
     // 'pending' is handled by ConfirmMatch appearing
