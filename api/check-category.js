@@ -20,9 +20,9 @@ export default async function handler(req, res) {
           `Reply with JSON only — no other text:\n` +
           `{"verdict":"yes|warm|cold","hint":"string or null"}\n\n` +
           `Rules:\n` +
-          `- "yes": the guess captures the right subject AND the right general ranking dimension, even if phrased loosely or abbreviated. Be permissive — if they clearly get the idea, accept it. hint: null\n` +
-          `- "warm": they have the right subject but are missing the ranking dimension entirely. hint: a vague nudge in the right direction — do NOT mention the specific metric, unit, or answer. One short sentence.\n` +
-          `- "cold": off track. hint: a short punchy dismissal like "Pretty off-base" or "Not even close"\n`,
+          `- "yes": the guess gets the right subject AND gestures at the right ranking dimension, even vaguely or with synonyms (e.g. "pop", "size", "enrollment", "students" all count). Abbreviations and shorthand are fine. Be generous. hint: null\n` +
+          `- "warm": right subject, but no mention of what's being ranked. hint: a short, casual, encouraging nudge — like something a friend would say. Don't reveal the metric or answer. Make it feel alive, not robotic.\n` +
+          `- "cold": wrong subject or completely off. hint: short and punchy, like "Nope" or "Way off" — keep it light\n`,
       }],
     })
 
