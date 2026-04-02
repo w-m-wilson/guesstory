@@ -88,7 +88,11 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
       </div>
 
       {/* Slots */}
-      <div className="flex flex-col gap-1" style={{ userSelect: 'none' }}>
+      <div
+        className="flex flex-col gap-1"
+        style={{ userSelect: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none' }}
+        onContextMenu={(e) => e.preventDefault()}
+      >
         {rankSlots.map((item, index) => {
           const position = index + 1
           const locked = lockedSlots.includes(index)
