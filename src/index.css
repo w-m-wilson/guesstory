@@ -12,8 +12,21 @@
   --color-sol-base3:  #FDF6E3;
 }
 
-/* ── Semantic layer — solarized light (default) ── */
+/* ── Semantic layer — gruvbox light (default) ── */
 :root,
+[data-theme="gruvbox-light"] {
+  --color-bg:           #FBF1C7;
+  --color-bg-elevated:  #EBDBB2;
+  --color-text:         #665C54;
+  --color-text-strong:  #3C3836;
+  --color-text-faint:   #928374;
+  --color-border:       #D5C4A1;
+  --color-dot-correct:  #79740E;
+  --color-dot-present:  #AF3A03;
+  --color-dot-absent:   #D5C4A1;
+}
+
+/* ── Solarized light ── */
 [data-theme="solarized-light"] {
   --color-bg:           #FDF6E3;
   --color-bg-elevated:  #EEE8D5;
@@ -42,15 +55,15 @@
 /* System dark fallback before JS sets data-theme */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --color-bg:           #002B36;
-    --color-bg-elevated:  #073642;
-    --color-text:         #839496;
-    --color-text-strong:  #93A1A1;
-    --color-text-faint:   #586E75;
-    --color-border:       #073642;
-    --color-dot-correct:  #EEE8D5;
-    --color-dot-present:  #93A1A1;
-    --color-dot-absent:   #073642;
+    --color-bg:           #282828;
+    --color-bg-elevated:  #3C3836;
+    --color-text:         #BDAE93;
+    --color-text-strong:  #EBDBB2;
+    --color-text-faint:   #928374;
+    --color-border:       #504945;
+    --color-dot-correct:  #B8BB26;
+    --color-dot-present:  #FE8019;
+    --color-dot-absent:   #504945;
   }
 }
 
@@ -78,6 +91,19 @@
   --color-dot-correct:  #FFFFFF;
   --color-dot-present:  #888888;
   --color-dot-absent:   #2A2A2A;
+}
+
+/* ── Gruvbox dark ── */
+[data-theme="gruvbox-dark"] {
+  --color-bg:           #282828;
+  --color-bg-elevated:  #3C3836;
+  --color-text:         #BDAE93;
+  --color-text-strong:  #EBDBB2;
+  --color-text-faint:   #928374;
+  --color-border:       #504945;
+  --color-dot-correct:  #B8BB26;
+  --color-dot-present:  #FE8019;
+  --color-dot-absent:   #504945;
 }
 
 /* ── Bailly light (rose & sage) ── */

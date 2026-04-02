@@ -100,6 +100,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
         <HintModal
           coins={state.coins}
           allBankFound={discoveredList.length >= puzzle.bank.length}
+          categoryGuessed={state.categoryGuessed}
           onPurchase={purchaseHint}
           onClose={() => setHintsOpen(false)}
         />

@@ -30,7 +30,7 @@ function applyTheme(scheme, mode) {
 
 export function useAppearance() {
   const saved = loadSaved()
-  const [scheme, setSchemeState] = useState(saved.scheme ?? 'minimal')
+  const [scheme, setSchemeState] = useState(saved.scheme ?? 'gruvbox')
   const [mode, setModeState] = useState(saved.mode ?? 'system')
 
   useEffect(() => {

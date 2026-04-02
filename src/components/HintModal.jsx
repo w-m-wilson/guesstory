@@ -28,7 +28,7 @@ const HINTS = [
   },
 ]
 
-export default function HintModal({ coins, allBankFound, onPurchase, onClose }) {
+export default function HintModal({ coins, allBankFound, categoryGuessed, onPurchase, onClose }) {
   const [feedback, setFeedback] = useState(null)
 
   function handlePurchase(key) {
@@ -84,7 +84,7 @@ export default function HintModal({ coins, allBankFound, onPurchase, onClose }) 
           {HINTS.map(({ key, label, description, cost }) => {
             const minCost = parseInt(cost)
             const canAfford = coins >= minCost
-            const unavailable = key === 'revealBankItem' && allBankFound
+            const unavailable = (key === 'revealBankItem' && allBankFound) || (key === 'revealCategory' && categoryGuessed)
             return (
               <button
                 key={key}
