@@ -10,6 +10,7 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
     setDragIndex(fromIndex)
 
     function onMove(me) {
+      me.preventDefault()
       const target = document.elementFromPoint(me.clientX, me.clientY)
       const row = target?.closest('[data-slot-index]')
       if (!row) return
@@ -28,7 +29,7 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
       document.removeEventListener('pointercancel', onUp)
     }
 
-    document.addEventListener('pointermove', onMove)
+    document.addEventListener('pointermove', onMove, { passive: false })
     document.addEventListener('pointerup', onUp)
     document.addEventListener('pointercancel', onUp)
   }
@@ -58,6 +59,7 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
               key={index}
               data-slot-index={index}
               className="flex items-center gap-2"
+              style={{ touchAction: isDraggable ? 'none' : 'auto' }}
             >
               <span
                 className="text-sm font-medium w-4 text-right shrink-0"
@@ -69,12 +71,22 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
               <div
                 className="flex-1 flex items-center rounded-lg px-3 py-1.5 min-w-0"
                 style={{
-                  background: locked ? 'var(--color-border)' : 'var(--color-bg-elevated)',
-                  border: `1px solid ${locked ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
+                  background: isDragging
+                    ? 'var(--color-bg)'
+                    : locked ? 'var(--color-border)' : 'var(--color-bg-elevated)',
+                  border: `1px solid ${
+                    isDragging
+                      ? 'var(--color-text)'
+                      : locked ? 'var(--color-text-faint)' : 'var(--color-border)'
+                  }`,
+                  boxShadow: isDragging ? '0 4px 12px rgba(0,0,0,0.25)' : 'none',
                   minHeight: '36px',
-                  opacity: isDragging ? 0.4 : 1,
-                  transition: 'opacity 0.1s',
+                  opacity: isDragging ? 0.85 : 1,
+                  transform: isDragging ? 'scale(1.02)' : 'scale(1)',
+                  transition: 'box-shadow 0.15s, border-color 0.15s, transform 0.1s, opacity 0.1s',
                   cursor: isDraggable ? 'pointer' : 'default',
+                  zIndex: isDragging ? 10 : 'auto',
+                  position: 'relative',
                 }}
                 onClick={isDraggable ? () => onRemoveSlot(index) : undefined}
               >
@@ -91,10 +103,10 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
                       <span
                         className="shrink-0 ml-2 text-sm select-none"
                         style={{
-                          color: 'var(--color-text-faint)',
+                          color: isDragging ? 'var(--color-text)' : 'var(--color-text-faint)',
                           cursor: isDragging ? 'grabbing' : 'grab',
-                          opacity: 0.4,
-                          touchAction: 'none',
+                          opacity: isDragging ? 0.8 : 0.4,
+                          transition: 'opacity 0.1s, color 0.1s',
                         }}
                         aria-hidden="true"
                         onPointerDown={(e) => {
