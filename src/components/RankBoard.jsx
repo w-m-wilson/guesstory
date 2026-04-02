@@ -42,6 +42,7 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
   }
 
   function handleCardPointerDown(e, index) {
+    e.preventDefault()
     const p = pressRef.current
     p.startX = e.clientX
     p.startY = e.clientY
