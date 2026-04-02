@@ -36,6 +36,19 @@ export default function App() {
 
   return (
     <>
+      <div
+        className="portrait-only-warning fixed inset-0 z-[100] flex-col items-center justify-center gap-3 text-center px-8"
+        style={{ background: 'var(--color-bg)' }}
+      >
+        <span style={{ fontSize: '2rem' }}>↩</span>
+        <p className="text-sm font-medium" style={{ color: 'var(--color-text-strong)' }}>
+          Please rotate to portrait
+        </p>
+        <p className="text-xs" style={{ color: 'var(--color-text-faint)' }}>
+          Rankie is designed for portrait mode
+        </p>
+      </div>
+
       <GameScreen puzzle={puzzle} onOpenIntro={openIntro} onOpenSettings={() => setSettingsOpen(true)} />
       {introOpen && <IntroModal onClose={closeIntro} />}
       {settingsOpen && (

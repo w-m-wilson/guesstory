@@ -125,6 +125,17 @@ body {
   overflow: hidden;
 }
 
+/* ── Portrait-only nudge (touch devices in landscape) ── */
+.portrait-only-warning {
+  display: none;
+}
+
+@media (orientation: landscape) and (pointer: coarse) {
+  .portrait-only-warning {
+    display: flex;
+  }
+}
+
 /* ── Micro-animations ── */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(3px); }

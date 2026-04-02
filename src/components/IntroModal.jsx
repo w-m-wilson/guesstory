@@ -24,9 +24,9 @@ const SECTIONS = [
       'After each attempt you\'ll see a row of dots:',
     ],
     feedback: [
-      { symbol: '●', label: 'Right item, right spot' },
-      { symbol: '◑', label: 'Right item, wrong spot' },
-      { symbol: '○', label: "That item isn't in the top 5" },
+      { symbol: '●', color: 'var(--color-dot-correct)', label: 'Right item, right spot' },
+      { symbol: '●', color: 'var(--color-dot-present)', label: 'Right item, wrong spot' },
+      { symbol: '○', color: 'var(--color-dot-absent)',  label: "That item isn't in the top 5" },
     ],
   },
   {
@@ -119,11 +119,11 @@ export default function IntroModal({ onClose }) {
 
               {feedback && (
                 <div className="mt-2 flex flex-col gap-1 pl-3">
-                  {feedback.map(({ symbol, label }) => (
-                    <div key={symbol} className="flex items-center gap-2.5 text-sm">
+                  {feedback.map(({ symbol, color, label }) => (
+                    <div key={label} className="flex items-center gap-2.5 text-sm">
                       <span
-                        className="font-semibold w-4 text-center shrink-0"
-                        style={{ color: 'var(--color-dot-correct)' }}
+                        className="text-base leading-none w-4 text-center shrink-0"
+                        style={{ color }}
                       >
                         {symbol}
                       </span>
