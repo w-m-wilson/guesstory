@@ -16,11 +16,14 @@ export default async function handler(req, res) {
         `CRITICAL: Judge ONLY against the given category string. Do not invent requirements that aren't in it — no "which specific ones?" or extra qualifiers.\n\n` +
         `Reply with JSON only — no other text: {"verdict":"yes|warm|cold","hint":"string or null"}\n\n` +
         `Verdicts:\n` +
-        `"yes" — subject matches AND metric matches. Be very generous with synonyms: "descending/ascending", "biggest to smallest", "most to least", "highest to lowest", "largest to smallest", "ranked by X" all count. hint: null\n` +
-        `"warm" — subject matches but metric is missing or wrong:\n` +
+        `"yes" — subject and metric both close enough. Be generous on both:\n` +
+        `  • Subject: accept synonyms, common shorthand, partial matches — "schools"="universities", "movies"="films", "pop size"/"enrollment"="population", "US"="United States", informal names for formal ones, etc.\n` +
+        `  • Metric: accept any reasonable paraphrase — "descending/ascending", "biggest to smallest", "most to least", "highest to lowest", "by size/age/pop/rank" etc. all count.\n` +
+        `  When in doubt, lean yes. hint: null\n` +
+        `"warm" — subject is recognisably right but metric is missing or clearly wrong:\n` +
         `  • No metric: hint like "yes, [subject] — but in what order?" (never reveal the metric)\n` +
         `  • Wrong metric: acknowledge subject is right, gently say the ordering is different\n` +
-        `"cold" — subject is wrong. hint: brief, light, "not the right direction" energy.\n` +
+        `"cold" — subject is in the wrong domain entirely. hint: brief, light, "not the right direction" energy.\n` +
         `Hints should sound like a friend — casual, never robotic.`,
       messages: [{
         role: 'user',
