@@ -76,11 +76,12 @@ export default function BankPanel({
 
   const freeMissesLeft = Math.max(0, FREE_MISSES - bankMisses)
   const burningCoins = bankMisses >= FREE_MISSES
+  const bankFull = discoveredList.length >= bankTotal
 
   return (
     <div className="flex flex-col min-h-0 flex-1">
-      {/* Guess input */}
-      <div className="px-4 pt-3 pb-2 shrink-0" style={{ borderBottom: '1px solid var(--color-border)' }}>
+      {/* Guess input — hidden once bank is fully discovered */}
+      {!bankFull && <div className="px-4 pt-3 pb-2 shrink-0" style={{ borderBottom: '1px solid var(--color-border)' }}>
         <form onSubmit={handleSubmit} className="flex gap-2">
           <input
             ref={inputRef}
@@ -185,7 +186,17 @@ export default function BankPanel({
             {feedback.message}
           </p>
         )}
-      </div>
+      </div>}
+
+      {/* Bank complete banner */}
+      {bankFull && (
+        <div
+          className="bank-complete px-4 pt-3 pb-2 shrink-0 text-center text-sm font-medium"
+          style={{ color: 'var(--color-text-strong)' }}
+        >
+          You got them all!
+        </div>
+      )}
 
       {/* Discovered items */}
       <div className="flex-1 overflow-y-auto px-4 py-3">

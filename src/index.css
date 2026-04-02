@@ -202,6 +202,14 @@ body {
   pointer-events: none;
 }
 
+/* ── Bank complete pop ── */
+@keyframes bankComplete {
+  0%   { opacity: 0; transform: translateY(-6px) scale(0.95); }
+  60%  { opacity: 1; transform: translateY(1px)  scale(1.02); }
+  100% { opacity: 1; transform: translateY(0)    scale(1); }
+}
+.bank-complete { animation: bankComplete 0.3s ease-out; }
+
 /* ── Category button glow ── */
 @keyframes categoryGlow {
   0%, 100% { color: var(--color-text-faint); }
