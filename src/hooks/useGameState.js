@@ -315,8 +315,12 @@ export function useGameState(puzzle) {
         throw new Error('non-ok response');
       }
     } catch {
-      // Fallback: local fuzzy matcher
-      ({ matched } = matchCategory(query, puzzle.category));
+      // Fallback: local fuzzy matcher with closeness-based warm/cold
+      const local = matchCategory(query, puzzle.category);
+      matched = local.matched;
+      warm    = !matched && local.closeness >= 0.45;
+      cold    = !matched && !warm;
+      hint    = warm ? (puzzle.hint ?? null) : null;
     }
 
     if (matched) {
