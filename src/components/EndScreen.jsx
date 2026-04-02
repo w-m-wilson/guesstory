@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import GuessHistory from './GuessHistory.jsx'
 
 const GRADES = [
@@ -13,15 +14,14 @@ function getGrade(coins) {
 }
 
 function buildShareText(puzzleId, coins, rankHistory) {
-  const lines = [`Reckon ${puzzleId}`, `Score: ${coins}/100`, '', 'Ranking attempts:']
+  const lines = [`Reckon ${puzzleId}`, `Score: ${coins}/100`]
   for (const { feedback } of rankHistory) {
-    lines.push(
-      feedback.map(v => {
-        if (v === 'correct' || v === 'present') return '●'
-        if (v === 'absent') return '○'
-        return '✗'
-      }).join(' ')
-    )
+    const dots = [...feedback]
+      .sort((a, b) => ({ correct: 0, present: 1 }[a] ?? 2) - ({ correct: 0, present: 1 }[b] ?? 2))
+      .map(v => v === 'correct' ? '●' : v === 'present' ? '○' : null)
+      .filter(Boolean)
+      .join('')
+    lines.push(dots || '—')
   }
   return lines.join('\n')
 }
@@ -30,11 +30,22 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, ca
   const won = gameStatus === 'won'
   const showHailMary = gameStatus === 'abandoned' && !hailMaryTaken
   const grade = getGrade(coins)
+  const [copied, setCopied] = useState(false)
 
   async function handleShare() {
     const text = buildShareText(puzzleId, coins, rankHistory)
+    if (navigator.share) {
+      try {
+        await navigator.share({ text })
+        return
+      } catch {
+        // user cancelled or API unsupported — fall through to clipboard
+      }
+    }
     try {
       await navigator.clipboard.writeText(text)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
     } catch {
       // silent fallback
     }
@@ -101,7 +112,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, ca
             className="w-full py-2.5 rounded-xl text-sm font-semibold"
             style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
           >
-            Copy result
+            {copied ? 'Copied!' : 'Share result'}
           </button>
         )}
       </div>
