@@ -10,23 +10,23 @@ export default async function handler(req, res) {
     const client = new Anthropic()
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 60,
+      max_tokens: 80,
+      system:
+        `You judge guesses in a daily ranking game. Every category has two parts:\n` +
+        `- Subject: the specific group of things being ranked\n` +
+        `- Metric: what they are ranked by\n\n` +
+        `Reply with JSON only — no other text: {"verdict":"yes|warm|cold","hint":"string or null"}\n\n` +
+        `Verdicts:\n` +
+        `"yes" — guess names the right specific subject AND the right metric (synonyms and vague gestures are fine). hint: null\n` +
+        `"warm" — guess is on the right track but not complete. Use the most fitting sub-case:\n` +
+        `  • Right specific subject + wrong metric stated: acknowledge the subject is right, gently redirect the metric without revealing it.\n` +
+        `  • Right specific subject + no metric: nudge toward finding the ranking dimension.\n` +
+        `  • Too broad: the guess names a wide class that contains the specific subject — "universities" when the answer is a particular group of universities, "songs" when the answer is a specific artist's songs, etc. Key test: would this guess also fit dozens of other possible categories? If yes, it's too broad. Tell them to narrow down which [things] AND that there's a ranking dimension. Don't echo or paraphrase the category.\n` +
+        `"cold" — wrong domain entirely. hint: brief, light, "not the right direction" energy.\n` +
+        `Warm hints should sound like a friend — casual, never robotic, never reveal the answer.`,
       messages: [{
         role: 'user',
-        content:
-          `You are judging a guess in a daily ranking game.\n` +
-          `Category: "${category}"\n` +
-          `Player's guess: "${query}"\n\n` +
-          `Reply with JSON only — no other text:\n` +
-          `{"verdict":"yes|warm|cold","hint":"string or null"}\n\n` +
-          `The category has two parts: a specific subject (which things) and a ranking metric (ranked how).\n\n` +
-          `Rules:\n` +
-          `- "yes": the guess identifies the right specific subject AND gestures at the right metric, even loosely or with synonyms. Be generous. hint: null\n` +
-          `- "warm": the guess is heading in the right direction but isn't complete. Pick the most fitting sub-case and write the hint accordingly:\n` +
-          `  - Mentions the right specific subject + names a plausible but wrong metric: acknowledge they have the right subject, gently redirect — something's being measured differently here. Don't reveal the metric.\n` +
-          `  - Mentions the right specific subject but no metric: nudge them toward the fact that there's a specific ranking dimension to find. Keep it light.\n` +
-          `  - Names the right general type of thing but too broad (e.g. the answer is a specific subset, but the guess names the whole class): encourage them to get more specific about which [things], and hint that there's a ranking dimension too. Keep the phrasing natural and general — don't echo the category wording.\n` +
-          `- "cold": wrong domain entirely. hint: a brief, light phrase — "not the right direction" energy, don't pile on\n`,
+        content: `Category: "${category}"\nPlayer's guess: "${query}"`,
       }],
     })
 
