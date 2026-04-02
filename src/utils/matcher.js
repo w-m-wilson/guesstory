@@ -30,7 +30,20 @@ export function createBankMatcher(items) {
 
   return {
     match(query) {
-      const results = fuse.search(query.trim());
+      const trimmed = query.trim();
+
+      // Require at least 3 characters unless the query exactly matches a
+      // short alias (< 3 chars) defined on some item in the bank.
+      if (trimmed.length < 3) {
+        const lower = trimmed.toLowerCase();
+        const shortAliasEntry = entries.find(
+          ({ alias }) => alias.length < 3 && alias.toLowerCase() === lower
+        );
+        if (!shortAliasEntry) return null;
+        return { item: shortAliasEntry.item, score: 0, needsConfirmation: false };
+      }
+
+      const results = fuse.search(trimmed);
       if (results.length === 0) return null;
 
       const { item: entry, score } = results[0];
