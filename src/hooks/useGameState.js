@@ -143,7 +143,7 @@ function reducer(state, action) {
     }
 
     case 'PURCHASE_HINT': {
-      const cost = getHintCost(action.hintType);
+      const cost = action.cost ?? getHintCost(action.hintType);
       const newState = {
         ...state,
         coins: Math.max(0, state.coins - cost),
@@ -346,14 +346,18 @@ export function useGameState(puzzle) {
       if (!item) return { item: null };
     }
 
+    let cost = getHintCost(hintType);
+
     if (hintType === 'revealRankPosition') {
       const topFiveItems = puzzle.bank.filter(b => puzzle.topFive.includes(b.rank));
       item = topFiveItems.find(b => !s.lockedSlots.includes(b.rank - 1)) ?? null;
       if (!item) return { item: null };
       slotIndex = item.rank - 1;
+      const isKnown = !!s.discoveredItems[item.rank];
+      cost = getHintCost(hintType, { isKnown });
     }
 
-    dispatch({ type: 'PURCHASE_HINT', hintType, item, slotIndex });
+    dispatch({ type: 'PURCHASE_HINT', hintType, item, slotIndex, cost });
     return { item };
   }, [puzzle.bank, puzzle.topFive]);
 

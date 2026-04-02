@@ -18,7 +18,13 @@ export function getCategoryMissCost(missCount) {
   return GAME_CONFIG.category.missCost;
 }
 
-/** Returns the coin cost for a given hint type. */
-export function getHintCost(hintType) {
+/** Returns the coin cost for a given hint type.
+ *  For revealRankPosition, pass isKnown to get the correct tier. */
+export function getHintCost(hintType, { isKnown = false } = {}) {
+  if (hintType === 'revealRankPosition') {
+    return isKnown
+      ? GAME_CONFIG.hints.revealRankPositionKnown
+      : GAME_CONFIG.hints.revealRankPositionUnknown;
+  }
   return GAME_CONFIG.hints[hintType] ?? 0;
 }

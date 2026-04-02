@@ -5,19 +5,19 @@ const HINTS = [
     key: 'revealCategory',
     label: 'Reveal category',
     description: 'Show the hidden category label',
-    cost: GAME_CONFIG.hints.revealCategory,
+    cost: `${GAME_CONFIG.hints.revealCategory}`,
   },
   {
     key: 'revealBankItem',
     label: 'Reveal a bank item',
     description: 'Add one undiscovered item to your bank',
-    cost: GAME_CONFIG.hints.revealBankItem,
+    cost: `${GAME_CONFIG.hints.revealBankItem}`,
   },
   {
     key: 'revealRankPosition',
-    label: 'Reveal a rank position',
-    description: 'Show which item belongs in one slot',
-    cost: GAME_CONFIG.hints.revealRankPosition,
+    label: 'Lock an item to its slot',
+    description: 'Pins one item to its correct position',
+    cost: `${GAME_CONFIG.hints.revealRankPositionKnown}–${GAME_CONFIG.hints.revealRankPositionUnknown}`,
   },
 ]
 
@@ -51,7 +51,8 @@ export default function HintModal({ coins, onPurchase, onClose }) {
 
         <div className="flex flex-col gap-2">
           {HINTS.map(({ key, label, description, cost }) => {
-            const canAfford = coins >= cost
+            const minCost = parseInt(cost)
+            const canAfford = coins >= minCost
             return (
               <button
                 key={key}

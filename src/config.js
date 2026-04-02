@@ -7,8 +7,8 @@ export const GAME_CONFIG = {
   },
 
   category: {
-    freeMisses: 2,
-    missCost: 1,      // coins per miss after free misses exhausted
+    freeMisses: 3,
+    missCost: 10,     // coins per miss after free misses exhausted
     correctGuessBonus: 15, // coins awarded for guessing the category correctly
   },
 
@@ -17,9 +17,10 @@ export const GAME_CONFIG = {
   },
 
   hints: {
-    revealCategory: 25,
-    revealBankItem: 20,
-    revealRankPosition: 50,
+    revealCategory: 40,
+    revealBankItem: 15,
+    revealRankPositionKnown: 30,    // item already in your bank
+    revealRankPositionUnknown: 60,  // item not yet discovered
   },
 
   matcher: {
