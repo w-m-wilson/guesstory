@@ -76,8 +76,8 @@ export default function Header({ categoryText, categoryHint, categoryMisses, onG
       {/* Row 1: Rankie wordmark + category text OR guess button */}
       <div className="flex items-center px-4 py-3">
         <span
-          className="font-black italic text-xl tracking-tight shrink-0"
-          style={{ color: 'var(--color-text-strong)' }}
+          className="text-xl tracking-tight shrink-0"
+          style={{ fontFamily: "'Rye', serif", color: 'var(--color-text-strong)' }}
         >
           Reckon
         </span>
