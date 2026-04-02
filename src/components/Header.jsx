@@ -27,12 +27,53 @@ function MissTracker({ misses }) {
   )
 }
 
+const TYPEWRITER_FULL   = 'Guess category'
+const TYPEWRITER_PREFIX = 'Guess '.length
+const TYPE_MS   = 68
+const RETYPE_MS = 110
+const ERASE_MS  = 90
+const PAUSE_MS  = 500
+const CYCLE_MS = 60000
+
 export default function Header({ categoryText, categoryHint, categoryMisses, onGuessCategory, onOpenIntro, onOpenSettings }) {
   const [guessing, setGuessing] = useState(false)
   const [query, setQuery] = useState('')
   const [lastHint, setLastHint] = useState(null)  // { text, warm } | null
   const [loading, setLoading] = useState(false)
+  const [twText, setTwText] = useState('')
+  const [twCursor, setTwCursor] = useState(true)
+  const timerRef = useRef(null)
   const inputRef = useRef(null)
+
+  // Typewriter: spell out on mount, then erase+retype "category" every ~60s
+  useEffect(() => {
+    if (categoryText) return
+
+    function typeFrom(idx, ms, onDone) {
+      setTwCursor(true)
+      setTwText(TYPEWRITER_FULL.slice(0, idx))
+      if (idx >= TYPEWRITER_FULL.length) { setTwCursor(false); onDone(); return }
+      timerRef.current = setTimeout(() => typeFrom(idx + 1, ms, onDone), ms)
+    }
+
+    function eraseTo(len, onDone) {
+      setTwCursor(true)
+      setTwText(TYPEWRITER_FULL.slice(0, len))
+      if (len <= TYPEWRITER_PREFIX) { onDone(); return }
+      timerRef.current = setTimeout(() => eraseTo(len - 1, onDone), ERASE_MS)
+    }
+
+    function cycle() {
+      timerRef.current = setTimeout(() => {
+        eraseTo(TYPEWRITER_FULL.length, () => {
+          timerRef.current = setTimeout(() => typeFrom(TYPEWRITER_PREFIX, RETYPE_MS, cycle), PAUSE_MS)
+        })
+      }, CYCLE_MS)
+    }
+
+    typeFrom(0, TYPE_MS, cycle)
+    return () => clearTimeout(timerRef.current)
+  }, [categoryText])
 
   // Close input when category is revealed (by hint or correct guess)
   useEffect(() => {
@@ -125,7 +166,8 @@ export default function Header({ categoryText, categoryHint, categoryMisses, onG
                 onClick={() => setGuessing(true)}
                 className="text-xs px-2 py-1 rounded-lg"
               >
-                <span className="category-glow">Guess category</span>
+                <span style={{ color: 'var(--color-text)', fontFamily: "'Courier New', Courier, monospace" }}>
+                  {twText}{twCursor ? '|' : ''}</span>
               </button>
             )}
             {!guessing && categoryMisses > 0 && (
