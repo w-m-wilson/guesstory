@@ -20,9 +20,11 @@ export default async function handler(req, res) {
           `Reply with JSON only — no other text:\n` +
           `{"verdict":"yes|warm|cold","hint":"string or null"}\n\n` +
           `Rules:\n` +
-          `- "yes": the guess gets the right subject AND gestures at the right ranking dimension, even vaguely or with synonyms (e.g. "pop", "size", "enrollment", "students" all count). Abbreviations and shorthand are fine. Be generous. hint: null\n` +
-          `- "warm": right subject, but no mention of what's being ranked. hint: a short, casual, encouraging nudge — like something a friend would say. Don't reveal the metric or answer. Make it feel alive, not robotic.\n` +
-          `- "cold": wrong subject or completely off. hint: short and punchy, like "Nope" or "Way off" — keep it light\n`,
+          `- "yes": the guess correctly identifies the subject AND gestures at the ranking dimension, even vaguely or with synonyms (e.g. "pop", "size", "enrollment", "students" all count). Abbreviations and shorthand are fine. Be generous. hint: null\n` +
+          `- "warm": the guess is in the right ballpark but incomplete. Two sub-cases:\n` +
+          `  - If the guess names the right *specific* subject but doesn't say what's being ranked: give a short, casual hint nudging toward the ranking dimension only. Don't reveal it — just a friendly poke, like something a friend would say.\n` +
+          `  - If the guess is in the right *general domain* but too vague (e.g. "schools" when the subject is a specific group of schools): hint should nudge toward both the specificity of the subject AND that there's a ranking dimension. E.g. "a specific kind of school, ranked a specific way" — keep the same energy, not robotic.\n` +
+          `- "cold": wrong subject or completely off base. hint: a brief phrase that conveys "not the right direction" — something like "That's a different angle" or "We're headed elsewhere" — light touch, don't pile on\n`,
       }],
     })
 

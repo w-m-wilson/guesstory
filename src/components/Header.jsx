@@ -4,10 +4,34 @@ import { GAME_CONFIG } from '../config.js'
 // Fade only the LEFT edge — right side stays sharp so text end is always readable
 const LEFT_FADE = 'linear-gradient(to right, transparent 0%, black 20%, black 100%)'
 
-export default function Header({ categoryText, categoryHint, onGuessCategory, onOpenIntro, onOpenSettings }) {
+function MissTracker({ misses }) {
+  const free = GAME_CONFIG.category.freeMisses
+  const cost = GAME_CONFIG.category.missCost
+  return (
+    <div className="flex items-center gap-1">
+      {Array.from({ length: free }).map((_, i) => (
+        <span
+          key={i}
+          className="inline-block w-1.5 h-1.5 rounded-full"
+          style={{
+            background: i < misses ? 'var(--color-text-faint)' : 'transparent',
+            border: '1px solid var(--color-text-faint)',
+            opacity: 0.6,
+          }}
+        />
+      ))}
+      {misses > free && (
+        <span className="text-xs ml-0.5" style={{ color: 'var(--color-text-faint)', opacity: 0.6 }}>
+          −{cost}/miss
+        </span>
+      )}
+    </div>
+  )
+}
+
+export default function Header({ categoryText, categoryHint, categoryMisses, onGuessCategory, onOpenIntro, onOpenSettings }) {
   const [guessing, setGuessing] = useState(false)
   const [query, setQuery] = useState('')
-  const [missCount, setMissCount] = useState(0)
   const [lastHint, setLastHint] = useState(null)  // { text, warm } | null
   const [loading, setLoading] = useState(false)
   const inputRef = useRef(null)
@@ -35,7 +59,6 @@ export default function Header({ categoryText, categoryHint, onGuessCategory, on
     setLoading(false)
     setQuery('')
     if (result.outcome === 'miss') {
-      setMissCount(c => c + 1)
       if (result.warm) {
         setLastHint({ text: result.hint ?? categoryHint ?? 'Getting warmer…', warm: true })
       } else if (result.cold) {
@@ -95,16 +118,19 @@ export default function Header({ categoryText, categoryHint, onGuessCategory, on
             </p>
           </div>
         ) : (
-          /* Not revealed: show guess button (hidden while input row is open) */
-          <div className="flex-1 flex justify-end ml-4">
+          /* Not revealed: show guess button + persistent miss tracker */
+          <div className="flex-1 flex flex-col items-end ml-4">
             {!guessing && (
               <button
-                onClick={() => { setGuessing(true); setMissCount(0) }}
+                onClick={() => setGuessing(true)}
                 className="text-xs px-2 py-1 rounded-lg"
                 style={{ color: 'var(--color-text-faint)' }}
               >
                 Guess category
               </button>
+            )}
+            {!guessing && categoryMisses > 0 && (
+              <MissTracker misses={categoryMisses} />
             )}
           </div>
         )}
@@ -150,20 +176,16 @@ export default function Header({ categoryText, categoryHint, onGuessCategory, on
             </button>
           </form>
 
-          {missCount > 0 && (
-            <p className="text-xs mt-1.5 fade-in" style={{ color: 'var(--color-text-faint)' }}>
-              {missCount === 1
-                ? `Not quite — ${GAME_CONFIG.category.freeMisses} free tries`
-                : missCount <= GAME_CONFIG.category.freeMisses
-                  ? 'Not quite — keep trying'
-                  : `Not quite — −1 coin per miss`}
-            </p>
-          )}
-          {lastHint && (
-            <p key={lastHint.text} className="text-xs mt-1 fade-in" style={{ color: 'var(--color-text-faint)' }}>
-              {lastHint.text}
-            </p>
-          )}
+          <div className="flex items-start justify-between mt-1.5 gap-3">
+            {categoryMisses > 0
+              ? <MissTracker misses={categoryMisses} />
+              : <span />}
+            {lastHint && (
+              <p key={lastHint.text} className="text-xs fade-in text-right" style={{ color: 'var(--color-text-faint)' }}>
+                {lastHint.text}
+              </p>
+            )}
+          </div>
         </div>
       )}
     </header>

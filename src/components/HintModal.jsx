@@ -57,14 +57,19 @@ export default function HintModal({ coins, onPurchase, onClose }) {
           <span className="font-semibold text-base" style={{ color: 'var(--color-text-strong)' }}>
             Hints
           </span>
-          <button
-            onClick={onClose}
-            className="text-lg leading-none"
-            style={{ color: 'var(--color-text-faint)' }}
-            aria-label="Close"
-          >
-            ✕
-          </button>
+          <div className="flex items-center gap-3">
+            <span className="text-sm" style={{ color: 'var(--color-text-faint)' }}>
+              🪙 {coins}
+            </span>
+            <button
+              onClick={onClose}
+              className="text-lg leading-none"
+              style={{ color: 'var(--color-text-faint)' }}
+              aria-label="Close"
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         {feedback && (

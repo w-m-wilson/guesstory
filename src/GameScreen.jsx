@@ -37,6 +37,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings }) {
       <Header
         categoryText={state.categoryGuessed ? puzzle.category : null}
         categoryHint={puzzle.hint ?? null}
+        categoryMisses={state.categoryMisses}
         onGuessCategory={guessCategory}
         onOpenIntro={onOpenIntro}
         onOpenSettings={onOpenSettings}
