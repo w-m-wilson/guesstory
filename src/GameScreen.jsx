@@ -9,7 +9,7 @@ import ScoreBar from './components/ScoreBar.jsx'
 import HintModal from './components/HintModal.jsx'
 import EndScreen from './components/EndScreen.jsx'
 
-export default function GameScreen({ puzzle, onOpenIntro }) {
+export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings }) {
   const [hintsOpen, setHintsOpen] = useState(false)
   const [endScreenDismissed, setEndScreenDismissed] = useState(false)
 
@@ -39,10 +39,12 @@ export default function GameScreen({ puzzle, onOpenIntro }) {
         categoryHint={puzzle.hint ?? null}
         onGuessCategory={guessCategory}
         onOpenIntro={onOpenIntro}
+        onOpenSettings={onOpenSettings}
       />
 
       <BankPanel
         discoveredList={discoveredList}
+        bankTotal={puzzle.bank.length}
         rankSlots={state.rankSlots}
         bankMisses={state.bankMisses}
         pendingMatch={state.pendingMatch}

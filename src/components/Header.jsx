@@ -4,7 +4,7 @@ import { GAME_CONFIG } from '../config.js'
 // Fade only the LEFT edge — right side stays sharp so text end is always readable
 const LEFT_FADE = 'linear-gradient(to right, transparent 0%, black 20%, black 100%)'
 
-export default function Header({ categoryText, categoryHint, onGuessCategory, onOpenIntro }) {
+export default function Header({ categoryText, categoryHint, onGuessCategory, onOpenIntro, onOpenSettings }) {
   const [guessing, setGuessing] = useState(false)
   const [query, setQuery] = useState('')
   const [missCount, setMissCount] = useState(0)
@@ -71,6 +71,14 @@ export default function Header({ categoryText, categoryHint, onGuessCategory, on
           aria-label="How to play"
         >
           ?
+        </button>
+        <button
+          onClick={onOpenSettings}
+          className="ml-1.5 shrink-0 text-xs w-5 h-5 rounded-full flex items-center justify-center opacity-50 hover:opacity-100"
+          style={{ color: 'var(--color-text-faint)' }}
+          aria-label="Settings"
+        >
+          ⚙
         </button>
 
         {categoryText ? (

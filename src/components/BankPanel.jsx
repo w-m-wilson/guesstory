@@ -6,6 +6,7 @@ const FREE_MISSES = GAME_CONFIG.bank.freeMisses
 
 export default function BankPanel({
   discoveredList,
+  bankTotal,
   rankSlots,
   bankMisses,
   pendingMatch,
@@ -124,6 +125,9 @@ export default function BankPanel({
               −1 coin per miss
             </span>
           )}
+          <span className="ml-auto text-xs" style={{ color: 'var(--color-text-faint)' }}>
+            {discoveredList.length}/{bankTotal} found
+          </span>
         </div>
 
         {/* Confirm match prompt */}

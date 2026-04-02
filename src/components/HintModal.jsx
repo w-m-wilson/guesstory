@@ -16,13 +16,13 @@ const HINTS = [
   {
     key: 'revealRankPositionKnown',
     label: 'Pin a discovered item',
-    description: 'Lock one item you've already found to its correct slot',
+    description: "Lock one item you've already found to its correct slot",
     cost: `${GAME_CONFIG.hints.revealRankPositionKnown}`,
   },
   {
     key: 'revealRankPositionUnknown',
     label: 'Pin an undiscovered item',
-    description: 'Reveal and lock an item you haven't found yet to its correct slot',
+    description: "Reveal and lock an item you haven't found yet to its correct slot",
     cost: `${GAME_CONFIG.hints.revealRankPositionUnknown}`,
   },
 ]
