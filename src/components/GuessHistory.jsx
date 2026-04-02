@@ -14,7 +14,9 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 export default function GuessHistory({ rankHistory, rankSlots, keyMap }) {
   const hasLiveSlot = rankSlots?.some(Boolean)
   const containerRef = useRef(null)
+  const scrollRef = useRef(null)
   const [compact, setCompact] = useState(false)
+  const [scrolledPast, setScrolledPast] = useState(false)
 
   // After every render, check if the names in the first visible row overflow
   // their container. If so, switch all rows to compact (truncated+faded) mode.
@@ -33,6 +35,22 @@ export default function GuessHistory({ rankHistory, rankSlots, keyMap }) {
     return () => ro.disconnect()
   }, [rankHistory, rankSlots])
 
+  // Track scroll position to drive the top fade
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    const onScroll = () => setScrolledPast(el.scrollTop > 4)
+    el.addEventListener('scroll', onScroll, { passive: true })
+    return () => el.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // Auto-scroll to bottom when a new attempt is added
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    el.scrollTop = el.scrollHeight
+  }, [rankHistory.length])
+
   if (rankHistory.length === 0 && !hasLiveSlot) return null
 
   return (
@@ -41,8 +59,8 @@ export default function GuessHistory({ rankHistory, rankSlots, keyMap }) {
       className="shrink-0 px-4 py-2 relative"
       style={{ borderBottom: '1px solid var(--color-border)' }}
     >
-      {/* Top fade — only appears once enough attempts push older ones out of view */}
-      {rankHistory.length > 5 && (
+      {/* Top fade — appears when content has scrolled past the top edge */}
+      {scrolledPast && (
         <div
           className="absolute top-0 left-0 right-0 z-10 pointer-events-none"
           style={{
@@ -52,6 +70,7 @@ export default function GuessHistory({ rankHistory, rankSlots, keyMap }) {
         />
       )}
       <div
+        ref={scrollRef}
         className="overflow-y-auto"
         style={{ maxHeight: '9rem' }}
       >
