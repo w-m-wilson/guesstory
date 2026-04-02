@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 
 const LONG_PRESS_MS = 275
 
-export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemoveSlot, onMoveSlot, onSubmit }) {
+export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMoveSlot, onSubmit }) {
   const hasAnySlot = rankSlots.some(Boolean)
   const [dragIndex, setDragIndex] = useState(null)
   const [chargingIndex, setChargingIndex] = useState(null)
@@ -80,13 +80,6 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
       className="shrink-0 px-4 pt-3 pb-2"
       style={{ borderTop: '1px solid var(--color-border)' }}
     >
-      {/* Attempt label */}
-      <div className="mb-2">
-        <span className="text-xs font-medium" style={{ color: 'var(--color-text-faint)' }}>
-          {rankHistory.length === 0 ? 'Arrange your ranking' : `Attempt ${rankHistory.length + 1}`}
-        </span>
-      </div>
-
       {/* Slots */}
       <div
         className="flex flex-col gap-1"

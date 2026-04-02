@@ -70,7 +70,6 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings }) {
       <RankBoard
         rankSlots={state.rankSlots}
         lockedSlots={state.lockedSlots}
-        rankHistory={state.rankHistory}
         onRemoveSlot={removeSlot}
         onMoveSlot={moveSlot}
         onSubmit={submitRanking}
