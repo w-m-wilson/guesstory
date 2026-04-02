@@ -30,7 +30,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings }) {
   if (!game) return null
 
   const { state, discoveredList, guessBankItem, confirmPending, cancelPending,
-          placeItem, removeSlot, submitRanking, purchaseHint, resetGame, guessCategory } = game
+          placeItem, removeSlot, moveSlot, submitRanking, purchaseHint, resetGame, guessCategory } = game
 
   return (
     <div className="flex flex-col h-full" style={{ background: 'var(--color-bg)' }}>
@@ -65,6 +65,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings }) {
         lockedSlots={state.lockedSlots}
         rankHistory={state.rankHistory}
         onRemoveSlot={removeSlot}
+        onMoveSlot={moveSlot}
         onSubmit={submitRanking}
       />
 

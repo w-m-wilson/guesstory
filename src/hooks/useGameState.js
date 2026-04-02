@@ -104,6 +104,14 @@ function reducer(state, action) {
       return { ...state, rankSlots: newSlots };
     }
 
+    case 'MOVE_SLOT': {
+      const { fromIndex, toIndex } = action;
+      if (state.lockedSlots.includes(fromIndex) || state.lockedSlots.includes(toIndex)) return state;
+      const newSlots = [...state.rankSlots];
+      [newSlots[fromIndex], newSlots[toIndex]] = [newSlots[toIndex], newSlots[fromIndex]];
+      return { ...state, rankSlots: newSlots };
+    }
+
     case 'SUBMIT_RANKING': {
       const { feedback } = action;
       const won = isWin(feedback);
@@ -112,15 +120,11 @@ function reducer(state, action) {
       const cost = won ? 0 : Math.min(state.coins, absentCount * GAME_CONFIG.ranking.absentCost);
       const newCoins = Math.max(0, state.coins - cost);
       const newStatus = won ? 'won' : (newCoins === 0 ? 'abandoned' : 'playing');
-      // On wrong submission, preserve locked slots and clear the rest
-      const clearedSlots = state.rankSlots.map((slot, i) =>
-        state.lockedSlots.includes(i) ? slot : null
-      );
       return {
         ...state,
         coins: newCoins,
         rankHistory: [...state.rankHistory, { slots: [...state.rankSlots], feedback }],
-        rankSlots: won ? state.rankSlots : clearedSlots,
+        rankSlots: state.rankSlots,
         gameStatus: newStatus,
       };
     }
@@ -290,6 +294,10 @@ export function useGameState(puzzle) {
     dispatch({ type: 'REMOVE_SLOT', slotIndex });
   }, []);
 
+  const moveSlot = useCallback((fromIndex, toIndex) => {
+    dispatch({ type: 'MOVE_SLOT', fromIndex, toIndex });
+  }, []);
+
   const submitRanking = useCallback(() => {
     const s = stateRef.current;
     const feedback = generateFeedback(s.rankSlots);
@@ -381,6 +389,7 @@ export function useGameState(puzzle) {
     cancelPending,
     placeItem,
     removeSlot,
+    moveSlot,
     submitRanking,
     guessCategory,
     purchaseHint,

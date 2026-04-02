@@ -1,5 +1,37 @@
-export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemoveSlot, onSubmit }) {
+import { useState } from 'react'
+
+export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemoveSlot, onMoveSlot, onSubmit }) {
   const hasAnySlot = rankSlots.some(Boolean)
+  const [dragIndex, setDragIndex] = useState(null)
+
+  function startDrag(fromIndex, e) {
+    e.preventDefault()
+    let currentFrom = fromIndex
+    setDragIndex(fromIndex)
+
+    function onMove(me) {
+      const target = document.elementFromPoint(me.clientX, me.clientY)
+      const row = target?.closest('[data-slot-index]')
+      if (!row) return
+      const toIndex = parseInt(row.dataset.slotIndex, 10)
+      if (toIndex === currentFrom) return
+      if (lockedSlots.includes(currentFrom) || lockedSlots.includes(toIndex)) return
+      onMoveSlot(currentFrom, toIndex)
+      currentFrom = toIndex
+      setDragIndex(toIndex)
+    }
+
+    function onUp() {
+      setDragIndex(null)
+      document.removeEventListener('pointermove', onMove)
+      document.removeEventListener('pointerup', onUp)
+      document.removeEventListener('pointercancel', onUp)
+    }
+
+    document.addEventListener('pointermove', onMove)
+    document.addEventListener('pointerup', onUp)
+    document.addEventListener('pointercancel', onUp)
+  }
 
   return (
     <div
@@ -18,9 +50,15 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
         {rankSlots.map((item, index) => {
           const position = index + 1
           const locked = lockedSlots.includes(index)
+          const isDragging = dragIndex === index
+          const isDraggable = !locked && item !== null
 
           return (
-            <div key={index} className="flex items-center gap-2">
+            <div
+              key={index}
+              data-slot-index={index}
+              className="flex items-center gap-2"
+            >
               <span
                 className="text-sm font-medium w-4 text-right shrink-0"
                 style={{ color: locked ? 'var(--color-text-strong)' : 'var(--color-text-faint)' }}
@@ -29,31 +67,41 @@ export default function RankBoard({ rankSlots, lockedSlots, rankHistory, onRemov
               </span>
 
               <div
-                className="flex-1 flex items-center justify-between rounded-lg px-3 py-1.5 min-w-0"
+                className="flex-1 flex items-center rounded-lg px-3 py-1.5 min-w-0"
                 style={{
                   background: locked ? 'var(--color-border)' : 'var(--color-bg-elevated)',
                   border: `1px solid ${locked ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
                   minHeight: '36px',
+                  opacity: isDragging ? 0.4 : 1,
+                  transition: 'opacity 0.1s',
+                  cursor: isDraggable ? 'pointer' : 'default',
                 }}
+                onClick={isDraggable ? () => onRemoveSlot(index) : undefined}
               >
                 {item ? (
                   <>
                     <span
-                      className="text-sm truncate"
+                      className="text-sm truncate flex-1"
                       style={{ color: locked ? 'var(--color-text-strong)' : 'var(--color-text)' }}
                     >
                       {item.name}
                       {locked && <span className="ml-1.5 text-xs opacity-50">★</span>}
                     </span>
-                    {!locked && (
-                      <button
-                        onClick={() => onRemoveSlot(index)}
-                        className="ml-2 shrink-0 text-xs opacity-30 hover:opacity-80"
-                        style={{ color: 'var(--color-text-faint)' }}
-                        aria-label={`Remove ${item.name}`}
-                      >
-                        ✕
-                      </button>
+                    {isDraggable && (
+                      <span
+                        className="shrink-0 ml-2 text-sm select-none"
+                        style={{
+                          color: 'var(--color-text-faint)',
+                          cursor: isDragging ? 'grabbing' : 'grab',
+                          opacity: 0.4,
+                          touchAction: 'none',
+                        }}
+                        aria-hidden="true"
+                        onPointerDown={(e) => {
+                          e.stopPropagation()
+                          startDrag(index, e)
+                        }}
+                      >⠿</span>
                     )}
                   </>
                 ) : (
