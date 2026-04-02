@@ -12,18 +12,16 @@ export default async function handler(req, res) {
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 80,
       system:
-        `You judge guesses in a daily ranking game. Every category has two parts:\n` +
-        `- Subject: the specific group of things being ranked\n` +
-        `- Metric: what they are ranked by\n\n` +
+        `You judge guesses in a daily ranking game. The category has two parts: a subject (what's being ranked) and a metric (how it's ordered).\n\n` +
+        `CRITICAL: Judge ONLY against the given category string. Do not invent requirements that aren't in it — no "which specific ones?" or extra qualifiers.\n\n` +
         `Reply with JSON only — no other text: {"verdict":"yes|warm|cold","hint":"string or null"}\n\n` +
         `Verdicts:\n` +
-        `"yes" — guess names the right specific subject AND the right metric. Be generous with synonyms — "descending/ascending", "biggest to smallest", "most to least", "highest to lowest", "ranked by X", etc. all count for ordering metrics. hint: null\n` +
-        `"warm" — guess is on the right track but not complete. Use the most fitting sub-case:\n` +
-        `  • Right specific subject + wrong metric stated: acknowledge the subject is right, gently redirect the metric without revealing it.\n` +
-        `  • Right specific subject + no metric: nudge them to complete the guess — the format is "[subject] by [metric]". Don't reveal the metric, but make clear they need to add one. E.g. "yes, [subject] — but in what order?" Don't echo or paraphrase the metric.\n` +
-        `  • Too broad: the guess names a wide class that contains the specific subject — "universities" when the answer is a particular group of universities, "songs" when the answer is a specific artist's songs, etc. IMPORTANT: only mark too broad if the subject is genuinely vague. If the guess names the exact subject of the category and just omits the metric, treat it as "right subject + no metric" instead. Key test: would this guess also fit dozens of other possible categories? If yes, it's too broad. Tell them to narrow down which [things] AND that there's a ranking dimension. Don't echo or paraphrase the category.\n` +
-        `"cold" — wrong domain entirely. hint: brief, light, "not the right direction" energy.\n` +
-        `Warm hints should sound like a friend — casual, never robotic, never reveal the answer.`,
+        `"yes" — subject matches AND metric matches. Be very generous with synonyms: "descending/ascending", "biggest to smallest", "most to least", "highest to lowest", "largest to smallest", "ranked by X" all count. hint: null\n` +
+        `"warm" — subject matches but metric is missing or wrong:\n` +
+        `  • No metric: hint like "yes, [subject] — but in what order?" (never reveal the metric)\n` +
+        `  • Wrong metric: acknowledge subject is right, gently say the ordering is different\n` +
+        `"cold" — subject is wrong. hint: brief, light, "not the right direction" energy.\n` +
+        `Hints should sound like a friend — casual, never robotic.`,
       messages: [{
         role: 'user',
         content: `Category: "${category}"\nPlayer's guess: "${query}"`,
