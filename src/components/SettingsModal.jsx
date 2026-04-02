@@ -107,7 +107,7 @@ export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose 
 
 // Representative swatches (always shown in their fixed colors, not theme-aware)
 const SWATCHES = {
-  gruvbox:   ['#FBF1C7', '#EBDBB2', '#3C3836'],
+  gruvbox:   ['#F2EAD5', '#E4D9C3', '#3C3836'],
   solarized: ['#FDF6E3', '#EEE8D5', '#586E75'],
   minimal:   ['#FFFFFF', '#F0F0F0', '#111111'],
   bailly:    ['#FEF2F5', '#FBDFE8', '#4A1F35'],
