@@ -7,22 +7,22 @@ const LEFT_FADE = 'linear-gradient(to right, transparent 0%, black 20%, black 10
 function MissTracker({ misses }) {
   const free = GAME_CONFIG.category.freeMisses
   const cost = GAME_CONFIG.category.missCost
+  const burningCoins = misses >= free
   return (
     <div className="flex items-center gap-1">
-      {Array.from({ length: free }).map((_, i) => (
-        <span
-          key={i}
-          className="inline-block w-1.5 h-1.5 rounded-full"
-          style={{
-            background: i < misses ? 'var(--color-text-faint)' : 'transparent',
-            border: '1px solid var(--color-text-faint)',
-            opacity: 0.6,
-          }}
-        />
-      ))}
-      {misses > free && (
-        <span className="text-xs ml-0.5" style={{ color: 'var(--color-text-faint)', opacity: 0.6 }}>
-          −{cost}/miss
+      {!burningCoins ? (
+        Array.from({ length: free }).map((_, i) => (
+          <span
+            key={i}
+            className="text-xs"
+            style={{ color: i < misses ? 'var(--color-text-faint)' : 'var(--color-text-strong)' }}
+          >
+            {i < misses ? '○' : '●'}
+          </span>
+        ))
+      ) : (
+        <span className="text-xs" style={{ color: 'var(--color-text-faint)' }}>
+          −{cost} coins/miss
         </span>
       )}
     </div>

@@ -20,7 +20,7 @@ export default async function handler(req, res) {
         `"yes" — guess names the right specific subject AND the right metric (synonyms and vague gestures are fine). hint: null\n` +
         `"warm" — guess is on the right track but not complete. Use the most fitting sub-case:\n` +
         `  • Right specific subject + wrong metric stated: acknowledge the subject is right, gently redirect the metric without revealing it.\n` +
-        `  • Right specific subject + no metric: nudge toward finding the ranking dimension.\n` +
+        `  • Right specific subject + no metric: nudge them to complete the guess — the format is "[subject] by [metric]". Don't reveal the metric, but make clear they need to add one. E.g. "try [subject] by something" or echo their guess with a "by ___?" trailing hint.\n` +
         `  • Too broad: the guess names a wide class that contains the specific subject — "universities" when the answer is a particular group of universities, "songs" when the answer is a specific artist's songs, etc. Key test: would this guess also fit dozens of other possible categories? If yes, it's too broad. Tell them to narrow down which [things] AND that there's a ranking dimension. Don't echo or paraphrase the category.\n` +
         `"cold" — wrong domain entirely. hint: brief, light, "not the right direction" energy.\n` +
         `Warm hints should sound like a friend — casual, never robotic, never reveal the answer.`,

@@ -20,7 +20,7 @@ function applyTheme(scheme, mode) {
 
 export function useAppearance() {
   const saved = loadSaved()
-  const [scheme, setSchemeState] = useState(saved.scheme ?? 'solarized')
+  const [scheme, setSchemeState] = useState(saved.scheme ?? 'minimal')
   const [mode, setModeState] = useState(saved.mode ?? 'system')
 
   useEffect(() => {
