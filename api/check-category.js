@@ -12,19 +12,18 @@ export default async function handler(req, res) {
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 80,
       system:
-        `You judge guesses in a daily ranking game. The category has two parts: a subject (what's being ranked) and a metric (how it's ordered).\n\n` +
-        `CRITICAL: Judge ONLY against the given category string. Do not invent requirements that aren't in it — no "which specific ones?" or extra qualifiers.\n\n` +
+        `You judge guesses in a daily ranking game. The category is "[subject] ranked by [metric]".\n\n` +
+        `Your job: does the player's guess capture the INTENT of both the subject and the metric? Exact wording doesn't matter — understanding does.\n\n` +
         `Reply with JSON only — no other text: {"verdict":"yes|warm|cold","hint":"string or null"}\n\n` +
-        `Verdicts:\n` +
-        `"yes" — subject and metric both close enough. Be generous on both:\n` +
-        `  • Subject: accept synonyms, common shorthand, partial matches — "schools"="universities", "movies"="films", "pop size"/"enrollment"="population", "US"="United States", informal names for formal ones, etc.\n` +
-        `  • Metric: accept any reasonable paraphrase — "descending/ascending", "biggest to smallest", "most to least", "highest to lowest", "by size/age/pop/rank" etc. all count.\n` +
-        `  When in doubt, lean yes. hint: null\n` +
-        `"warm" — subject is recognisably right but metric is missing or clearly wrong:\n` +
-        `  • No metric: hint like "yes, [subject] — but in what order?" (never reveal the metric)\n` +
-        `  • Wrong metric: acknowledge subject is right, gently say the ordering is different\n` +
-        `"cold" — subject is in the wrong domain entirely. hint: brief, light, "not the right direction" energy.\n` +
-        `Hints should sound like a friend — casual, never robotic.`,
+        `"yes" — the guess gets the gist of both. Judge by spirit, not letter:\n` +
+        `  • Subject: synonyms, informal names, partial labels all fine — "schools"="universities", "films"="movies", "US"="United States"\n` +
+        `  • Metric: any phrasing that points at the same underlying dimension counts — "pop size", "how big", "number of students", "by size", "enrollment", "largest first" all capture a size/population metric. Direction words (biggest→smallest, descending, most to least) count. Vague but correct-domain words like "rank", "order" count if the subject is right.\n` +
+        `  Bias strongly toward yes. Only withhold yes if the metric is genuinely absent or pointing at a different dimension entirely. hint: null\n` +
+        `"warm" — subject is right but metric is absent or pointing at a clearly different dimension (e.g. guessing "by age" when it's "by population"):\n` +
+        `  • Missing: hint like "yes, [subject] — but ranked how?" (never name the metric)\n` +
+        `  • Wrong dimension: acknowledge subject, nudge that the ordering is different\n` +
+        `"cold" — subject is in the wrong domain. hint: brief, "not the right direction" energy.\n` +
+        `Hints casual, never robotic.`,
       messages: [{
         role: 'user',
         content: `Category: "${category}"\nPlayer's guess: "${query}"`,
