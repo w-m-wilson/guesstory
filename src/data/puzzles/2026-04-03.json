@@ -1,0 +1,23 @@
+{
+  "id": "2026-04-03",
+  "category": "Languages by Number of Native Speakers",
+  "hint": "Think about which languages have the most people who grew up speaking them",
+  "seed": [
+    { "rank": 5, "name": "Hindi",   "aliases": [] },
+    { "rank": 8, "name": "Russian", "aliases": [] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "Chinese",    "aliases": ["Mandarin", "Mandarin Chinese"] },
+    { "rank": 2,  "name": "Spanish",    "aliases": [] },
+    { "rank": 3,  "name": "English",    "aliases": [] },
+    { "rank": 4,  "name": "Arabic",     "aliases": [] },
+    { "rank": 5,  "name": "Hindi",      "aliases": [] },
+    { "rank": 6,  "name": "Portuguese", "aliases": [] },
+    { "rank": 7,  "name": "Bengali",    "aliases": ["Bangla"] },
+    { "rank": 8,  "name": "Russian",    "aliases": [] },
+    { "rank": 9,  "name": "Japanese",   "aliases": [] },
+    { "rank": 10, "name": "Lahnda",     "aliases": ["Western Punjabi", "Punjabi"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://www.britannica.com/topic/languages-by-number-of-native-speakers-2228882"
+}

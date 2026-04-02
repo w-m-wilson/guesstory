@@ -115,7 +115,7 @@
   --color-text-faint:   #BA849A;
   --color-border:       #F5C8D8;
   --color-dot-correct:  #4A1F35;
-  --color-dot-present:  #7DB5A0;
+  --color-dot-present:  #BA849A;
   --color-dot-absent:   #F5C8D8;
 }
 
@@ -128,7 +128,7 @@
   --color-text-faint:   #7A4560;
   --color-border:       #3C1628;
   --color-dot-correct:  #F5D0DF;
-  --color-dot-present:  #7DB5A0;
+  --color-dot-present:  #7A4560;
   --color-dot-absent:   #3C1628;
 }
 
