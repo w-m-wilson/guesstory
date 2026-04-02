@@ -83,7 +83,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, ca
             <p className="text-xs font-medium mb-2" style={{ color: 'var(--color-text-faint)' }}>
               Ranking attempts
             </p>
-            <GuessHistory rankHistory={rankHistory} keyMap={keyMap} />
+            <GuessHistory rankHistory={rankHistory} />
           </div>
         )}
 

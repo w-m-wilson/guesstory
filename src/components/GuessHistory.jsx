@@ -2,19 +2,42 @@
  * GuessHistory — vertical list of past ranking submissions.
  *
  * Two-column layout per row:
- *   Left:  5 two-letter item keys in submission order
+ *   Left:  item names in submission order (full if they fit, truncated+faded if not)
  *   Right: Mastermind feedback dots
  *            ● = in top 5, correct position  ('correct')
  *            ○ = in top 5, wrong position    ('present')
  *            nothing = not in top 5          ('absent' / 'empty')
  *            — = shown when ALL slots give nothing
  */
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+
 export default function GuessHistory({ rankHistory, rankSlots, keyMap }) {
   const hasLiveSlot = rankSlots?.some(Boolean)
+  const containerRef = useRef(null)
+  const [compact, setCompact] = useState(false)
+
+  // After every render, check if the names in the first visible row overflow
+  // their container. If so, switch all rows to compact (truncated+faded) mode.
+  useLayoutEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+
+    const check = () => {
+      const probe = el.querySelector('[data-names-row]')
+      if (probe) setCompact(probe.scrollWidth > probe.clientWidth)
+    }
+
+    check()
+    const ro = new ResizeObserver(check)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [rankHistory, rankSlots])
+
   if (rankHistory.length === 0 && !hasLiveSlot) return null
 
   return (
     <div
+      ref={containerRef}
       className="shrink-0 px-4 py-2 relative"
       style={{ borderBottom: '1px solid var(--color-border)' }}
     >
@@ -38,12 +61,12 @@ export default function GuessHistory({ rankHistory, rankSlots, keyMap }) {
               key={attemptIndex}
               slots={slots}
               feedback={feedback}
-              keyMap={keyMap}
+              compact={compact}
               attemptNumber={attemptIndex + 1}
             />
           ))}
           {hasLiveSlot && (
-            <LiveRow slots={rankSlots} keyMap={keyMap} />
+            <LiveRow slots={rankSlots} compact={compact} />
           )}
         </div>
       </div>
@@ -51,7 +74,44 @@ export default function GuessHistory({ rankHistory, rankSlots, keyMap }) {
   )
 }
 
-function LiveRow({ slots, keyMap }) {
+function NameCell({ item, compact, faint }) {
+  const name = item?.name ?? '—'
+  const baseStyle = {
+    color: item
+      ? (faint ? 'var(--color-text-faint)' : 'var(--color-text)')
+      : 'var(--color-text-faint)',
+  }
+
+  if (compact) {
+    return (
+      <span
+        className="text-[11px] font-semibold shrink-0"
+        style={{
+          ...baseStyle,
+          display: 'inline-block',
+          maxWidth: '5ch',
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          WebkitMaskImage: 'linear-gradient(to right, black 40%, transparent 100%)',
+          maskImage: 'linear-gradient(to right, black 40%, transparent 100%)',
+        }}
+      >
+        {name}
+      </span>
+    )
+  }
+
+  return (
+    <span
+      className="text-[11px] font-semibold whitespace-nowrap"
+      style={baseStyle}
+    >
+      {name}
+    </span>
+  )
+}
+
+function LiveRow({ slots, compact }) {
   return (
     <div className="flex items-center gap-2" style={{ opacity: 0.4 }}>
       <span
@@ -60,25 +120,16 @@ function LiveRow({ slots, keyMap }) {
       >
         →
       </span>
-      <div className="flex items-center gap-1.5 flex-1 min-w-0">
-        {slots.map((item, i) => {
-          const key = item ? (keyMap[item.rank] ?? '??') : '—'
-          return (
-            <span
-              key={i}
-              className="text-[11px] font-semibold tabular-nums"
-              style={{ color: item ? 'var(--color-text)' : 'var(--color-text-faint)' }}
-            >
-              {key}
-            </span>
-          )
-        })}
+      <div className="flex items-center gap-1.5 flex-1 min-w-0 overflow-hidden" data-names-row>
+        {slots.map((item, i) => (
+          <NameCell key={i} item={item} compact={compact} />
+        ))}
       </div>
     </div>
   )
 }
 
-function AttemptRow({ slots, feedback, keyMap, attemptNumber }) {
+function AttemptRow({ slots, feedback, compact, attemptNumber }) {
   const hasAnyHit = feedback.some(f => f === 'correct' || f === 'present')
 
   return (
@@ -91,20 +142,11 @@ function AttemptRow({ slots, feedback, keyMap, attemptNumber }) {
         #{attemptNumber}
       </span>
 
-      {/* Left column: submitted keys in order */}
-      <div className="flex items-center gap-1.5 flex-1 min-w-0">
-        {slots.map((item, i) => {
-          const key = item ? (keyMap[item.rank] ?? '??') : '—'
-          return (
-            <span
-              key={i}
-              className="text-[11px] font-semibold tabular-nums"
-              style={{ color: 'var(--color-text)' }}
-            >
-              {key}
-            </span>
-          )
-        })}
+      {/* Left column: submitted names in order */}
+      <div className="flex items-center gap-1.5 flex-1 min-w-0 overflow-hidden" data-names-row>
+        {slots.map((item, i) => (
+          <NameCell key={i} item={item} compact={compact} />
+        ))}
       </div>
 
       {/* Right column: Mastermind feedback — ● always before ○, nothing for absent */}

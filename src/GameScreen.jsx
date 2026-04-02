@@ -64,7 +64,6 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings }) {
       <GuessHistory
         rankHistory={state.rankHistory}
         rankSlots={state.rankSlots}
-        keyMap={keyMap}
       />
 
       <RankBoard
