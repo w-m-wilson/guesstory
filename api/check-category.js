@@ -14,6 +14,7 @@ export default async function handler(req, res) {
       system:
         `You judge guesses in a daily ranking game. The category is "[subject] ranked by [metric]".\n\n` +
         `Your job: does the player's guess capture the INTENT of both the subject and the metric? Spirit matters, not wording.\n\n` +
+        `CRITICAL: Judge only against the given category string. Never invent requirements not in it — no "which specific ones?", no asking for more precision than the category itself has.\n\n` +
         `Reply with JSON only — no other text: {"verdict":"yes|warm|cold","hint":"string or null"}\n\n` +
         `"yes" — guess gets the gist of both. Bias strongly toward yes:\n` +
         `  • Subject: synonyms, informal names, partials all fine\n` +
