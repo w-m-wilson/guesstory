@@ -28,12 +28,19 @@ export default async function handler(req, res) {
 
     let matched = false, warm = false, cold = false, hint = null
     try {
-      const parsed = JSON.parse(message.content[0].text.trim())
+      const raw = message.content[0].text
+        .trim()
+        .replace(/^```(?:json)?\s*/i, '')
+        .replace(/\s*```$/, '')
+        .trim()
+      const parsed = JSON.parse(raw)
       matched = parsed.verdict === 'yes'
       warm    = parsed.verdict === 'warm'
       cold    = parsed.verdict === 'cold'
       hint    = parsed.hint ?? null
+      console.log('[check-category] verdict:', parsed.verdict, '| hint:', hint)
     } catch {
+      console.warn('[check-category] unparseable response:', message.content[0].text)
       cold = true
       hint = 'Not quite'
     }
