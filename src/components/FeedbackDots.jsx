@@ -40,34 +40,15 @@ function MastermindDot({ value }) {
     return (
       <span
         className="text-base leading-none"
-        style={{ color: 'var(--color-dot-present)' }}
+        style={{ color: 'var(--color-dot-correct)' }}
         aria-label="in top 5, wrong position"
-      >
-        ●
-      </span>
-    )
-  }
-  if (value === 'absent') {
-    return (
-      <span
-        className="text-base leading-none"
-        style={{ color: 'var(--color-dot-absent)' }}
-        aria-label="not in top 5"
       >
         ○
       </span>
     )
   }
-  // empty
-  return (
-    <span
-      className="text-base leading-none"
-      style={{ color: 'var(--color-dot-absent)', opacity: 0.3 }}
-      aria-label="empty slot"
-    >
-      ·
-    </span>
-  )
+  // absent or empty — render nothing
+  return null
 }
 
 function SpoilerFreeDot({ value }) {

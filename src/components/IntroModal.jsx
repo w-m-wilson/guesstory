@@ -21,12 +21,12 @@ const SECTIONS = [
     items: [
       'Tap a bank item to slot it into your ranking — tap it again to remove it',
       'Fill all 5 slots, then hit Submit',
-      'After each attempt you\'ll see a row of dots:',
+      'After each attempt, circles appear for items that belong in the top 5:',
     ],
     feedback: [
       { symbol: '●', color: 'var(--color-dot-correct)', label: 'Right item, right spot' },
-      { symbol: '●', color: 'var(--color-dot-present)', label: 'Right item, wrong spot' },
-      { symbol: '○', color: 'var(--color-dot-absent)',  label: "That item isn't in the top 5" },
+      { symbol: '○', color: 'var(--color-dot-correct)', label: 'Right item, wrong spot' },
+      { symbol: '—', color: 'var(--color-text-faint)',  label: "Not in the top 5 — no dot shown" },
     ],
   },
   {
