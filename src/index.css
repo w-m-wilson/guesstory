@@ -21,8 +21,8 @@
   --color-text-strong:  #3C3836;
   --color-text-faint:   #928374;
   --color-border:       #CEC4AC;
-  --color-dot-correct:  #79740E;
-  --color-dot-present:  #AF3A03;
+  --color-dot-correct:  #3C3836;
+  --color-dot-present:  #928374;
   --color-dot-absent:   #CEC4AC;
 }
 
@@ -61,8 +61,8 @@
     --color-text-strong:  #EBDBB2;
     --color-text-faint:   #928374;
     --color-border:       #504945;
-    --color-dot-correct:  #B8BB26;
-    --color-dot-present:  #FE8019;
+    --color-dot-correct:  #EBDBB2;
+    --color-dot-present:  #928374;
     --color-dot-absent:   #504945;
   }
 }
@@ -101,8 +101,8 @@
   --color-text-strong:  #EBDBB2;
   --color-text-faint:   #928374;
   --color-border:       #504945;
-  --color-dot-correct:  #B8BB26;
-  --color-dot-present:  #FE8019;
+  --color-dot-correct:  #EBDBB2;
+  --color-dot-present:  #928374;
   --color-dot-absent:   #504945;
 }
 
