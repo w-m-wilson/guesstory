@@ -1,0 +1,23 @@
+{
+  "id": "2026-04-04",
+  "category": "U.S. States by Number of Counties",
+  "hint": "Think about which states have the most subdivisions — bigger or older states tend to have more",
+  "seed": [
+    { "rank": 6, "name": "Kansas",    "aliases": [] },
+    { "rank": 9, "name": "Iowa",      "aliases": [] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "Texas",          "aliases": ["TX"] },
+    { "rank": 2,  "name": "Georgia",        "aliases": ["GA"] },
+    { "rank": 3,  "name": "Virginia",       "aliases": ["VA"] },
+    { "rank": 4,  "name": "Kentucky",       "aliases": ["KY"] },
+    { "rank": 5,  "name": "Missouri",       "aliases": ["MO"] },
+    { "rank": 6,  "name": "Kansas",         "aliases": ["KS"] },
+    { "rank": 7,  "name": "Illinois",       "aliases": ["IL"] },
+    { "rank": 8,  "name": "North Carolina", "aliases": ["NC"] },
+    { "rank": 9,  "name": "Iowa",           "aliases": ["IA"] },
+    { "rank": 10, "name": "Tennessee",      "aliases": ["TN"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://worldpopulationreview.com/state-rankings/county-count-by-state"
+}

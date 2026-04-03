@@ -35,19 +35,41 @@ const ERASE_MS  = 90
 const PAUSE_MS  = 500
 const CYCLE_MS = 60000
 
-export default function Header({ categoryText, categoryHint, categoryMisses, onGuessCategory, onOpenIntro, onOpenSettings }) {
+export default function Header({ categoryText, categoryAutoReveal, categoryHint, categoryMisses, onGuessCategory, onOpenIntro, onOpenSettings }) {
   const [guessing, setGuessing] = useState(false)
   const [query, setQuery] = useState('')
   const [lastHint, setLastHint] = useState(null)  // { text, warm } | null
   const [loading, setLoading] = useState(false)
   const [twText, setTwText] = useState('')
   const [twCursor, setTwCursor] = useState(true)
+  const [arText, setArText] = useState('')      // auto-reveal typewriter text
+  const [arCursor, setArCursor] = useState(true)
+  const [arDone, setArDone] = useState(false)
   const timerRef = useRef(null)
   const inputRef = useRef(null)
 
+  // Auto-reveal typewriter: type out the category name on mount (today-only mode)
+  useEffect(() => {
+    if (!categoryAutoReveal || categoryText) return
+
+    function typeFrom(idx) {
+      setArCursor(true)
+      setArText(categoryAutoReveal.slice(0, idx))
+      if (idx >= categoryAutoReveal.length) {
+        setArCursor(false)
+        setArDone(true)
+        return
+      }
+      timerRef.current = setTimeout(() => typeFrom(idx + 1), TYPE_MS)
+    }
+
+    timerRef.current = setTimeout(() => typeFrom(0), PAUSE_MS)
+    return () => clearTimeout(timerRef.current)
+  }, [categoryAutoReveal, categoryText])
+
   // Typewriter: spell out on mount, then erase+retype "category" every ~60s
   useEffect(() => {
-    if (categoryText) return
+    if (categoryText || categoryAutoReveal) return
 
     function typeFrom(idx, ms, onDone) {
       setTwCursor(true)
@@ -145,17 +167,27 @@ export default function Header({ categoryText, categoryHint, categoryMisses, onG
           ⚙
         </button>
 
-        {categoryText ? (
+        {categoryText || arDone ? (
           /* Revealed: show category, wrapping allowed for long names */
           <div
-            key={categoryText}
+            key={categoryText || categoryAutoReveal}
             className="flex-1 ml-4 fade-in"
           >
             <p
               className="text-xs text-right leading-snug"
               style={{ color: 'var(--color-text-faint)', textWrap: 'balance' }}
             >
-              {categoryText}
+              {categoryText || categoryAutoReveal}
+            </p>
+          </div>
+        ) : categoryAutoReveal ? (
+          /* Auto-reveal: typewriter animates the actual category text */
+          <div className="flex-1 ml-4">
+            <p
+              className="text-xs text-right leading-snug"
+              style={{ color: 'var(--color-text-faint)', fontFamily: "'Courier New', Courier, monospace" }}
+            >
+              {arText}{arCursor ? '|' : ''}
             </p>
           </div>
         ) : (
