@@ -26,7 +26,7 @@ function buildShareText(puzzleId, coins, rankHistory) {
   return lines.join('\n')
 }
 
-export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, categoryText, categorySource, hailMaryTaken, keyMap, onClose, onComplete }) {
+export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, categoryText, categorySource, hailMaryTaken, keyMap, onClose, onComplete, completeCTA }) {
   const won = gameStatus === 'won'
   const showHailMary = gameStatus === 'abandoned' && !hailMaryTaken
   const grade = getGrade(coins)
@@ -118,7 +118,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, ca
             className="w-full py-2.5 rounded-xl text-sm font-semibold"
             style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
           >
-            Play today's puzzle →
+            {completeCTA ?? 'Play today\'s puzzle →'}
           </button>
         ) : showHailMary ? (
           <button
