@@ -117,7 +117,6 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                           touchAction: 'none',
                         }}
                         aria-hidden="true"
-                        onPointerDown={(e) => e.stopPropagation()}
                       >⠿</span>
                     )}
                   </>
