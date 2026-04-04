@@ -143,12 +143,17 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                     </span>
                     {isDraggable && (
                       <span
-                        className="shrink-0 ml-2 text-sm select-none"
+                        className="shrink-0 select-none"
                         style={{
                           color: isDragging ? 'var(--color-text)' : 'var(--color-text-faint)',
                           cursor: isDragging ? 'grabbing' : 'grab',
-                          opacity: isDragging ? 0.8 : 0.4,
+                          opacity: isDragging ? 1 : 0.55,
                           transition: 'opacity 0.1s, color 0.1s',
+                          fontSize: '1.25rem',
+                          lineHeight: 1,
+                          padding: '4px 6px',
+                          margin: '-4px -4px -4px 2px',
+                          touchAction: 'none',
                         }}
                         aria-hidden="true"
                         onPointerDown={(e) => {
