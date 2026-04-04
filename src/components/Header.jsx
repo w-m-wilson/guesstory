@@ -175,7 +175,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
           >
             <p
               className="text-xs text-right leading-snug"
-              style={{ color: 'var(--color-text-faint)', textWrap: 'balance' }}
+              style={{ color: 'var(--color-text-faint)', textWrap: 'balance', fontFamily: "'Courier New', Courier, monospace" }}
             >
               {categoryText || categoryAutoReveal}
             </p>
