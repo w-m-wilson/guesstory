@@ -23,7 +23,7 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
             Now explore
           </h1>
           <p className="text-sm max-w-xs mb-6" style={{ color: 'var(--color-text)' }}>
-            10 items this time — only 5 belong in the ranking. Try these features as you play:
+            10 items this time. Only 5 belong in the ranking. Try these features as you play:
           </p>
           <ul
             className="text-left max-w-xs w-full mb-10 flex flex-col gap-2.5"
@@ -39,7 +39,7 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
             </li>
             <li className="flex gap-3 text-sm">
               <span style={{ color: 'var(--color-text-strong)', fontWeight: 700, flexShrink: 0 }}>→</span>
-              <span>Wrong guesses spend coins — watch your balance</span>
+              <span>Wrong guesses spend coins. Watch your balance.</span>
             </li>
           </ul>
           <button
@@ -70,10 +70,10 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
             <strong>Guess category</strong> (top right) for +15 bonus coins
           </p>
           <p className="text-xs" style={{ color: 'var(--color-bg)', opacity: 0.9 }}>
-            <strong>Hint shop</strong> — tap the hints button at the bottom right
+            <strong>Hint shop</strong>: tap the hints button at the bottom right
           </p>
           <p className="text-xs" style={{ color: 'var(--color-bg)', opacity: 0.9 }}>
-            Not all items are in the top 5 — so you might not even need to unlock them all!
+            Not all items are in the top 5, so you might not need to unlock them all!
           </p>
         </div>
       </div>
@@ -98,7 +98,7 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
           Welcome to Reckon
         </h1>
         <p className="text-base max-w-xs mb-10" style={{ color: 'var(--color-text)' }}>
-          There's a secret ranked list. Find what's on it — then put the top 5 in order.
+          There's a secret ranked list. Find what's on it and put the top 5 in order.
         </p>
         <button
           onClick={onBegin}
@@ -115,21 +115,21 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
 
   const STEPS = {
     1: {
-      label: 'Step 1 of 3 — Find the items',
+      label: 'Step 1 of 3: Find the items',
       instruction: "Type a name into the search box and hit Enter. If it's on the list, it appears in your bank.",
       progress: `Found ${discoveredCount} / ${NEEDED} needed`,
     },
     2: {
-      label: 'Step 2 of 3 — Build a ranking',
-      instruction: 'Tap a found item to fill a slot. Try a wrong order first — it\'s the best way to see how the feedback works.',
+      label: 'Step 2 of 3: Build a ranking',
+      instruction: "Tap a found item to fill a slot. Try a wrong order first. It's the best way to see how feedback works.",
       progress: null,
     },
     3: submitted ? {
-      label: 'Step 3 of 3 — Read your feedback',
+      label: 'Step 3 of 3: Read your feedback',
       instruction: '● = right item, right spot · ○ = right item, wrong spot · no dot = not in the top 5. Adjust and submit again.',
       progress: null,
     } : {
-      label: 'Step 3 of 3 — Submit your ranking',
+      label: 'Step 3 of 3: Submit your ranking',
       instruction: 'Fill all 5 slots, then hit Submit to see how close you are.',
       progress: null,
     },
