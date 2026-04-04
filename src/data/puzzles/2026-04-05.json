@@ -1,0 +1,23 @@
+{
+  "id": "2026-04-05",
+  "category": "Countries by Number of Popes",
+  "hint": "Think about which countries have contributed the most leaders to the Catholic Church throughout history",
+  "seed": [
+    { "rank": 3, "name": "Germany", "aliases": ["Deutschland"] },
+    { "rank": 8, "name": "Turkey",  "aliases": ["Türkiye", "Turkiye"] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "Italy",    "aliases": ["Italia"] },
+    { "rank": 2,  "name": "France",   "aliases": [] },
+    { "rank": 3,  "name": "Germany",  "aliases": ["Deutschland"] },
+    { "rank": 4,  "name": "Syria",    "aliases": ["Syrian Arab Republic"] },
+    { "rank": 5,  "name": "Greece",   "aliases": ["Hellas", "Hellenic Republic"] },
+    { "rank": 6,  "name": "Tunisia",  "aliases": [] },
+    { "rank": 7,  "name": "Israel",   "aliases": ["Palestine"] },
+    { "rank": 8,  "name": "Turkey",   "aliases": ["Türkiye", "Turkiye"] },
+    { "rank": 9,  "name": "Spain",    "aliases": ["España", "Espana"] },
+    { "rank": 10, "name": "Portugal", "aliases": [] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://worldpopulationreview.com/country-rankings/popes-by-country"
+}
