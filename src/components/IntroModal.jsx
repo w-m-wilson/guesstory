@@ -58,7 +58,7 @@ const SECTIONS = [
   },
 ]
 
-export default function IntroModal({ onClose }) {
+export default function IntroModal({ onClose, onReplayTutorial }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center px-4"
@@ -137,7 +137,10 @@ export default function IntroModal({ onClose }) {
         </div>
 
         {/* Footer CTA */}
-        <div className="px-5 pb-5 pt-3 shrink-0" style={{ borderTop: '1px solid var(--color-border)' }}>
+        <div
+          className="px-5 pb-5 pt-3 shrink-0 flex flex-col gap-2"
+          style={{ borderTop: '1px solid var(--color-border)' }}
+        >
           <button
             onClick={onClose}
             className="w-full py-2.5 rounded-xl text-sm font-semibold"
@@ -148,6 +151,18 @@ export default function IntroModal({ onClose }) {
           >
             Got it — let's play
           </button>
+          {onReplayTutorial && (
+            <button
+              onClick={() => { onClose(); onReplayTutorial() }}
+              className="w-full py-2 rounded-xl text-sm"
+              style={{
+                color: 'var(--color-text-faint)',
+                border: '1px solid var(--color-border)',
+              }}
+            >
+              Replay tutorial
+            </button>
+          )}
         </div>
       </div>
     </div>
