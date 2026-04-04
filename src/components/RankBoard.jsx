@@ -48,8 +48,6 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
       {/* Slots */}
       <div
         className="flex flex-col gap-1"
-        style={{ userSelect: 'none', WebkitUserSelect: 'none', WebkitTouchCallout: 'none' }}
-        onContextMenu={(e) => e.preventDefault()}
       >
         {rankSlots.map((item, index) => {
           const position = index + 1

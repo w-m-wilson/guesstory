@@ -6,6 +6,8 @@ import App from './App.jsx'
 
 inject()
 
+document.addEventListener('contextmenu', e => e.preventDefault())
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
