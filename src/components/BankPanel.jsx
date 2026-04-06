@@ -21,8 +21,10 @@ export default function BankPanel({
   const [feedback, setFeedback] = useState(null) // { type, message, ts }
   const [animatingCircleIdx, setAnimatingCircleIdx] = useState(null)
   const [penaltyKey, setPenaltyKey] = useState(0)
+  const [showLeftFade, setShowLeftFade] = useState(false)
   const feedbackTimer = useRef(null)
   const inputRef = useRef(null)
+  const bankScrollRef = useRef(null)
 
   function showFeedback(type, message) {
     clearTimeout(feedbackTimer.current)
@@ -31,6 +33,18 @@ export default function BankPanel({
   }
 
   useEffect(() => () => clearTimeout(feedbackTimer.current), [])
+
+  useEffect(() => {
+    function updateLeftFade() {
+      const node = bankScrollRef.current
+      if (!node) return
+      setShowLeftFade(node.scrollLeft > 0)
+    }
+
+    updateLeftFade()
+    window.addEventListener('resize', updateLeftFade)
+    return () => window.removeEventListener('resize', updateLeftFade)
+  }, [discoveredList.length])
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -205,37 +219,45 @@ export default function BankPanel({
             No items discovered yet.
           </p>
         ) : (
-          <div className="flex flex-wrap gap-2">
-            {discoveredList.map(item => {
-              const placed = placedRanks.has(item.rank)
-              return (
-                <button
-                  key={item.rank}
-                  onClick={() => {
-                    if (placed) onRemoveSlot(rankToSlotIndex[item.rank])
-                    else onPlaceItem(item)
-                  }}
-                  className="fade-in flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium"
-                  style={{
-                    background: placed ? 'var(--color-text-strong)' : 'var(--color-bg-elevated)',
-                    color: placed ? 'var(--color-bg)' : 'var(--color-text)',
-                    border: '1px solid var(--color-border)',
-                  }}
-                >
-                  {item.seeded && (
-                    <span
-                      className="text-xs"
-                      style={{ color: placed ? 'var(--color-bg)' : 'var(--color-text-faint)' }}
-                      title="Given at start"
+          <div className={`bank-scroll-wrap${showLeftFade ? ' bank-scroll-wrap--left-fade' : ''}`}>
+            <div
+              ref={bankScrollRef}
+              className="bank-scroll-area"
+              onScroll={e => setShowLeftFade(e.currentTarget.scrollLeft > 0)}
+            >
+              <div className="bank-scroll-grid">
+                {discoveredList.map(item => {
+                  const placed = placedRanks.has(item.rank)
+                  return (
+                    <button
+                      key={item.rank}
+                      onClick={() => {
+                        if (placed) onRemoveSlot(rankToSlotIndex[item.rank])
+                        else onPlaceItem(item)
+                      }}
+                      className="fade-in flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap"
+                      style={{
+                        background: placed ? 'var(--color-text-strong)' : 'var(--color-bg-elevated)',
+                        color: placed ? 'var(--color-bg)' : 'var(--color-text)',
+                        border: '1px solid var(--color-border)',
+                      }}
                     >
-                      ★
-                    </span>
-                  )}
-                  {item.name}
-                  {placed && <span className="text-xs opacity-70">✕</span>}
-                </button>
-              )
-            })}
+                      {item.seeded && (
+                        <span
+                          className="text-xs"
+                          style={{ color: placed ? 'var(--color-bg)' : 'var(--color-text-faint)' }}
+                          title="Given at start"
+                        >
+                          ★
+                        </span>
+                      )}
+                      {item.name}
+                      {placed && <span className="text-xs opacity-70">✕</span>}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
           </div>
         )}
       </div>

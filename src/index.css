@@ -248,6 +248,52 @@ body {
 }
 .bank-complete { animation: bankComplete 0.3s ease-out; }
 
+/* ── Horizontal two-row bank scroller ── */
+.bank-scroll-wrap {
+  position: relative;
+}
+
+.bank-scroll-wrap::before,
+.bank-scroll-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.bank-scroll-wrap::before {
+  left: 0;
+  background: linear-gradient(to right, var(--color-bg), transparent);
+  opacity: 0;
+  transition: opacity 0.15s ease-out;
+}
+
+.bank-scroll-wrap::after {
+  right: 0;
+  background: linear-gradient(to left, var(--color-bg), transparent);
+}
+
+.bank-scroll-wrap--left-fade::before {
+  opacity: 1;
+}
+
+.bank-scroll-area {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.bank-scroll-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, minmax(0, max-content));
+  gap: 0.5rem;
+  align-content: start;
+  width: max-content;
+}
+
 
 @keyframes coinPulse {
   0%   { transform: scale(1); }
