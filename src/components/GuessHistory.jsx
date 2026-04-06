@@ -31,7 +31,16 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
 
     const check = () => {
       const probe = el.querySelector('[data-names-row]')
-      if (probe && probe.scrollWidth > probe.clientWidth) {
+      if (!probe) return
+      const children = [...probe.children]
+      if (children.length === 0) return
+      // gap-1.5 = 0.375rem; compute in px from the element's own font size
+      const gapPx = parseFloat(getComputedStyle(probe).gap) || 6
+      const totalWidth = children.reduce(
+        (sum, c, i) => sum + c.getBoundingClientRect().width + (i > 0 ? gapPx : 0),
+        0
+      )
+      if (totalWidth > probe.getBoundingClientRect().width + 1) {
         compactRef.current = true
         setCompact(true)
       }
@@ -52,7 +61,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
     return () => el.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Auto-scroll to bottom when a new attempt is added
+  // Auto-scroll to bottom when a new attempt is added (newest row is just above live row)
   useEffect(() => {
     const el = scrollRef.current
     if (!el) return
@@ -84,7 +93,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
           className="flex-1 min-h-0 overflow-y-auto"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 justify-end min-h-full">
             <div className="h-1 shrink-0" aria-hidden="true" />
             {rankHistory.map(({ slots, feedback }, attemptIndex) => (
               <AttemptRow
