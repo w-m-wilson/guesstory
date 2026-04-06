@@ -1,0 +1,23 @@
+{
+  "id": "2026-04-06",
+  "category": "Fresh Fruits by Average Retail Price",
+  "hint": "Think about which fruits tend to cost more per pound at the grocery store",
+  "seed": [
+    { "rank": 4, "name": "Apricots", "aliases": [] },
+    { "rank": 5, "name": "Cherries", "aliases": [] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "Raspberries",  "aliases": [] },
+    { "rank": 2,  "name": "Blackberries", "aliases": [] },
+    { "rank": 3,  "name": "Blueberries",  "aliases": [] },
+    { "rank": 4,  "name": "Apricots",     "aliases": [] },
+    { "rank": 5,  "name": "Cherries",     "aliases": [] },
+    { "rank": 6,  "name": "Strawberries", "aliases": [] },
+    { "rank": 7,  "name": "Kiwi",         "aliases": ["Kiwifruit"] },
+    { "rank": 8,  "name": "Plum",         "aliases": ["Plums"] },
+    { "rank": 9,  "name": "Pomegranate",  "aliases": ["Pomegranates"] },
+    { "rank": 10, "name": "Nectarines",   "aliases": ["Nectarine"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://www.ers.usda.gov/data-products/fruit-and-vegetable-prices"
+}
