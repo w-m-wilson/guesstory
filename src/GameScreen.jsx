@@ -88,24 +88,25 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
         />
       )}
 
-      <BankPanel
-        discoveredList={discoveredList}
-        bankTotal={puzzle.bank.length}
-        rankSlots={state.rankSlots}
-        bankMisses={state.bankMisses}
-        pendingMatch={state.pendingMatch}
-        gameOver={gameOver}
-        onGuess={guessBankItem}
-        onConfirm={confirmPending}
-        onCancel={cancelPending}
-        onPlaceItem={placeItem}
-        onRemoveSlot={removeSlot}
-      />
-
-      <GuessHistory
-        rankHistory={state.rankHistory}
-        rankSlots={state.rankSlots}
-      />
+      <div style={{ position: 'relative', flex: 1, minHeight: 0 }}>
+        <GuessHistory
+          rankHistory={state.rankHistory}
+          rankSlots={state.rankSlots}
+        />
+        <BankPanel
+          discoveredList={discoveredList}
+          bankTotal={puzzle.bank.length}
+          rankSlots={state.rankSlots}
+          bankMisses={state.bankMisses}
+          pendingMatch={state.pendingMatch}
+          gameOver={gameOver}
+          onGuess={guessBankItem}
+          onConfirm={confirmPending}
+          onCancel={cancelPending}
+          onPlaceItem={placeItem}
+          onRemoveSlot={removeSlot}
+        />
+      </div>
 
       <RankBoard
         rankSlots={state.rankSlots}

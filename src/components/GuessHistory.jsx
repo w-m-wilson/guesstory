@@ -16,17 +16,25 @@ export default function GuessHistory({ rankHistory, rankSlots, keyMap }) {
   const containerRef = useRef(null)
   const scrollRef = useRef(null)
   const [compact, setCompact] = useState(false)
+  const compactRef = useRef(false)
   const [scrolledPast, setScrolledPast] = useState(false)
 
   // After every render, check if the names in the first visible row overflow
   // their container. If so, switch all rows to compact (truncated+faded) mode.
+  // One-way latch: once compact is needed, don't flip back — probing a compact
+  // row always shows it fitting, which would otherwise cause oscillation.
   useLayoutEffect(() => {
+    if (compactRef.current) return
+
     const el = containerRef.current
     if (!el) return
 
     const check = () => {
       const probe = el.querySelector('[data-names-row]')
-      if (probe) setCompact(probe.scrollWidth > probe.clientWidth)
+      if (probe && probe.scrollWidth > probe.clientWidth) {
+        compactRef.current = true
+        setCompact(true)
+      }
     }
 
     check()
@@ -56,8 +64,8 @@ export default function GuessHistory({ rankHistory, rankSlots, keyMap }) {
   return (
     <div
       ref={containerRef}
-      className="shrink-0 px-4 py-2 relative"
-      style={{ borderBottom: '1px solid var(--color-border)' }}
+      className="px-4 py-2 relative"
+      style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 0 }}
     >
       {/* Top fade — appears when content has scrolled past the top edge */}
       {scrolledPast && (
@@ -69,10 +77,18 @@ export default function GuessHistory({ rankHistory, rankSlots, keyMap }) {
           }}
         />
       )}
+      {/* Bottom fade — rows dissolve as they approach the rank board */}
+      <div
+        className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none"
+        style={{
+          height: '2.5rem',
+          background: 'linear-gradient(to top, var(--color-bg), transparent)',
+        }}
+      />
       <div
         ref={scrollRef}
         className="overflow-y-auto"
-        style={{ maxHeight: '9rem' }}
+        style={{ maxHeight: '9rem', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         <div className="flex flex-col gap-1">
           {rankHistory.map(({ slots, feedback }, attemptIndex) => (
@@ -104,15 +120,15 @@ function NameCell({ item, compact, faint }) {
   if (compact) {
     return (
       <span
-        className="text-[11px] font-semibold shrink-0"
+        className="text-[11px] font-semibold"
         style={{
           ...baseStyle,
-          display: 'inline-block',
-          maxWidth: '5ch',
+          flex: '1 1 0',
+          minWidth: 0,
           overflow: 'hidden',
           whiteSpace: 'nowrap',
-          WebkitMaskImage: 'linear-gradient(to right, black 40%, transparent 100%)',
-          maskImage: 'linear-gradient(to right, black 40%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to right, black 55%, transparent 95%)',
+          maskImage: 'linear-gradient(to right, black 55%, transparent 95%)',
         }}
       >
         {name}
@@ -122,7 +138,7 @@ function NameCell({ item, compact, faint }) {
 
   return (
     <span
-      className="text-[11px] font-semibold whitespace-nowrap"
+      className="text-[11px] font-semibold whitespace-nowrap shrink-0"
       style={baseStyle}
     >
       {name}

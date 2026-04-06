@@ -43,7 +43,11 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
   return (
     <div
       className="shrink-0 px-4 pt-3 pb-2"
-      style={{ borderTop: '1px solid var(--color-border)' }}
+      style={{
+        position: 'relative',
+        zIndex: 10,
+        background: 'var(--color-bg)',
+      }}
     >
       {/* Slots */}
       <div
@@ -94,8 +98,12 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                 {item ? (
                   <>
                     <span
-                      className="text-sm truncate flex-1"
-                      style={{ color: locked ? 'var(--color-text-strong)' : 'var(--color-text)' }}
+                      className="text-sm flex-1 min-w-0 overflow-hidden"
+                      style={{
+                        color: locked ? 'var(--color-text-strong)' : 'var(--color-text)',
+                        WebkitMaskImage: 'linear-gradient(to right, black calc(100% - 18px), transparent 100%)',
+                        maskImage: 'linear-gradient(to right, black calc(100% - 18px), transparent 100%)',
+                      }}
                     >
                       {item.name}
                       {locked && <span className="ml-1.5 text-xs opacity-50">★</span>}

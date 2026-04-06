@@ -79,7 +79,7 @@ export default function BankPanel({
   const bankFull = discoveredList.length >= bankTotal
 
   return (
-    <div className="flex flex-col min-h-0 flex-1">
+    <div className="flex flex-col" style={{ position: 'relative', zIndex: 10, background: 'var(--color-bg)' }}>
       {/* Guess input — hidden once bank is fully discovered */}
       {!bankFull && <div className="px-4 pt-3 pb-2 shrink-0" style={{ borderBottom: '1px solid var(--color-border)' }}>
         <form onSubmit={handleSubmit} className="flex gap-2">
@@ -199,7 +199,7 @@ export default function BankPanel({
       )}
 
       {/* Discovered items */}
-      <div className="flex-1 overflow-y-auto px-4 py-3">
+      <div className="overflow-y-auto px-4 py-3" style={{ maxHeight: '40vh' }}>
         {discoveredList.length === 0 ? (
           <p className="text-sm" style={{ color: 'var(--color-text-faint)' }}>
             No items discovered yet.

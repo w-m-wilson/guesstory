@@ -132,6 +132,15 @@
   --color-dot-absent:   #3C1628;
 }
 
+/* ── Hide scrollbars globally (scroll still works) ── */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+
 /* ── Base ── */
 html {
   overflow: hidden;
