@@ -70,7 +70,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
     <div className="flex flex-col h-full" style={{ background: 'var(--color-bg)' }}>
       <Header
         categoryText={state.categoryGuessed ? puzzle.category : null}
-        categoryAutoReveal={puzzle.id === '2026-04-04' && !state.categoryGuessed ? puzzle.category : null}
+        categoryAutoReveal={['2026-04-04', '2026-04-06'].includes(puzzle.id) && !state.categoryGuessed ? puzzle.category : null}
         categoryHint={puzzle.hint ?? null}
         categoryMisses={state.categoryMisses}
         onGuessCategory={guessCategory}
