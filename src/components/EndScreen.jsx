@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import GuessHistory from './GuessHistory.jsx'
 
 const GRADES = [
   { min: 100, label: 'Perfect' },
@@ -13,17 +12,73 @@ function getGrade(coins) {
   return GRADES.find(g => coins >= g.min)?.label ?? 'Keep practicing'
 }
 
+function feedbackDots({ feedback }) {
+  const sorted = [...feedback].sort(
+    (a, b) => ({ correct: 0, present: 1 }[a] ?? 2) - ({ correct: 0, present: 1 }[b] ?? 2)
+  )
+  const dots = sorted.map(v => v === 'correct' ? '●' : v === 'present' ? '○' : null).filter(Boolean).join('')
+  return dots || '—'
+}
+
 function buildShareText(puzzleId, coins, rankHistory) {
-  const lines = [`Reckon ${puzzleId}`, `Score: ${coins}/100`]
-  for (const { feedback } of rankHistory) {
-    const dots = [...feedback]
-      .sort((a, b) => ({ correct: 0, present: 1 }[a] ?? 2) - ({ correct: 0, present: 1 }[b] ?? 2))
-      .map(v => v === 'correct' ? '●' : v === 'present' ? '○' : null)
-      .filter(Boolean)
-      .join('')
-    lines.push(dots || '—')
-  }
+  const n = rankHistory.length
+  const header = `Reckon ${puzzleId}\n${coins}/100 · ${n} attempt${n !== 1 ? 's' : ''}`
+
+  const truncated = n > HEAD + TAIL
+  const visible = truncated
+    ? [...rankHistory.slice(0, HEAD), null, ...rankHistory.slice(-TAIL)]
+    : rankHistory
+
+  const lines = [header, ...visible.map(a => a === null ? '···' : feedbackDots(a))]
   return lines.join('\n')
+}
+
+function DotRow({ feedback }) {
+  const sorted = [...feedback].sort(
+    (a, b) => ({ correct: 0, present: 1 }[a] ?? 2) - ({ correct: 0, present: 1 }[b] ?? 2)
+  )
+  const hasAny = sorted.some(f => f === 'correct' || f === 'present')
+  return (
+    <div className="flex gap-0.5 items-center">
+      {hasAny ? sorted.map((f, i) =>
+        f === 'correct' ? (
+          <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-dot-correct)' }}>●</span>
+        ) : f === 'present' ? (
+          <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-dot-present)' }}>○</span>
+        ) : null
+      ) : (
+        <span className="text-xs" style={{ color: 'var(--color-text-faint)' }}>—</span>
+      )}
+    </div>
+  )
+}
+
+const HEAD = 1
+const TAIL = 2
+
+function AttemptsPreview({ rankHistory }) {
+  if (rankHistory.length === 0) return null
+  const truncated = rankHistory.length > HEAD + TAIL
+  const visible = truncated
+    ? [...rankHistory.slice(0, HEAD), null, ...rankHistory.slice(-TAIL)]
+    : rankHistory
+
+  return (
+    <div>
+      <p className="text-xs font-medium mb-2" style={{ color: 'var(--color-text-faint)' }}>
+        {rankHistory.length} attempt{rankHistory.length !== 1 ? 's' : ''}
+      </p>
+      <div className="flex flex-col gap-1">
+        {visible.map((attempt, i) =>
+          attempt === null ? (
+            <p key="gap" className="text-xs" style={{ color: 'var(--color-text-faint)' }}>· · ·</p>
+          ) : (
+            <DotRow key={i} feedback={attempt.feedback} />
+          )
+        )}
+      </div>
+    </div>
+  )
 }
 
 export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, categoryText, categorySource, hailMaryTaken, keyMap, onClose, onComplete, completeCTA }) {
@@ -92,25 +147,18 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, ca
           )}
         </div>
 
-        {/* Score */}
-        <div className="text-center">
-          <p className="text-5xl font-black tabular-nums" style={{ color: 'var(--color-text-strong)' }}>
-            {coins}
-          </p>
-          <p className="text-sm mt-1" style={{ color: 'var(--color-text-faint)' }}>
-            coins remaining · {grade}
-          </p>
-        </div>
-
-        {/* Attempt history reusing GuessHistory (spoiler-free, key-based) */}
-        {rankHistory.length > 0 && (
+        {/* Score + attempts side by side */}
+        <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-medium mb-2" style={{ color: 'var(--color-text-faint)' }}>
-              Ranking attempts
+            <p className="text-5xl font-black tabular-nums" style={{ color: 'var(--color-text-strong)' }}>
+              {coins}
             </p>
-            <GuessHistory rankHistory={rankHistory} />
+            <p className="text-sm mt-1" style={{ color: 'var(--color-text-faint)' }}>
+              coins remaining · {grade}
+            </p>
           </div>
-        )}
+          <AttemptsPreview rankHistory={rankHistory} />
+        </div>
 
         {onComplete ? (
           <button
