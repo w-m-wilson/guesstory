@@ -11,7 +11,7 @@
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
-export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow }) {
+export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow, topInset = 0 }) {
   const hasLiveSlot = rankSlots?.some(Boolean)
   const containerRef = useRef(null)
   const scrollRef = useRef(null)
@@ -64,48 +64,53 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow 
   return (
     <div
       ref={containerRef}
-      className="px-4 py-2 relative"
-      style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 0 }}
+      className="px-4 pt-1 pb-0 flex flex-col min-h-0"
+      style={{ position: 'absolute', top: topInset, bottom: 0, left: 0, right: 0, zIndex: 0 }}
     >
-      {/* Top fade — appears when content has scrolled past the top edge */}
-      {scrolledPast && (
+      {/* History list — flex-1 so it uses all space above the pinned live row */}
+      <div className="flex-1 min-h-0 flex flex-col relative">
+        {/* Top fade — appears when content has scrolled past the top edge */}
+        {scrolledPast && (
+          <div
+            className="absolute top-0 left-0 right-0 z-10 pointer-events-none"
+            style={{
+              height: '2rem',
+              background: 'linear-gradient(to bottom, var(--color-bg), transparent)',
+            }}
+          />
+        )}
         <div
-          className="absolute top-0 left-0 right-0 z-10 pointer-events-none"
-          style={{
-            height: '2rem',
-            background: 'linear-gradient(to bottom, var(--color-bg), transparent)',
-          }}
-        />
-      )}
-      {/* Bottom fade — rows dissolve as they approach the rank board */}
-      <div
-        className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none"
-        style={{
-          height: '2.5rem',
-          background: 'linear-gradient(to top, var(--color-bg), transparent)',
-        }}
-      />
-      <div
-        ref={scrollRef}
-        className="overflow-y-auto"
-        style={{ maxHeight: '9rem', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
-        <div className="flex flex-col gap-1">
-          {rankHistory.map(({ slots, feedback }, attemptIndex) => (
-            <AttemptRow
-              key={attemptIndex}
-              slots={slots}
-              feedback={feedback}
-              compact={compact}
-              attemptNumber={attemptIndex + 1}
-              onPick={() => onPickHistoryRow?.(slots)}
-            />
-          ))}
-          {hasLiveSlot && (
-            <LiveRow slots={rankSlots} compact={compact} />
-          )}
+          ref={scrollRef}
+          className="flex-1 min-h-0 overflow-y-auto"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          <div className="flex flex-col gap-1">
+            <div className="h-1 shrink-0" aria-hidden="true" />
+            {rankHistory.map(({ slots, feedback }, attemptIndex) => (
+              <AttemptRow
+                key={attemptIndex}
+                slots={slots}
+                feedback={feedback}
+                compact={compact}
+                attemptNumber={attemptIndex + 1}
+                onPick={() => onPickHistoryRow?.(slots)}
+              />
+            ))}
+            <div className="h-2 shrink-0" aria-hidden="true" />
+          </div>
         </div>
       </div>
+      {hasLiveSlot && (
+        <div
+          className="shrink-0 z-20 border-t"
+          style={{
+            background: 'var(--color-bg)',
+            borderColor: 'var(--color-border)',
+          }}
+        >
+          <LiveRow slots={rankSlots} compact={compact} />
+        </div>
+      )}
     </div>
   )
 }
@@ -173,7 +178,7 @@ function AttemptRow({ slots, feedback, compact, attemptNumber, onPick }) {
   return (
     <button
       type="button"
-      className="flex items-center gap-2 fade-in w-full text-left cursor-pointer rounded-md"
+      className="flex items-center gap-2 fade-in w-full text-left cursor-pointer rounded-md appearance-none p-0 border-0 bg-transparent"
       onClick={onPick}
     >
       {/* Attempt number */}

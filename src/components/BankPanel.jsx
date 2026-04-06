@@ -213,7 +213,7 @@ export default function BankPanel({
       )}
 
       {/* Discovered items */}
-      <div className="overflow-y-auto px-4 py-3" style={{ maxHeight: '40vh' }}>
+      <div className="overflow-y-auto px-4 pt-3 pb-2" style={{ maxHeight: '40vh' }}>
         {discoveredList.length === 0 ? (
           <p className="text-sm" style={{ color: 'var(--color-text-faint)' }}>
             No items discovered yet.

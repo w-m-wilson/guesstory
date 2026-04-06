@@ -42,7 +42,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
 
   return (
     <div
-      className="shrink-0 px-4 pt-3 pb-2"
+      className="shrink-0 px-4 pt-2 pb-2"
       style={{
         position: 'relative',
         zIndex: 10,

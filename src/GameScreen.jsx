@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useLayoutEffect, useRef } from 'react'
 import { useGameState } from './hooks/useGameState.js'
 import { buildItemKeys } from './utils/itemKeys.js'
 import Header from './components/Header.jsx'
@@ -13,6 +13,8 @@ import TutorialBanner from './components/TutorialBanner.jsx'
 export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComplete, isTutorial, tutorialMode = 'learn' }) {
   const [hintsOpen, setHintsOpen] = useState(false)
   const [endScreenDismissed, setEndScreenDismissed] = useState(false)
+  const [bankPanelHeight, setBankPanelHeight] = useState(0)
+  const bankPanelRef = useRef(null)
 
   // Build key map once per puzzle (rank → 2-letter key)
   const keyMap = useMemo(() => buildItemKeys(puzzle.bank), [puzzle])
@@ -59,6 +61,18 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
     if (hailMaryTaken) setEndScreenDismissed(false)
   }, [hailMaryTaken])
 
+  useLayoutEffect(() => {
+    const node = bankPanelRef.current
+    if (!node) return
+
+    const update = () => setBankPanelHeight(node.offsetHeight)
+    update()
+
+    const ro = new ResizeObserver(update)
+    ro.observe(node)
+    return () => ro.disconnect()
+  }, [])
+
   if (!game) return null
 
   const { state, guessBankItem, confirmPending, cancelPending,
@@ -93,20 +107,23 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
           rankHistory={state.rankHistory}
           rankSlots={state.rankSlots}
           onPickHistoryRow={loadRankingSlots}
+          topInset={bankPanelHeight}
         />
-        <BankPanel
-          discoveredList={discoveredList}
-          bankTotal={puzzle.bank.length}
-          rankSlots={state.rankSlots}
-          bankMisses={state.bankMisses}
-          pendingMatch={state.pendingMatch}
-          gameOver={gameOver}
-          onGuess={guessBankItem}
-          onConfirm={confirmPending}
-          onCancel={cancelPending}
-          onPlaceItem={placeItem}
-          onRemoveSlot={removeSlot}
-        />
+        <div ref={bankPanelRef} style={{ position: 'relative', zIndex: 10 }}>
+          <BankPanel
+            discoveredList={discoveredList}
+            bankTotal={puzzle.bank.length}
+            rankSlots={state.rankSlots}
+            bankMisses={state.bankMisses}
+            pendingMatch={state.pendingMatch}
+            gameOver={gameOver}
+            onGuess={guessBankItem}
+            onConfirm={confirmPending}
+            onCancel={cancelPending}
+            onPlaceItem={placeItem}
+            onRemoveSlot={removeSlot}
+          />
+        </div>
       </div>
 
       <RankBoard
