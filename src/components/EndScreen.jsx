@@ -113,10 +113,18 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, ca
       onClick={onClose}
     >
       <div
-        className="w-full max-w-sm rounded-2xl p-6 flex flex-col gap-5"
+        className="w-full max-w-sm rounded-2xl p-6 flex flex-col gap-5 relative"
         style={{ background: 'var(--color-bg)' }}
         onClick={e => e.stopPropagation()}
       >
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-lg leading-none"
+          style={{ color: 'var(--color-text-faint)', opacity: 0.4 }}
+          aria-label="Close"
+        >
+          ✕
+        </button>
         {/* Headline */}
         <div className="text-center">
           <p className="text-2xl mb-1">{won ? '🎉' : '🏁'}</p>
