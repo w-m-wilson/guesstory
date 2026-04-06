@@ -34,13 +34,10 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
       if (!probe) return
       const children = [...probe.children]
       if (children.length === 0) return
-      // gap-1.5 = 0.375rem; compute in px from the element's own font size
-      const gapPx = parseFloat(getComputedStyle(probe).gap) || 6
-      const totalWidth = children.reduce(
-        (sum, c, i) => sum + c.getBoundingClientRect().width + (i > 0 ? gapPx : 0),
-        0
-      )
-      if (totalWidth > probe.getBoundingClientRect().width + 1) {
+      // Each cell is a grid column (1fr). If any cell's text overflows its column,
+      // scrollWidth will exceed clientWidth.
+      const anyOverflow = children.some(c => c.scrollWidth > c.clientWidth + 1)
+      if (anyOverflow) {
         compactRef.current = true
         setCompact(true)
       }
@@ -130,34 +127,38 @@ function NameCell({ item, compact, faint }) {
     color: item
       ? (faint ? 'var(--color-text-faint)' : 'var(--color-text)')
       : 'var(--color-text-faint)',
-  }
-
-  if (compact) {
-    return (
-      <span
-        className="text-[11px] font-semibold"
-        style={{
-          ...baseStyle,
-          flex: '1 1 0',
-          minWidth: 0,
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
-          WebkitMaskImage: 'linear-gradient(to right, black 55%, transparent 95%)',
-          maskImage: 'linear-gradient(to right, black 55%, transparent 95%)',
-        }}
-      >
-        {name}
-      </span>
-    )
+    minWidth: 0,
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    ...(compact && {
+      WebkitMaskImage: 'linear-gradient(to right, black 55%, transparent 95%)',
+      maskImage: 'linear-gradient(to right, black 55%, transparent 95%)',
+    }),
   }
 
   return (
-    <span
-      className="text-[11px] font-semibold whitespace-nowrap shrink-0"
-      style={baseStyle}
-    >
+    <span className="text-[11px] font-semibold" style={baseStyle}>
       {name}
     </span>
+  )
+}
+
+function NamesGrid({ slots, compact }) {
+  return (
+    <div
+      className="flex-1 min-w-0 overflow-hidden"
+      data-names-row
+      style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${slots.length}, 1fr)`,
+        gap: '0 0.375rem',
+        alignItems: 'center',
+      }}
+    >
+      {slots.map((item, i) => (
+        <NameCell key={i} item={item} compact={compact} />
+      ))}
+    </div>
   )
 }
 
@@ -170,11 +171,7 @@ function LiveRow({ slots, compact }) {
       >
         →
       </span>
-      <div className="flex items-center gap-1.5 flex-1 min-w-0 overflow-hidden" data-names-row>
-        {slots.map((item, i) => (
-          <NameCell key={i} item={item} compact={compact} />
-        ))}
-      </div>
+      <NamesGrid slots={slots} compact={compact} />
       {/* Keep live-row width aligned with historical rows' feedback column */}
       <div className="shrink-0" style={{ minWidth: '3.5rem' }} aria-hidden="true" />
     </div>
@@ -199,11 +196,7 @@ function AttemptRow({ slots, feedback, compact, attemptNumber, onPick }) {
       </span>
 
       {/* Left column: submitted names in order */}
-      <div className="flex items-center gap-1.5 flex-1 min-w-0 overflow-hidden" data-names-row>
-        {slots.map((item, i) => (
-          <NameCell key={i} item={item} compact={compact} />
-        ))}
-      </div>
+      <NamesGrid slots={slots} compact={compact} />
 
       {/* Right column: Mastermind feedback — ● always before ○, nothing for absent */}
       <div className="flex items-center gap-0.5 shrink-0 justify-end" style={{ minWidth: '3.5rem' }}>

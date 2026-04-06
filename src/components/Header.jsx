@@ -175,7 +175,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
           >
             <p
               className="text-xs text-right leading-snug"
-              style={{ color: 'var(--color-text-faint)', textWrap: 'balance', fontFamily: "'Courier New', Courier, monospace" }}
+              style={{ color: 'var(--color-text-faint)', textWrap: 'balance', fontFamily: "'Courier New', Courier, monospace", fontWeight: 700 }}
             >
               {categoryText || categoryAutoReveal}
             </p>
@@ -185,7 +185,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
           <div className="flex-1 ml-4">
             <p
               className="text-xs text-right leading-snug"
-              style={{ color: 'var(--color-text-faint)', fontFamily: "'Courier New', Courier, monospace" }}
+              style={{ color: 'var(--color-text-faint)', fontFamily: "'Courier New', Courier, monospace", fontWeight: 700 }}
             >
               {arText}{arCursor ? '|' : ''}
             </p>
@@ -198,7 +198,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                 onClick={() => setGuessing(true)}
                 className="text-xs px-2 py-1 rounded-lg"
               >
-                <span style={{ color: 'var(--color-text)', fontFamily: "'Courier New', Courier, monospace" }}>
+                <span style={{ color: 'var(--color-text)', fontFamily: "'Courier New', Courier, monospace", fontWeight: 700 }}>
                   {twText}{twCursor ? '|' : ''}</span>
               </button>
             )}
