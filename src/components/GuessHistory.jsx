@@ -160,6 +160,8 @@ function LiveRow({ slots, compact }) {
           <NameCell key={i} item={item} compact={compact} />
         ))}
       </div>
+      {/* Keep live-row width aligned with historical rows' feedback column */}
+      <div className="shrink-0" style={{ minWidth: '3.5rem' }} aria-hidden="true" />
     </div>
   )
 }
