@@ -11,7 +11,7 @@
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
-export default function GuessHistory({ rankHistory, rankSlots, keyMap }) {
+export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow }) {
   const hasLiveSlot = rankSlots?.some(Boolean)
   const containerRef = useRef(null)
   const scrollRef = useRef(null)
@@ -98,6 +98,7 @@ export default function GuessHistory({ rankHistory, rankSlots, keyMap }) {
               feedback={feedback}
               compact={compact}
               attemptNumber={attemptIndex + 1}
+              onPick={() => onPickHistoryRow?.(slots)}
             />
           ))}
           {hasLiveSlot && (
@@ -166,11 +167,15 @@ function LiveRow({ slots, compact }) {
   )
 }
 
-function AttemptRow({ slots, feedback, compact, attemptNumber }) {
+function AttemptRow({ slots, feedback, compact, attemptNumber, onPick }) {
   const hasAnyHit = feedback.some(f => f === 'correct' || f === 'present')
 
   return (
-    <div className="flex items-center gap-2 fade-in">
+    <button
+      type="button"
+      className="flex items-center gap-2 fade-in w-full text-left cursor-pointer rounded-md"
+      onClick={onPick}
+    >
       {/* Attempt number */}
       <span
         className="text-[10px] font-medium w-5 shrink-0 tabular-nums"
@@ -215,6 +220,6 @@ function AttemptRow({ slots, feedback, compact, attemptNumber }) {
             })
         )}
       </div>
-    </div>
+    </button>
   )
 }

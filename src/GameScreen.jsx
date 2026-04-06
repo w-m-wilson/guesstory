@@ -62,7 +62,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
   if (!game) return null
 
   const { state, guessBankItem, confirmPending, cancelPending,
-          placeItem, removeSlot, moveSlot, submitRanking, purchaseHint, resetGame, guessCategory } = game
+          placeItem, removeSlot, moveSlot, loadRankingSlots, submitRanking, purchaseHint, resetGame, guessCategory } = game
 
   const gameOver = gameStatus === 'won' || gameStatus === 'abandoned'
 
@@ -92,6 +92,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
         <GuessHistory
           rankHistory={state.rankHistory}
           rankSlots={state.rankSlots}
+          onPickHistoryRow={loadRankingSlots}
         />
         <BankPanel
           discoveredList={discoveredList}

@@ -116,6 +116,16 @@ function reducer(state, action) {
       return { ...state, rankSlots: newSlots };
     }
 
+    case 'LOAD_RANKING_SLOTS': {
+      const incomingSlots = Array.isArray(action.slots) ? action.slots : [];
+      const newSlots = state.rankSlots.map((currentItem, index) => {
+        // Never overwrite locked hint slots.
+        if (state.lockedSlots.includes(index)) return currentItem;
+        return incomingSlots[index] ?? null;
+      });
+      return { ...state, rankSlots: newSlots };
+    }
+
     case 'SUBMIT_RANKING': {
       const { feedback } = action;
 
@@ -225,6 +235,7 @@ function reducer(state, action) {
  *   cancelPending()       → void
  *   placeItem(item)       → void
  *   removeSlot(index)     → void
+ *   loadRankingSlots(...) → void
  *   submitRanking()       → { feedback, won }
  *   guessCategory(query)  → { outcome: 'hit'|'miss', cost? }
  *   purchaseHint(type)    → { item? }
@@ -313,6 +324,10 @@ export function useGameState(puzzle) {
 
   const moveSlot = useCallback((fromIndex, toIndex) => {
     dispatch({ type: 'MOVE_SLOT', fromIndex, toIndex });
+  }, []);
+
+  const loadRankingSlots = useCallback((slots) => {
+    dispatch({ type: 'LOAD_RANKING_SLOTS', slots });
   }, []);
 
   const submitRanking = useCallback(() => {
@@ -430,6 +445,7 @@ export function useGameState(puzzle) {
     placeItem,
     removeSlot,
     moveSlot,
+    loadRankingSlots,
     submitRanking,
     guessCategory,
     purchaseHint,
