@@ -20,12 +20,10 @@ function DifficultySelector({ current, onSelect, onDismiss }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"
-      style={{ background: 'rgba(0,0,0,0.4)' }}
-      onClick={onDismiss}
+      style={{ background: 'var(--color-bg)' }}
     >
       <div
-        className="w-full max-w-[430px] rounded-t-2xl p-5 pb-8 flex flex-col gap-3"
-        style={{ background: 'var(--color-bg)' }}
+        className="w-full max-w-[430px] h-full flex flex-col justify-end p-5 pb-8 gap-3"
         onClick={e => e.stopPropagation()}
       >
         <div>
