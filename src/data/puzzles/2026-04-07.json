@@ -15,7 +15,7 @@
     { "rank": 6,  "name": "Avengers",                  "aliases": ["Avengers franchise"] },
     { "rank": 7,  "name": "X-Men",                     "aliases": ["X-Men franchise"] },
     { "rank": 8,  "name": "Fast & Furious",            "aliases": ["Fast and Furious", "Fast Furious"] },
-    { "rank": 9,  "name": "DC Extended Universe",      "aliases": ["DCEU", "DC Extended Universe franchise"] },
+    { "rank": 9,  "name": "DC Extended Universe",      "aliases": ["DCEU", "DC Extended Universe franchise", "DC", "DC Universe", "DCU"] },
     { "rank": 10, "name": "Batman",                    "aliases": ["Batman franchise"] }
   ],
   "topFive": [1, 2, 3, 4, 5],

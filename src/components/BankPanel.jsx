@@ -231,36 +231,42 @@ export default function BankPanel({
               onScroll={e => setShowLeftFade(e.currentTarget.scrollLeft > 0)}
             >
               <div className="bank-scroll-grid">
-                {discoveredList.map(item => {
-                  const placed = placedRanks.has(item.rank)
-                  return (
-                    <button
-                      key={item.rank}
-                      onClick={() => {
-                        if (placed) onRemoveSlot(rankToSlotIndex[item.rank])
-                        else onPlaceItem(item)
-                      }}
-                      className="fade-in flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap"
-                      style={{
-                        background: placed ? 'var(--color-text-strong)' : 'var(--color-bg-elevated)',
-                        color: placed ? 'var(--color-bg)' : 'var(--color-text)',
-                        border: '1px solid var(--color-border)',
-                      }}
-                    >
-                      {item.seeded && (
-                        <span
-                          className="text-xs"
-                          style={{ color: placed ? 'var(--color-bg)' : 'var(--color-text-faint)' }}
-                          title="Given at start"
-                        >
-                          ★
-                        </span>
-                      )}
-                      {item.name}
-                      {placed && <span className="text-xs opacity-70">✕</span>}
-                    </button>
+                {[discoveredList.filter((_, i) => i % 2 === 0), discoveredList.filter((_, i) => i % 2 === 1)].map((row, rowIdx) =>
+                  row.length === 0 ? null : (
+                    <div key={rowIdx} className="flex gap-2">
+                      {row.map(item => {
+                        const placed = placedRanks.has(item.rank)
+                        return (
+                          <button
+                            key={item.rank}
+                            onClick={() => {
+                              if (placed) onRemoveSlot(rankToSlotIndex[item.rank])
+                              else onPlaceItem(item)
+                            }}
+                            className="fade-in flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap"
+                            style={{
+                              background: placed ? 'var(--color-text-strong)' : 'var(--color-bg-elevated)',
+                              color: placed ? 'var(--color-bg)' : 'var(--color-text)',
+                              border: '1px solid var(--color-border)',
+                            }}
+                          >
+                            {item.seeded && (
+                              <span
+                                className="text-xs"
+                                style={{ color: placed ? 'var(--color-bg)' : 'var(--color-text-faint)' }}
+                                title="Given at start"
+                              >
+                                ★
+                              </span>
+                            )}
+                            {item.name}
+                            {placed && <span className="text-xs opacity-70">✕</span>}
+                          </button>
+                        )
+                      })}
+                    </div>
                   )
-                })}
+                )}
               </div>
             </div>
           </div>
