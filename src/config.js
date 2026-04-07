@@ -17,10 +17,10 @@ export const GAME_CONFIG = {
   },
 
   hints: {
-    revealCategory: 40,
-    revealBankItem: 15,
-    revealRankPositionKnown: 30,    // item already in your bank
-    revealRankPositionUnknown: 60,  // item not yet discovered
+    revealBankItem: 5,
+    revealRankPositionKnown: 10,    // item already in your bank
+    revealCategory: 15,
+    revealRankPositionUnknown: 30,  // item not yet discovered
   },
 
   matcher: {

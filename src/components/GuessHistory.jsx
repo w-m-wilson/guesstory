@@ -180,7 +180,6 @@ function LiveRow({ slots, compact }) {
 }
 
 function AttemptRow({ slots, feedback, compact, attemptNumber, isLatest, onPick }) {
-  const hasAnyHit = feedback.some(f => f === 'correct' || f === 'present')
 
   return (
     <button
@@ -199,34 +198,29 @@ function AttemptRow({ slots, feedback, compact, attemptNumber, isLatest, onPick 
       {/* Left column: submitted names in order */}
       <NamesGrid slots={slots} compact={compact} />
 
-      {/* Right column: Mastermind feedback — ● always before ○, nothing for absent */}
+      {/* Right column: Mastermind feedback — ● correct, ○ present, — absent; ●s then ○s then —s */}
       <div className="flex items-center gap-0.5 shrink-0 justify-end" style={{ minWidth: '3.5rem' }}>
-        {!hasAnyHit ? (
-          <span className="text-xs" style={{ color: 'var(--color-text-faint)' }}>—</span>
-        ) : (
-          [...feedback]
-            .sort((a, b) => {
-              const order = { correct: 0, present: 1 }
-              return (order[a] ?? 2) - (order[b] ?? 2)
-            })
-            .map((f, i) => {
-              if (f === 'correct') {
-                return (
-                  <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-dot-correct)' }}>
-                    ●
-                  </span>
-                )
-              }
-              if (f === 'present') {
-                return (
-                  <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-dot-present)' }}>
-                    ○
-                  </span>
-                )
-              }
-              return null
-            })
-        )}
+        {[...feedback]
+          .sort((a, b) => {
+            const order = { correct: 0, present: 1 }
+            return (order[a] ?? 2) - (order[b] ?? 2)
+          })
+          .map((f, i) => {
+            if (f === 'correct') {
+              return (
+                <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-dot-correct)' }}>●</span>
+              )
+            }
+            if (f === 'present') {
+              return (
+                <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-dot-present)' }}>○</span>
+              )
+            }
+            return (
+              <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-text-faint)', opacity: 0.4 }}>—</span>
+            )
+          })
+        }
       </div>
     </button>
   )

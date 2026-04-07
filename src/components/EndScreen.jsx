@@ -16,8 +16,7 @@ function feedbackDots({ feedback }) {
   const sorted = [...feedback].sort(
     (a, b) => ({ correct: 0, present: 1 }[a] ?? 2) - ({ correct: 0, present: 1 }[b] ?? 2)
   )
-  const dots = sorted.map(v => v === 'correct' ? '●' : v === 'present' ? '○' : null).filter(Boolean).join('')
-  return dots || '—'
+  return sorted.map(v => v === 'correct' ? '●' : v === 'present' ? '○' : '—').join('')
 }
 
 function buildShareText(puzzleId, coins, rankHistory) {
@@ -37,17 +36,16 @@ function DotRow({ feedback }) {
   const sorted = [...feedback].sort(
     (a, b) => ({ correct: 0, present: 1 }[a] ?? 2) - ({ correct: 0, present: 1 }[b] ?? 2)
   )
-  const hasAny = sorted.some(f => f === 'correct' || f === 'present')
   return (
     <div className="flex gap-0.5 items-center">
-      {hasAny ? sorted.map((f, i) =>
+      {sorted.map((f, i) =>
         f === 'correct' ? (
           <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-dot-correct)' }}>●</span>
         ) : f === 'present' ? (
           <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-dot-present)' }}>○</span>
-        ) : null
-      ) : (
-        <span className="text-xs" style={{ color: 'var(--color-text-faint)' }}>—</span>
+        ) : (
+          <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-text-faint)', opacity: 0.4 }}>—</span>
+        )
       )}
     </div>
   )

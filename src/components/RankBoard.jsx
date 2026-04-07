@@ -61,20 +61,21 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
         borderTop: '1px solid var(--color-border)',
       }}
     >
-      <div className="flex items-baseline justify-between mb-2">
-        <p className="text-[9px] font-black tracking-widest uppercase" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
+      <div className="flex items-start justify-between mb-2 gap-3">
+        <p className="text-[9px] font-black tracking-widest uppercase shrink-0 pt-px" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
           Rank
         </p>
-        <span className="text-[9px] font-mono" style={{ color: 'var(--color-text-faint)', opacity: 0.45 }} aria-hidden="true">
-          <span style={{ color: 'var(--color-dot-correct)' }}>●</span>
-          {' '}right
-          {'\u00A0\u00A0'}
-          <span style={{ color: 'var(--color-dot-present)' }}>○</span>
-          {' '}wrong spot
-          {'\u00A0\u00A0'}
-          <span>—</span>
-          {' '}not in top 5
-        </span>
+        <div className="flex gap-3" aria-hidden="true">
+          <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--color-text-faint)' }}>
+            <span style={{ color: 'var(--color-dot-correct)' }}>●</span> right
+          </span>
+          <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--color-text-faint)' }}>
+            <span style={{ color: 'var(--color-dot-present)' }}>○</span> wrong spot
+          </span>
+          <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--color-text-faint)' }}>
+            <span>—</span> not in top 5
+          </span>
+        </div>
       </div>
       {/* Slots */}
       <div

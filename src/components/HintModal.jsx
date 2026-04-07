@@ -3,28 +3,28 @@ import { GAME_CONFIG } from '../config.js'
 
 const HINTS = [
   {
-    key: 'revealCategory',
-    label: 'Reveal category',
-    description: 'Show the hidden category label',
-    cost: `${GAME_CONFIG.hints.revealCategory}`,
-  },
-  {
     key: 'revealBankItem',
     label: 'Reveal a bank item',
     description: 'Add one undiscovered item to your bank',
-    cost: `${GAME_CONFIG.hints.revealBankItem}`,
+    cost: GAME_CONFIG.hints.revealBankItem,
   },
   {
     key: 'revealRankPositionKnown',
     label: 'Pin a discovered item',
     description: "Lock one item you've already found to its correct slot",
-    cost: `${GAME_CONFIG.hints.revealRankPositionKnown}`,
+    cost: GAME_CONFIG.hints.revealRankPositionKnown,
+  },
+  {
+    key: 'revealCategory',
+    label: 'Reveal category',
+    description: 'Show the hidden category label',
+    cost: GAME_CONFIG.hints.revealCategory,
   },
   {
     key: 'revealRankPositionUnknown',
     label: 'Pin an undiscovered item',
     description: "Reveal and lock an item you haven't found yet to its correct slot",
-    cost: `${GAME_CONFIG.hints.revealRankPositionUnknown}`,
+    cost: GAME_CONFIG.hints.revealRankPositionUnknown,
   },
 ]
 
@@ -82,7 +82,7 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, onPurc
 
         <div className="flex flex-col gap-2">
           {HINTS.map(({ key, label, description, cost }) => {
-            const minCost = parseInt(cost)
+            const minCost = cost
             const canAfford = coins >= minCost
             const unavailable = (key === 'revealBankItem' && allBankFound) || (key === 'revealCategory' && categoryGuessed)
             return (
@@ -108,7 +108,7 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, onPurc
                   className="text-sm font-semibold ml-3 shrink-0"
                   style={{ color: canAfford ? 'var(--color-text-strong)' : 'var(--color-text-faint)' }}
                 >
-                  🪙 {cost}
+                  🪙 {String(cost)}
                 </span>
               </button>
             )
