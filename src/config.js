@@ -18,7 +18,7 @@ export const DIFFICULTY_CONFIG = {
     hints: {
       revealBankItem: 5,
       revealRankPositionKnown: 10,
-      revealCategoryNudge: 15,
+      revealCategoryNudge: 10,
       revealRankPositionUnknown: 30,
       revealCategory: 40,
     },
@@ -30,7 +30,7 @@ export const DIFFICULTY_CONFIG = {
     hints: {
       revealBankItem: 5,
       revealRankPositionKnown: 10,
-      revealCategoryNudge: 15,
+      revealCategoryNudge: 10,
       revealRankPositionUnknown: 30,
       revealCategory: 40,
     },
@@ -42,7 +42,7 @@ export const DIFFICULTY_CONFIG = {
     hints: {
       revealBankItem: 8,
       revealRankPositionKnown: 15,
-      revealCategoryNudge: 22,
+      revealCategoryNudge: 15,
       revealRankPositionUnknown: 45,
       revealCategory: 60,
     },

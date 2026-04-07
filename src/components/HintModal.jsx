@@ -4,7 +4,7 @@ import { DIFFICULTY_CONFIG } from '../config.js'
 const HINT_DEFS = [
   { key: 'revealBankItem',            label: 'Reveal a bank item',        description: 'Add one undiscovered item to your bank' },
   { key: 'revealRankPositionKnown',   label: 'Pin a discovered item',     description: "Lock one item you've already found to its correct slot" },
-  { key: 'revealCategoryNudge',       label: 'Category clue',             description: 'Get a cryptic hint toward the hidden category' },
+  { key: 'revealCategoryNudge',       label: 'Category clue',             description: 'Get a hint toward the hidden category' },
   { key: 'revealRankPositionUnknown', label: 'Pin an undiscovered item',   description: "Reveal and lock an item you haven't found yet to its correct slot" },
   { key: 'revealCategory',            label: 'Reveal category',            description: 'Show the full hidden category label' },
 ]
@@ -24,7 +24,7 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, catego
         const res = await fetch('/api/category-nudge', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ category }),
+          body: JSON.stringify({ category, difficulty }),
         })
         const data = res.ok ? await res.json() : null
         setFeedback(data?.clue ?? 'No clue available right now.')
