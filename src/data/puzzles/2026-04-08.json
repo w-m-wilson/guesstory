@@ -1,0 +1,32 @@
+{
+  "id": "2026-04-08",
+  "category": "U.S. Fast Food Chains by Number of Locations Worldwide",
+  "hint": "Think total global footprint — some coffee and pizza chains spread further than you'd expect",
+  "seed": [
+    { "rank": 3, "name": "Subway",    "aliases": [] },
+    { "rank": 7, "name": "Pizza Hut", "aliases": ["Pizza Hut franchise"] }
+  ],
+  "liteSeed": [
+    { "rank": 1, "name": "McDonald's",  "aliases": ["McDonalds"] },
+    { "rank": 4, "name": "KFC",         "aliases": ["Kentucky Fried Chicken"] },
+    { "rank": 5, "name": "Domino's",    "aliases": ["Dominos", "Domino's Pizza"] },
+    { "rank": 6, "name": "Burger King", "aliases": [] }
+  ],
+  "challengeSeed": [
+    { "rank": 8, "name": "Dunkin'", "aliases": ["Dunkin", "Dunkin Donuts", "Dunkin' Donuts"] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "McDonald's",        "aliases": ["McDonalds"] },
+    { "rank": 2,  "name": "Starbucks",         "aliases": [] },
+    { "rank": 3,  "name": "Subway",            "aliases": [] },
+    { "rank": 4,  "name": "KFC",               "aliases": ["Kentucky Fried Chicken"] },
+    { "rank": 5,  "name": "Domino's",          "aliases": ["Dominos", "Domino's Pizza"] },
+    { "rank": 6,  "name": "Burger King",       "aliases": [] },
+    { "rank": 7,  "name": "Pizza Hut",         "aliases": ["Pizza Hut franchise"] },
+    { "rank": 8,  "name": "Dunkin'",           "aliases": ["Dunkin", "Dunkin Donuts", "Dunkin' Donuts"] },
+    { "rank": 9,  "name": "Krispy Kreme",      "aliases": ["Krispy Kreme Doughnuts"] },
+    { "rank": 10, "name": "Hunt Brothers Pizza", "aliases": ["Hunt Brothers"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://en.wikipedia.org/wiki/List_of_the_largest_fast_food_restaurant_chains"
+}

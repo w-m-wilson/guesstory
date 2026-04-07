@@ -1,0 +1,32 @@
+{
+  "id": "2026-04-09",
+  "category": "U.S. States by Number of Presidents Born There",
+  "hint": "Think about which states were most prominent in the early republic — the answer might not be who you expect",
+  "seed": [
+    { "rank": 3, "name": "New York", "aliases": ["NY"] },
+    { "rank": 7, "name": "Texas",    "aliases": ["TX"] }
+  ],
+  "liteSeed": [
+    { "rank": 1, "name": "Virginia",      "aliases": ["VA"] },
+    { "rank": 2, "name": "Ohio",          "aliases": ["OH"] },
+    { "rank": 4, "name": "Massachusetts", "aliases": ["MA"] },
+    { "rank": 6, "name": "Pennsylvania",  "aliases": ["PA"] }
+  ],
+  "challengeSeed": [
+    { "rank": 5, "name": "North Carolina", "aliases": ["NC"] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "Virginia",       "aliases": ["VA"] },
+    { "rank": 2,  "name": "Ohio",           "aliases": ["OH"] },
+    { "rank": 3,  "name": "New York",       "aliases": ["NY"] },
+    { "rank": 4,  "name": "Massachusetts",  "aliases": ["MA"] },
+    { "rank": 5,  "name": "North Carolina", "aliases": ["NC"] },
+    { "rank": 6,  "name": "Pennsylvania",   "aliases": ["PA"] },
+    { "rank": 7,  "name": "Texas",          "aliases": ["TX"] },
+    { "rank": 8,  "name": "Vermont",        "aliases": ["VT"] },
+    { "rank": 9,  "name": "Arkansas",       "aliases": ["AR"] },
+    { "rank": 10, "name": "California",     "aliases": ["CA"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://worldpopulationreview.com/state-rankings/presidents-by-state"
+}
