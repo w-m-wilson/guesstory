@@ -1,0 +1,23 @@
+{
+  "id": "2026-04-07",
+  "category": "Movie Franchises by Total Worldwide Gross",
+  "hint": "Think about which film series have the most movies and the biggest blockbusters",
+  "seed": [
+    { "rank": 3, "name": "Star Wars", "aliases": ["Star Wars franchise"] },
+    { "rank": 7, "name": "X-Men", "aliases": ["X-Men franchise"] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "Marvel Cinematic Universe", "aliases": ["MCU", "Marvel"] },
+    { "rank": 2,  "name": "Spider-Man",                "aliases": ["Spider-Man franchise", "Spiderman"] },
+    { "rank": 3,  "name": "Star Wars",                 "aliases": ["Star Wars franchise"] },
+    { "rank": 4,  "name": "Wizarding World",           "aliases": ["Harry Potter", "Harry Potter franchise", "Fantastic Beasts"] },
+    { "rank": 5,  "name": "James Bond",                "aliases": ["James Bond franchise", "007"] },
+    { "rank": 6,  "name": "Avengers",                  "aliases": ["Avengers franchise"] },
+    { "rank": 7,  "name": "X-Men",                     "aliases": ["X-Men franchise"] },
+    { "rank": 8,  "name": "Fast & Furious",            "aliases": ["Fast and Furious", "Fast Furious"] },
+    { "rank": 9,  "name": "DC Extended Universe",      "aliases": ["DCEU", "DC Extended Universe franchise"] },
+    { "rank": 10, "name": "Batman",                    "aliases": ["Batman franchise"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://en.wikipedia.org/wiki/List_of_highest-grossing_films#Highest-grossing_franchises_and_film_series"
+}
