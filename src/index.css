@@ -197,6 +197,15 @@ body {
 }
 .slide-down { animation: slideDown 0.18s ease-out; }
 
+/* ── Narration toast ── */
+@keyframes narrationIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.narration-toast {
+  animation: narrationIn 0.35s ease-out;
+}
+
 /* ── Coin animations ── */
 @keyframes floatUp {
   0%   { opacity: 1; transform: translateY(0); }

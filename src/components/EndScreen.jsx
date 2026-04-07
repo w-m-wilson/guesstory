@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const GRADES = [
   { min: 100, label: 'Perfect' },
@@ -79,11 +79,31 @@ function AttemptsPreview({ rankHistory }) {
   )
 }
 
-export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, categoryText, categorySource, hailMaryTaken, keyMap, onClose, onComplete, completeCTA }) {
+export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, category, categoryGuessed, categoryText, categorySource, hailMaryTaken, isTutorial, keyMap, onClose, onComplete, completeCTA }) {
   const won = gameStatus === 'won'
   const showHailMary = gameStatus === 'abandoned' && !hailMaryTaken
   const grade = getGrade(coins)
   const [copied, setCopied] = useState(false)
+  const [recap, setRecap] = useState(null)
+  const [recapLoading, setRecapLoading] = useState(!isTutorial)
+
+  useEffect(() => {
+    if (isTutorial || !category) { setRecapLoading(false); return }
+    fetch('/api/game-recap', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        attempts: rankHistory.length,
+        coins,
+        won,
+        category,
+        categoryGuessed: !!categoryGuessed,
+      }),
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { setRecap(data?.recap ?? null); setRecapLoading(false) })
+      .catch(() => setRecapLoading(false))
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleShare() {
     const text = buildShareText(puzzleId, coins, rankHistory)
@@ -165,6 +185,16 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, ca
           </div>
           <AttemptsPreview rankHistory={rankHistory} />
         </div>
+
+        {/* Haiku recap — async, shimmer while loading */}
+        {!isTutorial && (recapLoading || recap) && (
+          <p
+            className={`text-xs italic text-center${recapLoading ? ' animate-pulse' : ' fade-in'}`}
+            style={{ color: 'var(--color-text-faint)' }}
+          >
+            {recapLoading ? '···' : recap}
+          </p>
+        )}
 
         {onComplete ? (
           <button

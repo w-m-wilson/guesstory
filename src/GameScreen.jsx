@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useLayoutEffect, useRef } from 'react'
+import { useState, useMemo, useEffect, useLayoutEffect, useRef, useCallback } from 'react'
 import { useGameState } from './hooks/useGameState.js'
 import { buildItemKeys } from './utils/itemKeys.js'
 import Header from './components/Header.jsx'
@@ -14,7 +14,9 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
   const [hintsOpen, setHintsOpen] = useState(false)
   const [endScreenDismissed, setEndScreenDismissed] = useState(false)
   const [bankPanelHeight, setBankPanelHeight] = useState(0)
+  const [narration, setNarration] = useState(null)
   const bankPanelRef = useRef(null)
+  const narrationTimerRef = useRef(null)
 
   // Build key map once per puzzle (rank → 2-letter key)
   const keyMap = useMemo(() => buildItemKeys(puzzle.bank), [puzzle])
@@ -78,6 +80,29 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
   const { state, guessBankItem, confirmPending, cancelPending,
           placeItem, removeSlot, moveSlot, loadRankingSlots, submitRanking, purchaseHint, resetGame, guessCategory } = game
 
+  function handleSubmitRanking() {
+    const result = submitRanking()
+    if (!result) return
+    const { feedback } = result
+    const slotNames = state.rankSlots.map(s => s?.name ?? null)
+    const attemptNumber = state.rankHistory.length + 1
+    clearTimeout(narrationTimerRef.current)
+    setNarration(null)
+    fetch('/api/narrate-attempt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slots: slotNames, feedback, attemptNumber, coinsRemaining: state.coins }),
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.narration) {
+          setNarration(data.narration)
+          narrationTimerRef.current = setTimeout(() => setNarration(null), 4000)
+        }
+      })
+      .catch(() => {})
+  }
+
   const gameOver = gameStatus === 'won' || gameStatus === 'abandoned'
 
   return (
@@ -121,6 +146,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
             bankMisses={state.bankMisses}
             pendingMatch={state.pendingMatch}
             gameOver={gameOver}
+            category={puzzle.category}
             onGuess={guessBankItem}
             onConfirm={confirmPending}
             onCancel={cancelPending}
@@ -130,12 +156,18 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
         </div>
       </div>
 
+      {narration && (
+        <div key={narration} className="narration-toast shrink-0 px-5 py-2 text-center">
+          <p className="text-xs italic" style={{ color: 'var(--color-text-faint)' }}>{narration}</p>
+        </div>
+      )}
+
       <RankBoard
         rankSlots={state.rankSlots}
         lockedSlots={state.lockedSlots}
         onRemoveSlot={removeSlot}
         onMoveSlot={moveSlot}
-        onSubmit={submitRanking}
+        onSubmit={handleSubmitRanking}
       />
 
       <ScoreBar
@@ -151,6 +183,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
           coins={state.coins}
           allBankFound={discoveredList.length >= puzzle.bank.length}
           categoryGuessed={state.categoryGuessed}
+          category={puzzle.category}
           onPurchase={purchaseHint}
           onClose={() => setHintsOpen(false)}
         />
@@ -162,9 +195,12 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
           coins={state.coins}
           rankHistory={state.rankHistory}
           gameStatus={state.gameStatus}
+          category={puzzle.category}
+          categoryGuessed={state.categoryGuessed}
           categoryText={gameStatus === 'abandoned' || !state.categoryGuessed ? puzzle.category : null}
           categorySource={puzzle.source ?? null}
           hailMaryTaken={hailMaryTaken}
+          isTutorial={isTutorial}
           keyMap={keyMap}
           onClose={
             isTutorial && tutorialMode === 'learn' && gameStatus === 'won'

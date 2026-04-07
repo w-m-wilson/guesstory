@@ -4,6 +4,18 @@ import ConfirmMatch from './ConfirmMatch.jsx'
 
 const FREE_MISSES = GAME_CONFIG.bank.freeMisses
 
+// Heuristic: does this guess look like a category answer typed in the wrong field?
+// Category format is "[things] ranked by [metric]" — key signals are ranking/metric words.
+function looksLikeCategory(guess) {
+  const s = guess.toLowerCase().trim()
+  return (
+    /\bby\b/.test(s) ||
+    /\b(ranked|sorted|ordered|ranking)\b/.test(s) ||
+    /\b(most|highest|lowest|biggest|largest|smallest|fewest)\b/.test(s) ||
+    /\b(total|gross|revenue|earnings|sales|income|budget|worldwide|domestic|per capita|population|number of)\b/.test(s)
+  )
+}
+
 export default function BankPanel({
   discoveredList,
   bankTotal,
@@ -11,6 +23,7 @@ export default function BankPanel({
   bankMisses,
   pendingMatch,
   gameOver,
+  category,
   onGuess,
   onConfirm,
   onCancel,
@@ -19,10 +32,12 @@ export default function BankPanel({
 }) {
   const [query, setQuery] = useState('')
   const [feedback, setFeedback] = useState(null) // { type, message, ts }
+  const [haikuHint, setHaikuHint] = useState(null)
   const [animatingCircleIdx, setAnimatingCircleIdx] = useState(null)
   const [penaltyKey, setPenaltyKey] = useState(0)
   const [showLeftFade, setShowLeftFade] = useState(false)
   const feedbackTimer = useRef(null)
+  const haikuTimerRef = useRef(null)
   const inputRef = useRef(null)
   const bankScrollRef = useRef(null)
 
@@ -32,7 +47,10 @@ export default function BankPanel({
     feedbackTimer.current = setTimeout(() => setFeedback(null), 2500)
   }
 
-  useEffect(() => () => clearTimeout(feedbackTimer.current), [])
+  useEffect(() => () => {
+    clearTimeout(feedbackTimer.current)
+    clearTimeout(haikuTimerRef.current)
+  }, [])
 
   useEffect(() => {
     function updateLeftFade() {
@@ -52,8 +70,19 @@ export default function BankPanel({
     const q = query.trim()
     if (!q) return
 
+    // Intercept before scoring: if it looks like a category guess, redirect without penalising
+    if (looksLikeCategory(q)) {
+      setQuery('')
+      clearTimeout(haikuTimerRef.current)
+      setHaikuHint('That looks like a category answer — try guessing it in the field at the top.')
+      haikuTimerRef.current = setTimeout(() => setHaikuHint(null), 6000)
+      return
+    }
+
     const result = onGuess(q)
     setQuery('')
+    setHaikuHint(null)
+    clearTimeout(haikuTimerRef.current)
     if (!result) return
 
     if (result.outcome === 'hit') {
@@ -201,6 +230,12 @@ export default function BankPanel({
             }}
           >
             {feedback.message}
+          </p>
+        )}
+        {/* Haiku directional hint — appears on 2nd+ miss */}
+        {!pendingMatch && haikuHint && (
+          <p key={haikuHint} className="fade-in text-xs mt-0.5 italic" style={{ color: 'var(--color-text-faint)' }}>
+            {haikuHint}
           </p>
         )}
       </div>}

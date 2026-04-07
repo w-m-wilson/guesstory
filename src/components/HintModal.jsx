@@ -15,10 +15,10 @@ const HINTS = [
     cost: GAME_CONFIG.hints.revealRankPositionKnown,
   },
   {
-    key: 'revealCategory',
-    label: 'Reveal category',
-    description: 'Show the hidden category label',
-    cost: GAME_CONFIG.hints.revealCategory,
+    key: 'revealCategoryNudge',
+    label: 'Category clue',
+    description: 'Get a cryptic hint toward the hidden category',
+    cost: GAME_CONFIG.hints.revealCategoryNudge,
   },
   {
     key: 'revealRankPositionUnknown',
@@ -26,12 +26,39 @@ const HINTS = [
     description: "Reveal and lock an item you haven't found yet to its correct slot",
     cost: GAME_CONFIG.hints.revealRankPositionUnknown,
   },
+  {
+    key: 'revealCategory',
+    label: 'Reveal category',
+    description: 'Show the full hidden category label',
+    cost: GAME_CONFIG.hints.revealCategory,
+  },
 ]
 
-export default function HintModal({ coins, allBankFound, categoryGuessed, onPurchase, onClose }) {
+export default function HintModal({ coins, allBankFound, categoryGuessed, category, onPurchase, onClose }) {
   const [feedback, setFeedback] = useState(null)
+  const [nudgeLoading, setNudgeLoading] = useState(false)
 
-  function handlePurchase(key) {
+  async function handlePurchase(key) {
+    if (key === 'revealCategoryNudge') {
+      onPurchase(key)
+      setNudgeLoading(true)
+      setFeedback(null)
+      try {
+        const res = await fetch('/api/category-nudge', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category }),
+        })
+        const data = res.ok ? await res.json() : null
+        setFeedback(data?.clue ?? 'No clue available right now.')
+      } catch {
+        setFeedback('No clue available right now.')
+      } finally {
+        setNudgeLoading(false)
+      }
+      return
+    }
+
     const result = onPurchase(key)
     if (result?.noneFound) {
       setFeedback("None of your discovered items are in the top 5.")
@@ -74,17 +101,19 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, onPurc
           </div>
         </div>
 
-        {feedback && (
-          <p className="text-sm mb-3 px-1" style={{ color: 'var(--color-text-faint)' }}>
-            {feedback}
+        {(feedback || nudgeLoading) && (
+          <p className="text-sm mb-3 px-1 italic" style={{ color: 'var(--color-text-faint)' }}>
+            {nudgeLoading ? 'Getting a clue…' : feedback}
           </p>
         )}
 
         <div className="flex flex-col gap-2">
           {HINTS.map(({ key, label, description, cost }) => {
-            const minCost = cost
-            const canAfford = coins >= minCost
-            const unavailable = (key === 'revealBankItem' && allBankFound) || (key === 'revealCategory' && categoryGuessed)
+            const canAfford = coins >= cost
+            const unavailable =
+              (key === 'revealBankItem' && allBankFound) ||
+              (key === 'revealCategory' && categoryGuessed) ||
+              (key === 'revealCategoryNudge' && categoryGuessed)
             return (
               <button
                 key={key}
