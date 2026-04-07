@@ -5,6 +5,7 @@ export const TUTORIAL_PUZZLE_1 = {
   hint: 'Think about counting up from the very beginning',
   seed: [
     { rank: 1, name: 'one', aliases: ['1'] },
+    { rank: 2, name: 'two', aliases: ['2'] },
   ],
   bank: [
     { rank: 1, name: 'one',   aliases: ['1'] },
@@ -22,7 +23,8 @@ export const TUTORIAL_PUZZLE_2 = {
   category: 'Numbers, Largest to Smallest',
   hint: 'Think about counting backwards from ten',
   seed: [
-    { rank: 1, name: 'ten', aliases: ['10'] },
+    { rank: 1, name: 'ten',  aliases: ['10'] },
+    { rank: 2, name: 'nine', aliases: ['9']  },
   ],
   bank: [
     { rank: 1,  name: 'ten',   aliases: ['10'] },

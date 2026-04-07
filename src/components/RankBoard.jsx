@@ -1,10 +1,21 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 
 export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMoveSlot, onSubmit }) {
   const hasAnySlot = rankSlots.some(Boolean)
+  const allFilled = rankSlots.every(Boolean)
   const [dragIndex, setDragIndex] = useState(null)
+  const [submitReadyKey, setSubmitReadyKey] = useState(0)
+  const prevAllFilled = useRef(false)
   const pressRef = useRef({ dragging: false })
+
+  // Pulse the submit button once when all slots fill for the first time
+  useEffect(() => {
+    if (allFilled && !prevAllFilled.current) {
+      setSubmitReadyKey(k => k + 1)
+    }
+    prevAllFilled.current = allFilled
+  }, [allFilled])
 
   function startDrag(fromIndex, { onTap } = {}) {
     pressRef.current.dragging = true
@@ -47,8 +58,24 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
         position: 'relative',
         zIndex: 10,
         background: 'var(--color-bg)',
+        borderTop: '1px solid var(--color-border)',
       }}
     >
+      <div className="flex items-baseline justify-between mb-2">
+        <p className="text-[9px] font-black tracking-widest uppercase" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
+          Rank
+        </p>
+        <span className="text-[9px] font-mono" style={{ color: 'var(--color-text-faint)', opacity: 0.45 }} aria-hidden="true">
+          <span style={{ color: 'var(--color-dot-correct)' }}>●</span>
+          {' '}right
+          {'\u00A0\u00A0'}
+          <span style={{ color: 'var(--color-dot-present)' }}>○</span>
+          {' '}wrong spot
+          {'\u00A0\u00A0'}
+          <span>—</span>
+          {' '}not in top 5
+        </span>
+      </div>
       {/* Slots */}
       <div
         className="flex flex-col gap-1"
@@ -139,9 +166,10 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
 
       {/* Submit */}
       <button
+        key={submitReadyKey}
         onClick={onSubmit}
         disabled={!hasAnySlot}
-        className="mt-3 w-full py-2 rounded-lg text-sm font-semibold disabled:opacity-30"
+        className={`mt-3 w-full py-2 rounded-lg text-sm font-semibold disabled:opacity-30${allFilled && submitReadyKey > 0 ? ' submit-ready' : ''}`}
         style={{
           background: hasAnySlot ? 'var(--color-text-strong)' : 'var(--color-bg-elevated)',
           color: hasAnySlot ? 'var(--color-bg)' : 'var(--color-text-faint)',

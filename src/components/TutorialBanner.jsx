@@ -31,15 +31,19 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
           >
             <li className="flex gap-3 text-sm">
               <span style={{ color: 'var(--color-text-strong)', fontWeight: 700, flexShrink: 0 }}>→</span>
-              <span>Tap <strong>Guess category</strong> (top right) to earn +15 bonus coins</span>
+              <span>Tap <strong>? Guess category</strong> (top right) to earn +15 bonus coins</span>
             </li>
             <li className="flex gap-3 text-sm">
               <span style={{ color: 'var(--color-text-strong)', fontWeight: 700, flexShrink: 0 }}>→</span>
-              <span>Open the <strong>hint shop</strong> by tapping the coin bar at the bottom</span>
+              <span>Open the <strong>hint shop</strong> via the Hints button at the bottom right</span>
             </li>
             <li className="flex gap-3 text-sm">
               <span style={{ color: 'var(--color-text-strong)', fontWeight: 700, flexShrink: 0 }}>→</span>
-              <span>Wrong guesses spend coins. Watch your balance.</span>
+              <span>10 items in the bank — only 5 belong in the ranking. Not everything fits.</span>
+            </li>
+            <li className="flex gap-3 text-sm">
+              <span style={{ color: 'var(--color-text-strong)', fontWeight: 700, flexShrink: 0 }}>→</span>
+              <span>When you're done, a new puzzle drops every day.</span>
             </li>
           </ul>
           <button
@@ -89,17 +93,49 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
         style={{ background: 'var(--color-bg)' }}
       >
         <div
-          className="mb-6 px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase"
+          className="mb-5 px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase"
           style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
         >
           TUTORIAL · GAME 1 OF 2
         </div>
-        <h1 className="text-3xl font-black mb-3" style={{ color: 'var(--color-text-strong)' }}>
+        <h1 className="text-3xl font-black mb-2" style={{ color: 'var(--color-text-strong)' }}>
           Welcome to Reckon
         </h1>
-        <p className="text-base max-w-xs mb-10" style={{ color: 'var(--color-text)' }}>
+        <p className="text-sm max-w-xs mb-6" style={{ color: 'var(--color-text)' }}>
           There's a secret ranked list. Find what's on it and put the top 5 in order.
         </p>
+
+        {/* Phone mockup */}
+        <div className="mb-7 mx-auto" style={{ width: '140px' }}>
+          <div
+            className="rounded-[22px] overflow-hidden"
+            style={{ border: '2.5px solid var(--color-text-strong)', background: 'var(--color-bg)' }}
+          >
+            {/* Status bar */}
+            <div className="flex justify-center items-center pt-2 pb-1.5" style={{ background: 'var(--color-text-strong)' }}>
+              <div className="rounded-full" style={{ width: '28px', height: '5px', background: 'var(--color-bg)', opacity: 0.35 }} />
+            </div>
+            {/* FIND zone */}
+            <div className="px-2.5 py-2" style={{ background: 'var(--color-bg-elevated)', borderBottom: '1px solid var(--color-border)' }}>
+              <p className="text-[7px] font-black tracking-widest uppercase mb-0.5" style={{ color: 'var(--color-text-faint)', opacity: 0.55 }}>Find</p>
+              <p className="text-[9px]" style={{ color: 'var(--color-text-faint)' }}>Type items to discover them</p>
+            </div>
+            {/* History zone */}
+            <div className="px-2.5 py-3 flex items-center justify-center" style={{ minHeight: '42px', borderBottom: '1px solid var(--color-border)' }}>
+              <p className="text-[8px] text-center" style={{ color: 'var(--color-text-faint)', opacity: 0.4 }}>attempts + feedback</p>
+            </div>
+            {/* RANK zone */}
+            <div className="px-2.5 py-2" style={{ background: 'var(--color-bg-elevated)' }}>
+              <p className="text-[7px] font-black tracking-widest uppercase mb-0.5" style={{ color: 'var(--color-text-faint)', opacity: 0.55 }}>Rank</p>
+              <p className="text-[9px]" style={{ color: 'var(--color-text-faint)' }}>Order top 5, then submit</p>
+            </div>
+            {/* Home bar */}
+            <div className="flex justify-center py-1.5" style={{ background: 'var(--color-bg)' }}>
+              <div className="rounded-full" style={{ width: '32px', height: '3px', background: 'var(--color-border)' }} />
+            </div>
+          </div>
+        </div>
+
         <button
           onClick={onBegin}
           className="w-full max-w-xs py-3.5 rounded-xl text-base font-bold"
@@ -116,7 +152,7 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
   const STEPS = {
     1: {
       label: 'Step 1 of 3: Find the items',
-      instruction: "Type a name into the search box and hit Enter. If it's on the list, it appears in your bank.",
+      instruction: "Type a name into the search box and hit Guess. If it's on the list, it appears below.",
       progress: `Found ${discoveredCount} / ${NEEDED} needed`,
     },
     2: {

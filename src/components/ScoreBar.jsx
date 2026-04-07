@@ -14,7 +14,7 @@ export default function ScoreBar({ coins, gameOver, onHintsOpen, onShowResults, 
       setDeltas(prev => [...prev, { id, amount: Math.abs(delta), positive: delta < 0 }])
       setTimeout(() => {
         setDeltas(prev => prev.filter(d => d.id !== id))
-      }, 1000)
+      }, 1500)
     }
     prevCoins.current = coins
   }, [coins])

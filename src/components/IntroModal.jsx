@@ -25,7 +25,7 @@ const SECTIONS = [
     ],
     feedback: [
       { symbol: '●', color: 'var(--color-dot-correct)', label: 'Right item, right spot' },
-      { symbol: '○', color: 'var(--color-dot-correct)', label: 'Right item, wrong spot' },
+      { symbol: '○', color: 'var(--color-dot-present)', label: 'Right item, wrong spot' },
       { symbol: '—', color: 'var(--color-text-faint)',  label: "Not in the top 5 — no dot shown" },
     ],
   },

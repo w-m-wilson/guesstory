@@ -95,7 +95,10 @@ export default function BankPanel({
   return (
     <div className="flex flex-col" style={{ position: 'relative', zIndex: 10, background: 'var(--color-bg)' }}>
       {/* Guess input — hidden once bank is fully discovered */}
-      {!bankFull && <div className="px-4 pt-3 pb-2 shrink-0" style={{ borderBottom: '1px solid var(--color-border)' }}>
+      {!bankFull && <div className="px-4 pt-2 pb-2 shrink-0" style={{ borderBottom: '1px solid var(--color-border)' }}>
+        <p className="text-[9px] font-black tracking-widest uppercase mb-2" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
+          Find
+        </p>
         <form onSubmit={handleSubmit} className="flex gap-2">
           <input
             ref={inputRef}
@@ -216,7 +219,9 @@ export default function BankPanel({
       <div className="overflow-y-auto px-4 pt-3 pb-2" style={{ maxHeight: '40vh' }}>
         {discoveredList.length === 0 ? (
           <p className="text-sm" style={{ color: 'var(--color-text-faint)' }}>
-            No items discovered yet.
+            {bankMisses === 0
+              ? `Type anything in the puzzle's topic — you have ${FREE_MISSES} free misses.`
+              : 'Nothing found yet — keep trying.'}
           </p>
         ) : (
           <div className={`bank-scroll-wrap${showLeftFade ? ' bank-scroll-wrap--left-fade' : ''}`}>

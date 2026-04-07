@@ -99,6 +99,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
                 feedback={feedback}
                 compact={compact}
                 attemptNumber={attemptIndex + 1}
+                isLatest={attemptIndex === rankHistory.length - 1}
                 onPick={() => onPickHistoryRow?.(slots)}
               />
             ))}
@@ -178,13 +179,13 @@ function LiveRow({ slots, compact }) {
   )
 }
 
-function AttemptRow({ slots, feedback, compact, attemptNumber, onPick }) {
+function AttemptRow({ slots, feedback, compact, attemptNumber, isLatest, onPick }) {
   const hasAnyHit = feedback.some(f => f === 'correct' || f === 'present')
 
   return (
     <button
       type="button"
-      className="flex items-center gap-2 fade-in w-full text-left cursor-pointer rounded-md appearance-none p-0 border-0 bg-transparent"
+      className={`flex items-center gap-2 w-full text-left cursor-pointer rounded-md appearance-none p-0 border-0 bg-transparent ${isLatest ? 'attempt-new' : 'fade-in'}`}
       onClick={onPick}
     >
       {/* Attempt number */}

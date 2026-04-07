@@ -84,7 +84,11 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
     <div className="flex flex-col h-full" style={{ background: 'var(--color-bg)' }}>
       <Header
         categoryText={state.categoryGuessed ? puzzle.category : null}
-        categoryAutoReveal={['2026-04-04', '2026-04-06'].includes(puzzle.id) && !state.categoryGuessed ? puzzle.category : null}
+        categoryAutoReveal={
+          (isTutorial && tutorialMode === 'learn')
+            ? (!state.categoryGuessed ? puzzle.category : null)
+            : (['2026-04-04', '2026-04-06'].includes(puzzle.id) && !state.categoryGuessed ? puzzle.category : null)
+        }
         categoryHint={puzzle.hint ?? null}
         categoryMisses={state.categoryMisses}
         onGuessCategory={guessCategory}
@@ -162,7 +166,11 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
           categorySource={puzzle.source ?? null}
           hailMaryTaken={hailMaryTaken}
           keyMap={keyMap}
-          onClose={() => setEndScreenDismissed(true)}
+          onClose={
+            isTutorial && tutorialMode === 'learn' && gameStatus === 'won'
+              ? () => { setEndScreenDismissed(true); onComplete?.() }
+              : () => setEndScreenDismissed(true)
+          }
           onComplete={onComplete}
           completeCTA={isTutorial && tutorialMode === 'learn' ? 'Play tutorial game 2 →' : undefined}
         />
