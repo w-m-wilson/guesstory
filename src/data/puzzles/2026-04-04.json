@@ -6,6 +6,15 @@
     { "rank": 6, "name": "Kansas",    "aliases": [] },
     { "rank": 9, "name": "Iowa",      "aliases": [] }
   ],
+  "liteSeed": [
+    { "rank": 1, "name": "Texas",    "aliases": ["TX"] },
+    { "rank": 2, "name": "Georgia",  "aliases": ["GA"] },
+    { "rank": 3, "name": "Virginia", "aliases": ["VA"] },
+    { "rank": 5, "name": "Missouri", "aliases": ["MO"] }
+  ],
+  "challengeSeed": [
+    { "rank": 7, "name": "Illinois", "aliases": ["IL"] }
+  ],
   "bank": [
     { "rank": 1,  "name": "Texas",          "aliases": ["TX"] },
     { "rank": 2,  "name": "Georgia",        "aliases": ["GA"] },

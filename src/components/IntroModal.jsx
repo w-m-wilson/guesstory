@@ -1,7 +1,3 @@
-import { GAME_CONFIG } from '../config.js'
-
-const { bank, category, ranking, hints } = GAME_CONFIG
-
 const SECTIONS = [
   {
     heading: 'What is this?',
@@ -12,7 +8,7 @@ const SECTIONS = [
     items: [
       'Type a name into the search box and submit it',
       "If it's on the list, it gets added to your bank",
-      `Your first ${bank.freeMisses} wrong guesses are free — after that, each miss costs 1 coin`,
+      'Your first 3 wrong guesses are free — after that, each miss costs 1 coin',
       'The counter at the top right of the bank shows how many you\'ve found so far',
     ],
   },
@@ -33,8 +29,8 @@ const SECTIONS = [
     heading: 'Guess the category',
     items: [
       'See the "Guess category" button at the top right? That\'s the theme of the list',
-      `Nail it and earn +${category.correctGuessBonus} bonus coins`,
-      `You get ${category.freeMisses} free tries — after that, wrong guesses cost ${category.missCost} coins each`,
+      'Nail it and earn +15 bonus coins',
+      'You get 3 free tries — after that, wrong guesses cost 5 coins each',
       "Close guesses get a hint nudging you in the right direction",
     ],
   },
@@ -42,15 +38,15 @@ const SECTIONS = [
     heading: 'Hints',
     items: [
       'Tap the coin bar at the bottom to open the hint shop',
-      `Reveal the category — ${hints.revealCategory} coins`,
-      `Add a hidden item to your bank — ${hints.revealBankItem} coins`,
-      `Pin a discovered item to its correct slot — ${hints.revealRankPositionKnown} coins`,
-      `Pin an undiscovered item to its correct slot — ${hints.revealRankPositionUnknown} coins`,
+      'Reveal the category — 40 coins',
+      'Add a hidden item to your bank — 5 coins',
+      'Pin a discovered item to its correct slot — 10 coins',
+      'Pin an undiscovered item to its correct slot — 30 coins',
     ],
   },
   {
     heading: 'Coins',
-    body: `You start with ${GAME_CONFIG.startingCoins} coins. Wrong guesses and hints spend them. Hit zero and the game ends — so spend wisely.`,
+    body: 'You start with 100 coins. Wrong guesses and hints spend them. Hit zero and the game ends — so spend wisely.',
   },
   {
     heading: 'Appearance',

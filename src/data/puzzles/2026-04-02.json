@@ -5,6 +5,15 @@
   "seed": [
     { "rank": 3, "name": "Brown", "aliases": ["Brown University"] }
   ],
+  "liteSeed": [
+    { "rank": 1, "name": "Cornell",  "aliases": ["Cornell University"] },
+    { "rank": 2, "name": "UPenn",    "aliases": ["University of Pennsylvania", "Penn"] },
+    { "rank": 4, "name": "Harvard",  "aliases": ["Harvard University"] },
+    { "rank": 5, "name": "Columbia", "aliases": ["Columbia University"] }
+  ],
+  "challengeSeed": [
+    { "rank": 6, "name": "Yale", "aliases": ["Yale University"] }
+  ],
   "bank": [
     { "rank": 1, "name": "Cornell",   "aliases": ["Cornell University"] },
     { "rank": 2, "name": "UPenn",     "aliases": ["University of Pennsylvania", "Penn"] },

@@ -1,24 +1,32 @@
-import { GAME_CONFIG } from '../config.js';
+import { DIFFICULTY_CONFIG } from '../config.js';
 
-/**
- * Returns the coin cost for a bank miss.
- * missCount = number of bank misses already recorded (before this one).
- */
-export function getBankMissCost(missCount) {
-  if (missCount < GAME_CONFIG.bank.freeMisses) return 0;
-  return GAME_CONFIG.bank.missCost;
+function cfg(difficulty) {
+  return DIFFICULTY_CONFIG[difficulty] ?? DIFFICULTY_CONFIG.medium;
 }
 
-/**
- * Returns the coin cost for a category miss.
- * missCount = number of category misses already recorded (before this one).
- */
-export function getCategoryMissCost(missCount) {
-  if (missCount < GAME_CONFIG.category.freeMisses) return 0;
-  return GAME_CONFIG.category.missCost;
+export function getBankMissCost(missCount, difficulty = 'medium') {
+  const c = cfg(difficulty).bank;
+  return missCount < c.freeMisses ? 0 : c.missCost;
 }
 
-/** Returns the coin cost for a given hint type. */
-export function getHintCost(hintType) {
-  return GAME_CONFIG.hints[hintType] ?? 0;
+export function getCategoryMissCost(missCount, difficulty = 'medium') {
+  const c = cfg(difficulty).category;
+  return missCount < c.freeMisses ? 0 : c.missCost;
+}
+
+export function getCategoryBonus(difficulty = 'medium') {
+  return cfg(difficulty).category.correctGuessBonus;
+}
+
+export function getRankingAbsentCost(difficulty = 'medium') {
+  return cfg(difficulty).ranking.absentCost;
+}
+
+export function getHintCost(hintType, difficulty = 'medium') {
+  return cfg(difficulty).hints[hintType] ?? 0;
+}
+
+// Returns the free-miss count for the bank (same across all difficulties currently)
+export function getBankFreeMisses(difficulty = 'medium') {
+  return cfg(difficulty).bank.freeMisses;
 }

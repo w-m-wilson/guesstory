@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
-import { GAME_CONFIG } from '../config.js'
+import { DIFFICULTY_CONFIG } from '../config.js'
 
 
-function MissTracker({ misses }) {
-  const free = GAME_CONFIG.category.freeMisses
-  const cost = GAME_CONFIG.category.missCost
+function MissTracker({ misses, difficulty = 'medium' }) {
+  const cfg = DIFFICULTY_CONFIG[difficulty] ?? DIFFICULTY_CONFIG.medium
+  const free = cfg.category.freeMisses
+  const cost = cfg.category.missCost
   const burningCoins = misses >= free
   return (
     <div className="flex items-center gap-1">
@@ -35,7 +36,7 @@ const ERASE_MS  = 90
 const PAUSE_MS  = 500
 const CYCLE_MS = 60000
 
-export default function Header({ categoryText, categoryAutoReveal, categoryHint, categoryMisses, onGuessCategory, onOpenIntro, onOpenSettings }) {
+export default function Header({ categoryText, categoryAutoReveal, categoryHint, categoryMisses, difficulty = 'medium', onGuessCategory, onOpenIntro, onOpenSettings }) {
   const [guessing, setGuessing] = useState(false)
   const [query, setQuery] = useState('')
   const [lastHint, setLastHint] = useState(null)  // { text, warm } | null
@@ -203,7 +204,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
               </button>
             )}
             {!guessing && categoryMisses > 0 && (
-              <MissTracker misses={categoryMisses} />
+              <MissTracker misses={categoryMisses} difficulty={difficulty} />
             )}
           </div>
         )}
@@ -251,7 +252,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
 
           <div className="flex items-start justify-between mt-1.5 gap-3">
             {categoryMisses > 0
-              ? <MissTracker misses={categoryMisses} />
+              ? <MissTracker misses={categoryMisses} difficulty={difficulty} />
               : <span />}
             {lastHint && (
               <p key={lastHint.text} className="text-xs fade-in text-right" style={{ color: 'var(--color-text-faint)' }}>

@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
-import { GAME_CONFIG } from '../config.js'
 import ConfirmMatch from './ConfirmMatch.jsx'
 
-const FREE_MISSES = GAME_CONFIG.bank.freeMisses
+const FREE_MISSES = 3
 
 // Heuristic: does this guess look like a category answer typed in the wrong field?
 // Category format is "[things] ranked by [metric]" — key signals are ranking/metric words.

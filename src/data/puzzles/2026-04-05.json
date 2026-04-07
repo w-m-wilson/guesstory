@@ -6,6 +6,15 @@
     { "rank": 3, "name": "Germany", "aliases": ["Deutschland"] },
     { "rank": 8, "name": "Turkey",  "aliases": ["Türkiye", "Turkiye"] }
   ],
+  "liteSeed": [
+    { "rank": 1, "name": "Italy",  "aliases": ["Italia"] },
+    { "rank": 2, "name": "France", "aliases": [] },
+    { "rank": 4, "name": "Syria",  "aliases": ["Syrian Arab Republic"] },
+    { "rank": 5, "name": "Greece", "aliases": ["Hellas", "Hellenic Republic"] }
+  ],
+  "challengeSeed": [
+    { "rank": 6, "name": "Tunisia", "aliases": [] }
+  ],
   "bank": [
     { "rank": 1,  "name": "Italy",    "aliases": ["Italia"] },
     { "rank": 2,  "name": "France",   "aliases": [] },

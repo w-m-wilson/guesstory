@@ -11,7 +11,7 @@
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
-export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow, topInset = 0 }) {
+export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow, topInset = 0, difficulty = 'medium' }) {
   const hasLiveSlot = rankSlots?.some(Boolean)
   const containerRef = useRef(null)
   const scrollRef = useRef(null)
@@ -100,6 +100,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
                 compact={compact}
                 attemptNumber={attemptIndex + 1}
                 isLatest={attemptIndex === rankHistory.length - 1}
+                liteDots={difficulty === 'lite'}
                 onPick={() => onPickHistoryRow?.(slots)}
               />
             ))}
@@ -179,7 +180,7 @@ function LiveRow({ slots, compact }) {
   )
 }
 
-function AttemptRow({ slots, feedback, compact, attemptNumber, isLatest, onPick }) {
+function AttemptRow({ slots, feedback, compact, attemptNumber, isLatest, liteDots, onPick }) {
 
   return (
     <button
@@ -198,29 +199,26 @@ function AttemptRow({ slots, feedback, compact, attemptNumber, isLatest, onPick 
       {/* Left column: submitted names in order */}
       <NamesGrid slots={slots} compact={compact} />
 
-      {/* Right column: Mastermind feedback — ● correct, ○ present, — absent; ●s then ○s then —s */}
+      {/* Right column: Mastermind feedback — ●s then ○s then —s; in Lite mode unsorted (positional) */}
       <div className="flex items-center gap-0.5 shrink-0 justify-end" style={{ minWidth: '3.5rem' }}>
-        {[...feedback]
-          .sort((a, b) => {
-            const order = { correct: 0, present: 1 }
-            return (order[a] ?? 2) - (order[b] ?? 2)
-          })
-          .map((f, i) => {
-            if (f === 'correct') {
-              return (
-                <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-dot-correct)' }}>●</span>
-              )
-            }
-            if (f === 'present') {
-              return (
-                <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-dot-present)' }}>○</span>
-              )
-            }
+        {(liteDots ? feedback : [...feedback].sort((a, b) => {
+          const order = { correct: 0, present: 1 }
+          return (order[a] ?? 2) - (order[b] ?? 2)
+        })).map((f, i) => {
+          if (f === 'correct') {
             return (
-              <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-text-faint)', opacity: 0.4 }}>—</span>
+              <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-dot-correct)' }}>●</span>
             )
-          })
-        }
+          }
+          if (f === 'present') {
+            return (
+              <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-dot-present)' }}>○</span>
+            )
+          }
+          return (
+            <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-text-faint)', opacity: 0.4 }}>—</span>
+          )
+        })}
       </div>
     </button>
   )

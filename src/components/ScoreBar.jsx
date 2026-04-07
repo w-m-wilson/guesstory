@@ -2,10 +2,14 @@ import { useRef, useState, useEffect } from 'react'
 
 const COIN_EMOJI = '🪙'
 
-export default function ScoreBar({ coins, gameOver, onHintsOpen, onShowResults, onReset }) {
+const DIFFICULTY_LABELS = { lite: 'LITE', medium: 'MED', challenge: 'CHAL' }
+const DIFFICULTY_ORDER = ['lite', 'medium', 'challenge']
+const DIFFICULTY_NAMES = { lite: 'Lite', medium: 'Medium', challenge: 'Challenge' }
+
+export default function ScoreBar({ coins, gameOver, difficulty = 'medium', onSetDifficulty, onHintsOpen, onShowResults, onReset }) {
   const prevCoins = useRef(coins)
-  // { id, amount, positive }
   const [deltas, setDeltas] = useState([])
+  const [pickerOpen, setPickerOpen] = useState(false)
 
   useEffect(() => {
     const delta = prevCoins.current - coins
@@ -19,75 +23,122 @@ export default function ScoreBar({ coins, gameOver, onHintsOpen, onShowResults, 
     prevCoins.current = coins
   }, [coins])
 
+  // Options easier than current difficulty (downgrade only mid-game)
+  const easierOptions = DIFFICULTY_ORDER.slice(0, DIFFICULTY_ORDER.indexOf(difficulty))
+  const canSwitch = easierOptions.length > 0
+
   return (
-    <div
-      className="flex items-center justify-between px-4 py-3 shrink-0"
-      style={{ borderTop: '1px solid var(--color-border)' }}
-    >
-      {/* Coin display */}
-      <div className="flex items-center gap-2 relative">
-        <span className="text-base">{COIN_EMOJI}</span>
+    <div style={{ position: 'relative' }}>
+      {/* Mid-game difficulty picker — appears above the bar */}
+      {pickerOpen && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setPickerOpen(false)} />
+          <div
+            className="absolute bottom-full left-0 right-0 z-50 px-4 pb-2"
+            style={{ background: 'var(--color-bg)' }}
+          >
+            <div
+              className="rounded-xl overflow-hidden"
+              style={{ border: '1px solid var(--color-border)' }}
+            >
+              <p className="text-[10px] font-black tracking-widest uppercase px-3 pt-2.5 pb-1" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
+                Make it easier
+              </p>
+              {easierOptions.map(d => (
+                <button
+                  key={d}
+                  onClick={() => { onSetDifficulty?.(d); setPickerOpen(false) }}
+                  className="w-full flex items-center justify-between px-3 py-2 text-left"
+                  style={{ borderTop: '1px solid var(--color-border)' }}
+                >
+                  <span className="text-sm font-medium" style={{ color: 'var(--color-text-strong)' }}>{DIFFICULTY_NAMES[d]}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
 
-        {/* Pulse on every change by remounting via key */}
-        <span
-          key={coins}
-          className="coin-pulse text-xl font-bold tabular-nums"
-          style={{ color: 'var(--color-text-strong)' }}
-        >
-          {coins}
-        </span>
+      <div
+        className="flex items-center justify-between px-4 py-3 shrink-0"
+        style={{ borderTop: '1px solid var(--color-border)' }}
+      >
+        {/* Coin display + difficulty badge */}
+        <div className="flex items-center gap-2 relative">
+          <span className="text-base">{COIN_EMOJI}</span>
 
-        {/* Floating delta labels */}
-        {deltas.map(({ id, amount, positive }) => (
           <span
-            key={id}
-            className="coin-float absolute left-6 text-base font-bold"
+            key={coins}
+            className="coin-pulse text-xl font-bold tabular-nums"
+            style={{ color: 'var(--color-text-strong)' }}
+          >
+            {coins}
+          </span>
+
+          {deltas.map(({ id, amount, positive }) => (
+            <span
+              key={id}
+              className="coin-float absolute left-6 text-base font-bold"
+              style={{ color: 'var(--color-text-strong)', top: '-6px' }}
+            >
+              {positive ? `+${amount}` : `−${amount}`}
+            </span>
+          ))}
+
+          {/* Difficulty badge */}
+          <button
+            onClick={canSwitch ? () => setPickerOpen(p => !p) : undefined}
+            className="text-[9px] font-black tracking-widest rounded px-1.5 py-0.5"
             style={{
-              color: 'var(--color-text-strong)',
-              top: '-6px',
+              color: 'var(--color-text-faint)',
+              background: 'var(--color-bg-elevated)',
+              border: '1px solid var(--color-border)',
+              cursor: canSwitch ? 'pointer' : 'default',
+              opacity: canSwitch ? 1 : 0.6,
+            }}
+            aria-label={canSwitch ? 'Change difficulty' : `Difficulty: ${DIFFICULTY_NAMES[difficulty]}`}
+          >
+            {DIFFICULTY_LABELS[difficulty] ?? 'MED'}
+          </button>
+        </div>
+
+        {/* Reset button — center */}
+        <button
+          onClick={onReset}
+          className="text-xs font-medium px-2 py-1 rounded-lg"
+          style={{ color: 'var(--color-text-faint)' }}
+          aria-label="Reset session"
+        >
+          ↺ Reset
+        </button>
+
+        {/* Results or Hints */}
+        {gameOver ? (
+          <button
+            onClick={onShowResults}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium"
+            style={{
+              background: 'var(--color-bg-elevated)',
+              color: 'var(--color-text)',
+              border: '1px solid var(--color-border)',
             }}
           >
-            {positive ? `+${amount}` : `−${amount}`}
-          </span>
-        ))}
+            Results
+          </button>
+        ) : (
+          <button
+            onClick={onHintsOpen}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium"
+            style={{
+              background: 'var(--color-bg-elevated)',
+              color: 'var(--color-text)',
+              border: '1px solid var(--color-border)',
+            }}
+          >
+            Hints
+          </button>
+        )}
       </div>
-
-      {/* Reset button — center */}
-      <button
-        onClick={onReset}
-        className="text-xs font-medium px-2 py-1 rounded-lg"
-        style={{ color: 'var(--color-text-faint)' }}
-        aria-label="Reset session"
-      >
-        ↺ Reset
-      </button>
-
-      {/* Results button (post-game) or Hints button (during game) */}
-      {gameOver ? (
-        <button
-          onClick={onShowResults}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium"
-          style={{
-            background: 'var(--color-bg-elevated)',
-            color: 'var(--color-text)',
-            border: '1px solid var(--color-border)',
-          }}
-        >
-          Results
-        </button>
-      ) : (
-        <button
-          onClick={onHintsOpen}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium"
-          style={{
-            background: 'var(--color-bg-elevated)',
-            color: 'var(--color-text)',
-            border: '1px solid var(--color-border)',
-          }}
-        >
-          Hints
-        </button>
-      )}
     </div>
   )
 }

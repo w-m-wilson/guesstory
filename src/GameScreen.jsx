@@ -10,18 +10,66 @@ import HintModal from './components/HintModal.jsx'
 import EndScreen from './components/EndScreen.jsx'
 import TutorialBanner from './components/TutorialBanner.jsx'
 
+const DIFFICULTY_META = {
+  lite:      { label: 'Lite',      blurb: 'Most answers given — focus on the ranking order' },
+  medium:    { label: 'Medium',    blurb: 'A couple of hints to get you started' },
+  challenge: { label: 'Challenge', blurb: 'Start from scratch — no hints given' },
+}
+
+function DifficultySelector({ current, onSelect, onDismiss }) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center"
+      style={{ background: 'rgba(0,0,0,0.4)' }}
+      onClick={onDismiss}
+    >
+      <div
+        className="w-full max-w-[430px] rounded-t-2xl p-5 pb-8 flex flex-col gap-3"
+        style={{ background: 'var(--color-bg)' }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div>
+          <p className="font-semibold text-base mb-0.5" style={{ color: 'var(--color-text-strong)' }}>Choose difficulty</p>
+          <p className="text-xs" style={{ color: 'var(--color-text-faint)' }}>You can always make it easier mid-game if needed.</p>
+        </div>
+        {Object.entries(DIFFICULTY_META).map(([key, { label, blurb }]) => (
+          <button
+            key={key}
+            onClick={() => onSelect(key)}
+            className="flex items-center justify-between w-full rounded-xl px-4 py-3 text-left"
+            style={{
+              background: current === key ? 'var(--color-text-strong)' : 'var(--color-bg-elevated)',
+              border: `1px solid ${current === key ? 'var(--color-text-strong)' : 'var(--color-border)'}`,
+              color: current === key ? 'var(--color-bg)' : 'var(--color-text)',
+            }}
+          >
+            <div>
+              <p className="text-sm font-semibold">{label}</p>
+              <p className="text-xs mt-0.5" style={{ color: current === key ? 'var(--color-bg)' : 'var(--color-text-faint)', opacity: current === key ? 0.75 : 1 }}>{blurb}</p>
+            </div>
+            {current === key && <span className="text-sm ml-3 shrink-0" style={{ color: 'var(--color-bg)', opacity: 0.7 }}>✓</span>}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComplete, isTutorial, tutorialMode = 'learn' }) {
   const [hintsOpen, setHintsOpen] = useState(false)
   const [endScreenDismissed, setEndScreenDismissed] = useState(false)
   const [bankPanelHeight, setBankPanelHeight] = useState(0)
   const [narration, setNarration] = useState(null)
+  const [selectorDismissed, setSelectorDismissed] = useState(() => !!localStorage.getItem('rankie-difficulty'))
   const bankPanelRef = useRef(null)
   const narrationTimerRef = useRef(null)
+
+  const initialDifficulty = useState(() => localStorage.getItem('rankie-difficulty') ?? 'medium')[0]
 
   // Build key map once per puzzle (rank → 2-letter key)
   const keyMap = useMemo(() => buildItemKeys(puzzle.bank), [puzzle])
 
-  const game = useGameState(puzzle)
+  const game = useGameState(puzzle, initialDifficulty)
 
   // Derive primitives before the null guard so tutorial effects can reference them safely
   const discoveredList = game?.discoveredList ?? []
@@ -78,7 +126,10 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
   if (!game) return null
 
   const { state, guessBankItem, confirmPending, cancelPending,
-          placeItem, removeSlot, moveSlot, loadRankingSlots, submitRanking, purchaseHint, resetGame, guessCategory } = game
+          placeItem, removeSlot, moveSlot, loadRankingSlots, submitRanking, purchaseHint, setDifficulty, resetGame, guessCategory } = game
+
+  const difficulty = state.difficulty ?? 'medium'
+  const showDifficultySelector = !isTutorial && !selectorDismissed && state.bankMisses === 0 && state.rankHistory.length === 0
 
   function handleSubmitRanking() {
     const result = submitRanking()
@@ -86,21 +137,22 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
     const { feedback } = result
     const slotNames = state.rankSlots.map(s => s?.name ?? null)
     const attemptNumber = state.rankHistory.length + 1
-    clearTimeout(narrationTimerRef.current)
-    setNarration(null)
-    fetch('/api/narrate-attempt', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slots: slotNames, feedback, attemptNumber, coinsRemaining: state.coins }),
-    })
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        if (data?.narration) {
-          setNarration(data.narration)
-          narrationTimerRef.current = setTimeout(() => setNarration(null), 4000)
-        }
-      })
-      .catch(() => {})
+    // narration disabled for prod — uncomment to re-enable for local workshopping
+    // clearTimeout(narrationTimerRef.current)
+    // setNarration(null)
+    // fetch('/api/narrate-attempt', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ slots: slotNames, feedback, attemptNumber, coinsRemaining: state.coins }),
+    // })
+    //   .then(r => r.ok ? r.json() : null)
+    //   .then(data => {
+    //     if (data?.narration) {
+    //       setNarration(data.narration)
+    //       narrationTimerRef.current = setTimeout(() => setNarration(null), 4000)
+    //     }
+    //   })
+    //   .catch(() => {})
   }
 
   const gameOver = gameStatus === 'won' || gameStatus === 'abandoned'
@@ -116,6 +168,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
         }
         categoryHint={puzzle.hint ?? null}
         categoryMisses={state.categoryMisses}
+        difficulty={difficulty}
         onGuessCategory={guessCategory}
         onOpenIntro={onOpenIntro}
         onOpenSettings={onOpenSettings}
@@ -137,6 +190,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
           rankSlots={state.rankSlots}
           onPickHistoryRow={loadRankingSlots}
           topInset={bankPanelHeight}
+          difficulty={difficulty}
         />
         <div ref={bankPanelRef} style={{ position: 'relative', zIndex: 10 }}>
           <BankPanel
@@ -173,9 +227,11 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
       <ScoreBar
         coins={state.coins}
         gameOver={gameOver}
+        difficulty={difficulty}
+        onSetDifficulty={setDifficulty}
         onHintsOpen={() => setHintsOpen(true)}
         onShowResults={gameOver ? () => setEndScreenDismissed(false) : null}
-        onReset={resetGame}
+        onReset={() => { resetGame(); setSelectorDismissed(false) }}
       />
 
       {hintsOpen && (
@@ -184,8 +240,17 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
           allBankFound={discoveredList.length >= puzzle.bank.length}
           categoryGuessed={state.categoryGuessed}
           category={puzzle.category}
+          difficulty={difficulty}
           onPurchase={purchaseHint}
           onClose={() => setHintsOpen(false)}
+        />
+      )}
+
+      {showDifficultySelector && (
+        <DifficultySelector
+          current={difficulty}
+          onSelect={(d) => { setDifficulty(d); setSelectorDismissed(true) }}
+          onDismiss={() => setSelectorDismissed(true)}
         />
       )}
 
@@ -195,6 +260,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
           coins={state.coins}
           rankHistory={state.rankHistory}
           gameStatus={state.gameStatus}
+          difficulty={difficulty}
           category={puzzle.category}
           categoryGuessed={state.categoryGuessed}
           categoryText={gameStatus === 'abandoned' || !state.categoryGuessed ? puzzle.category : null}
@@ -202,6 +268,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
           hailMaryTaken={hailMaryTaken}
           isTutorial={isTutorial}
           keyMap={keyMap}
+          onGuessCategory={guessCategory}
           onClose={
             isTutorial && tutorialMode === 'learn' && gameStatus === 'won'
               ? () => { setEndScreenDismissed(true); onComplete?.() }

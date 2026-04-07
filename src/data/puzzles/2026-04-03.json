@@ -6,6 +6,15 @@
     { "rank": 5, "name": "Hindi",   "aliases": [] },
     { "rank": 8, "name": "Russian", "aliases": [] }
   ],
+  "liteSeed": [
+    { "rank": 1, "name": "Chinese", "aliases": ["Mandarin", "Mandarin Chinese"] },
+    { "rank": 2, "name": "Spanish", "aliases": [] },
+    { "rank": 3, "name": "English", "aliases": [] },
+    { "rank": 4, "name": "Arabic",  "aliases": [] }
+  ],
+  "challengeSeed": [
+    { "rank": 6, "name": "Portuguese", "aliases": [] }
+  ],
   "bank": [
     { "rank": 1,  "name": "Chinese",    "aliases": ["Mandarin", "Mandarin Chinese"] },
     { "rank": 2,  "name": "Spanish",    "aliases": [] },

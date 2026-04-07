@@ -6,6 +6,15 @@
     { "rank": 4, "name": "Apricots", "aliases": [] },
     { "rank": 5, "name": "Cherries", "aliases": [] }
   ],
+  "liteSeed": [
+    { "rank": 1, "name": "Raspberries",  "aliases": [] },
+    { "rank": 2, "name": "Blackberries", "aliases": [] },
+    { "rank": 3, "name": "Blueberries",  "aliases": [] },
+    { "rank": 5, "name": "Cherries",     "aliases": [] }
+  ],
+  "challengeSeed": [
+    { "rank": 6, "name": "Strawberries", "aliases": [] }
+  ],
   "bank": [
     { "rank": 1,  "name": "Raspberries",  "aliases": [] },
     { "rank": 2,  "name": "Blackberries", "aliases": [] },

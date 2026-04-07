@@ -6,6 +6,15 @@
     { "rank": 3, "name": "Star Wars", "aliases": ["Star Wars franchise"] },
     { "rank": 7, "name": "X-Men", "aliases": ["X-Men franchise"] }
   ],
+  "liteSeed": [
+    { "rank": 1, "name": "Marvel Cinematic Universe", "aliases": ["MCU", "Marvel"] },
+    { "rank": 2, "name": "Spider-Man",                "aliases": ["Spider-Man franchise", "Spiderman"] },
+    { "rank": 4, "name": "Wizarding World",           "aliases": ["Harry Potter", "Harry Potter franchise", "Fantastic Beasts"] },
+    { "rank": 5, "name": "James Bond",                "aliases": ["James Bond franchise", "007"] }
+  ],
+  "challengeSeed": [
+    { "rank": 6, "name": "Avengers", "aliases": ["Avengers franchise"] }
+  ],
   "bank": [
     { "rank": 1,  "name": "Marvel Cinematic Universe", "aliases": ["MCU", "Marvel"] },
     { "rank": 2,  "name": "Spider-Man",                "aliases": ["Spider-Man franchise", "Spiderman"] },

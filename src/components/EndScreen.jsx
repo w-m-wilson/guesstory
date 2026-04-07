@@ -19,9 +19,12 @@ function feedbackDots({ feedback }) {
   return sorted.map(v => v === 'correct' ? '●' : v === 'present' ? '○' : '—').join('')
 }
 
-function buildShareText(puzzleId, coins, rankHistory) {
+const DIFFICULTY_SHARE = { lite: 'Lite', medium: 'Medium', challenge: 'Challenge' }
+
+function buildShareText(puzzleId, coins, rankHistory, difficulty) {
   const n = rankHistory.length
-  const header = `Reckon ${puzzleId}\n${coins}/100 · ${n} attempt${n !== 1 ? 's' : ''}`
+  const diff = DIFFICULTY_SHARE[difficulty] ?? 'Medium'
+  const header = `Reckon ${puzzleId} · ${diff}\n${coins}/100 · ${n} attempt${n !== 1 ? 's' : ''}`
 
   const truncated = n > HEAD + TAIL
   const visible = truncated
@@ -79,16 +82,25 @@ function AttemptsPreview({ rankHistory }) {
   )
 }
 
-export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, category, categoryGuessed, categoryText, categorySource, hailMaryTaken, isTutorial, keyMap, onClose, onComplete, completeCTA }) {
+export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, difficulty = 'medium', category, categoryGuessed, categoryText, categorySource, hailMaryTaken, isTutorial, keyMap, onGuessCategory, onClose, onComplete, completeCTA }) {
   const won = gameStatus === 'won'
   const showHailMary = gameStatus === 'abandoned' && !hailMaryTaken
   const grade = getGrade(coins)
+
+  // Post-win bonus category guess (only when won without guessing category)
+  const needsBonusGuess = won && !categoryGuessed && !isTutorial
+  const [postWinGuess, setPostWinGuess] = useState(null) // null=pending, { correct }=done
+  const [bonusQuery, setBonusQuery] = useState('')
+  const [bonusLoading, setBonusLoading] = useState(false)
+  const recapReady = !needsBonusGuess || postWinGuess !== null
+
   const [copied, setCopied] = useState(false)
   const [recap, setRecap] = useState(null)
-  const [recapLoading, setRecapLoading] = useState(!isTutorial)
+  const [recapLoading, setRecapLoading] = useState(false)
 
   useEffect(() => {
-    if (isTutorial || !category) { setRecapLoading(false); return }
+    if (!recapReady || isTutorial || !category) return
+    setRecapLoading(true)
     fetch('/api/game-recap', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -97,16 +109,26 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, ca
         coins,
         won,
         category,
-        categoryGuessed: !!categoryGuessed,
+        categoryGuessed: !!categoryGuessed || !!postWinGuess?.correct,
       }),
     })
       .then(r => r.ok ? r.json() : null)
       .then(data => { setRecap(data?.recap ?? null); setRecapLoading(false) })
       .catch(() => setRecapLoading(false))
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [recapReady]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function handleBonusGuess(e) {
+    e.preventDefault()
+    const q = bonusQuery.trim()
+    if (!q) return
+    setBonusLoading(true)
+    const result = await onGuessCategory?.(q)
+    setBonusLoading(false)
+    setPostWinGuess({ correct: result?.outcome === 'hit' })
+  }
 
   async function handleShare() {
-    const text = buildShareText(puzzleId, coins, rankHistory)
+    const text = buildShareText(puzzleId, coins, rankHistory, difficulty)
     if (navigator.share) {
       try {
         await navigator.share({ text })
@@ -180,7 +202,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, ca
               {coins}
             </p>
             <p className="text-sm mt-1" style={{ color: 'var(--color-text-faint)' }}>
-              coins remaining · {grade}
+              coins · {DIFFICULTY_SHARE[difficulty] ?? 'Medium'} · {grade}
             </p>
           </div>
           <AttemptsPreview rankHistory={rankHistory} />
@@ -196,30 +218,79 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, ca
           </p>
         )}
 
-        {onComplete ? (
-          <button
-            onClick={() => { onClose(); onComplete(); }}
-            className="w-full py-2.5 rounded-xl text-sm font-semibold"
-            style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
-          >
-            {completeCTA ?? 'Play today\'s puzzle →'}
-          </button>
-        ) : showHailMary ? (
-          <button
-            onClick={onClose}
-            className="w-full py-2.5 rounded-xl text-sm font-semibold"
-            style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
-          >
-            Take your Hail Mary →
-          </button>
+        {needsBonusGuess && postWinGuess === null ? (
+          <div className="flex flex-col gap-2">
+            <p className="text-sm font-medium" style={{ color: 'var(--color-text-strong)' }}>
+              One guess at the category — what was the theme?
+            </p>
+            <form onSubmit={handleBonusGuess} className="flex gap-2">
+              <input
+                type="text"
+                value={bonusQuery}
+                onChange={e => setBonusQuery(e.target.value)}
+                placeholder="The theme was…"
+                className="flex-1 rounded-lg px-3 py-1.5 text-sm outline-none"
+                style={{
+                  background: 'var(--color-bg-elevated)',
+                  color: 'var(--color-text)',
+                  border: '1px solid var(--color-border)',
+                  fontSize: '16px',
+                }}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
+              />
+              <button
+                type="submit"
+                disabled={!bonusQuery.trim() || bonusLoading}
+                className="px-3 py-1.5 rounded-lg text-sm font-semibold shrink-0 disabled:opacity-40"
+                style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+              >
+                {bonusLoading ? '…' : '→'}
+              </button>
+            </form>
+            <button
+              onClick={() => setPostWinGuess({ correct: false })}
+              className="text-xs text-center py-1"
+              style={{ color: 'var(--color-text-faint)' }}
+            >
+              Skip
+            </button>
+          </div>
         ) : (
-          <button
-            onClick={handleShare}
-            className="w-full py-2.5 rounded-xl text-sm font-semibold"
-            style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
-          >
-            {copied ? 'Copied!' : 'Share result'}
-          </button>
+          <>
+            {needsBonusGuess && postWinGuess && (
+              <p className="text-sm text-center fade-in" style={{ color: postWinGuess.correct ? 'var(--color-dot-correct)' : 'var(--color-text-faint)' }}>
+                {postWinGuess.correct ? '✓ Got it!' : `The category was ${category}`}
+              </p>
+            )}
+            {onComplete ? (
+              <button
+                onClick={() => { onClose(); onComplete(); }}
+                className="w-full py-2.5 rounded-xl text-sm font-semibold"
+                style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+              >
+                {completeCTA ?? 'Play today\'s puzzle →'}
+              </button>
+            ) : showHailMary ? (
+              <button
+                onClick={onClose}
+                className="w-full py-2.5 rounded-xl text-sm font-semibold"
+                style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+              >
+                Take your Hail Mary →
+              </button>
+            ) : (
+              <button
+                onClick={handleShare}
+                className="w-full py-2.5 rounded-xl text-sm font-semibold"
+                style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+              >
+                {copied ? 'Copied!' : 'Share result'}
+              </button>
+            )}
+          </>
         )}
       </div>
     </div>

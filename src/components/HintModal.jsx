@@ -1,40 +1,17 @@
 import { useState } from 'react'
-import { GAME_CONFIG } from '../config.js'
+import { DIFFICULTY_CONFIG } from '../config.js'
 
-const HINTS = [
-  {
-    key: 'revealBankItem',
-    label: 'Reveal a bank item',
-    description: 'Add one undiscovered item to your bank',
-    cost: GAME_CONFIG.hints.revealBankItem,
-  },
-  {
-    key: 'revealRankPositionKnown',
-    label: 'Pin a discovered item',
-    description: "Lock one item you've already found to its correct slot",
-    cost: GAME_CONFIG.hints.revealRankPositionKnown,
-  },
-  {
-    key: 'revealCategoryNudge',
-    label: 'Category clue',
-    description: 'Get a cryptic hint toward the hidden category',
-    cost: GAME_CONFIG.hints.revealCategoryNudge,
-  },
-  {
-    key: 'revealRankPositionUnknown',
-    label: 'Pin an undiscovered item',
-    description: "Reveal and lock an item you haven't found yet to its correct slot",
-    cost: GAME_CONFIG.hints.revealRankPositionUnknown,
-  },
-  {
-    key: 'revealCategory',
-    label: 'Reveal category',
-    description: 'Show the full hidden category label',
-    cost: GAME_CONFIG.hints.revealCategory,
-  },
+const HINT_DEFS = [
+  { key: 'revealBankItem',            label: 'Reveal a bank item',        description: 'Add one undiscovered item to your bank' },
+  { key: 'revealRankPositionKnown',   label: 'Pin a discovered item',     description: "Lock one item you've already found to its correct slot" },
+  { key: 'revealCategoryNudge',       label: 'Category clue',             description: 'Get a cryptic hint toward the hidden category' },
+  { key: 'revealRankPositionUnknown', label: 'Pin an undiscovered item',   description: "Reveal and lock an item you haven't found yet to its correct slot" },
+  { key: 'revealCategory',            label: 'Reveal category',            description: 'Show the full hidden category label' },
 ]
 
-export default function HintModal({ coins, allBankFound, categoryGuessed, category, onPurchase, onClose }) {
+export default function HintModal({ coins, allBankFound, categoryGuessed, category, difficulty = 'medium', onPurchase, onClose }) {
+  const hintCosts = (DIFFICULTY_CONFIG[difficulty] ?? DIFFICULTY_CONFIG.medium).hints
+  const HINTS = HINT_DEFS.map(h => ({ ...h, cost: hintCosts[h.key] }))
   const [feedback, setFeedback] = useState(null)
   const [nudgeLoading, setNudgeLoading] = useState(false)
 
@@ -63,7 +40,7 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, catego
     if (result?.noneFound) {
       setFeedback("None of your discovered items are in the top 5.")
     } else if (result?.fellBackToKnown) {
-      setFeedback(`No undiscovered items left to pin — pinned a discovered one instead (${GAME_CONFIG.hints.revealRankPositionKnown} coins).`)
+      setFeedback(`No undiscovered items left to pin — pinned a discovered one instead (${hintCosts.revealRankPositionKnown} coins).`)
     } else {
       onClose()
     }

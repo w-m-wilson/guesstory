@@ -1,8 +1,8 @@
 import { useReducer, useCallback, useEffect, useRef } from 'react';
 import { createBankMatcher, matchCategory } from '../utils/matcher.js';
 import { generateFeedback, isWin } from '../utils/mastermind.js';
-import { getBankMissCost, getCategoryMissCost, getHintCost } from '../utils/scoring.js';
-import { GAME_CONFIG } from '../config.js';
+import { getBankMissCost, getCategoryMissCost, getCategoryBonus, getRankingAbsentCost, getHintCost } from '../utils/scoring.js';
+import { GAME_CONFIG, DIFFICULTY_CONFIG } from '../config.js';
 
 // ---------------------------------------------------------------------------
 // Storage
@@ -25,19 +25,40 @@ function loadSavedState(puzzleId) {
 // Initial state
 // ---------------------------------------------------------------------------
 
-function initState(puzzle) {
+// Seeds are cumulative: easier tiers include all seeds from harder tiers.
+// challengeSeed ⊆ seed (medium) ⊆ liteSeed
+function seedsForDifficulty(puzzle, difficulty) {
+  const challenge = puzzle.challengeSeed ?? []
+  const medium = puzzle.seed ?? []
+  const lite = puzzle.liteSeed ?? medium
+
+  // Merge by rank so harder-tier items are never lost when going easier
+  const merge = (...arrays) => {
+    const byRank = new Map()
+    for (const arr of arrays) for (const item of arr) byRank.set(item.rank, item)
+    return [...byRank.values()]
+  }
+
+  if (difficulty === 'lite')      return merge(lite, medium, challenge)
+  if (difficulty === 'challenge') return challenge
+  return merge(medium, challenge) // medium
+}
+
+function initState(puzzle, difficulty = 'medium') {
   const discoveredItems = {};
-  for (const item of puzzle.seed) {
+  for (const item of seedsForDifficulty(puzzle, difficulty)) {
     discoveredItems[item.rank] = { ...item, seeded: true };
   }
 
   return {
     coins: GAME_CONFIG.startingCoins,
+    difficulty,               // 'lite' | 'medium' | 'challenge'
     bankMisses: 0,
     categoryMisses: 0,
     discoveredItems,          // { [rank]: item }
     rankSlots: [null, null, null, null, null],  // index 0 = rank position 1
-    lockedSlots: [],          // slot indices locked by revealRankPosition hint
+    lockedSlots: [],          // slot indices locked by hints or Lite auto-lock
+    confirmedCorrect: [],     // [{ index, item }] — Lite mode: slots confirmed correct
     rankHistory: [],          // [{ slots: [...], feedback: [...] }]
     categoryGuessed: false,
     gameStatus: 'playing',    // 'playing' | 'won' | 'abandoned'
@@ -71,7 +92,7 @@ function reducer(state, action) {
     }
 
     case 'BANK_MISS': {
-      const cost = getBankMissCost(state.bankMisses);
+      const cost = getBankMissCost(state.bankMisses, state.difficulty);
       return {
         ...state,
         bankMisses: state.bankMisses + 1,
@@ -139,18 +160,33 @@ function reducer(state, action) {
       }
 
       const won = isWin(feedback);
-      // Cost = 1 coin per slot that's wrong or empty
       const wrongCount = feedback.filter(f => f === 'absent' || f === 'empty').length;
-      const cost = won ? 0 : Math.min(state.coins, wrongCount * GAME_CONFIG.ranking.absentCost);
+      const absentCost = getRankingAbsentCost(state.difficulty);
+      const cost = won ? 0 : Math.min(state.coins, wrongCount * absentCost);
       const newCoins = Math.max(0, state.coins - cost);
       const newStatus = won ? 'won' : (newCoins === 0 ? 'abandoned' : 'playing');
+
+      // Lite mode: auto-lock newly confirmed-correct slots
+      let newConfirmedCorrect = state.confirmedCorrect;
+      let newLockedSlots = state.lockedSlots;
+      if (state.difficulty === 'lite') {
+        const additions = [];
+        feedback.forEach((f, i) => {
+          if (f === 'correct' && !state.lockedSlots.includes(i)) {
+            additions.push({ index: i, item: state.rankSlots[i] });
+            newLockedSlots = [...newLockedSlots, i];
+          }
+        });
+        if (additions.length) newConfirmedCorrect = [...newConfirmedCorrect, ...additions];
+      }
+
       return {
         ...state,
         coins: newCoins,
         rankHistory: [...state.rankHistory, { slots: [...state.rankSlots], feedback }],
-        rankSlots: state.rankSlots,
+        lockedSlots: newLockedSlots,
+        confirmedCorrect: newConfirmedCorrect,
         gameStatus: newStatus,
-        // Auto-reveal category when going abandoned so player sees it during Hail Mary
         categoryGuessed: newStatus === 'abandoned' ? true : state.categoryGuessed,
       };
     }
@@ -159,12 +195,12 @@ function reducer(state, action) {
       return {
         ...state,
         categoryGuessed: true,
-        coins: state.coins + GAME_CONFIG.category.correctGuessBonus,
+        coins: state.coins + getCategoryBonus(state.difficulty),
       };
     }
 
     case 'CATEGORY_MISS': {
-      const cost = getCategoryMissCost(state.categoryMisses);
+      const cost = getCategoryMissCost(state.categoryMisses, state.difficulty);
       return {
         ...state,
         categoryMisses: state.categoryMisses + 1,
@@ -173,7 +209,7 @@ function reducer(state, action) {
     }
 
     case 'PURCHASE_HINT': {
-      const cost = action.cost ?? getHintCost(action.hintType);
+      const cost = action.cost ?? getHintCost(action.hintType, state.difficulty);
       const newState = {
         ...state,
         coins: Math.max(0, state.coins - cost),
@@ -201,6 +237,19 @@ function reducer(state, action) {
         }
       }
       return newState;
+    }
+
+    case 'SET_DIFFICULTY': {
+      const newDifficulty = action.difficulty;
+      // Remove Lite-specific locks when leaving Lite mode
+      let newLockedSlots = state.lockedSlots;
+      let newConfirmedCorrect = state.confirmedCorrect;
+      if (state.difficulty === 'lite' && newDifficulty !== 'lite') {
+        const liteIndices = new Set(state.confirmedCorrect.map(c => c.index));
+        newLockedSlots = state.lockedSlots.filter(i => !liteIndices.has(i));
+        newConfirmedCorrect = [];
+      }
+      return { ...state, difficulty: newDifficulty, lockedSlots: newLockedSlots, confirmedCorrect: newConfirmedCorrect };
     }
 
     case 'END_GAME': {
@@ -241,7 +290,7 @@ function reducer(state, action) {
  *   purchaseHint(type)    → { item? }
  *   endGame()             → void
  */
-export function useGameState(puzzle) {
+export function useGameState(puzzle, initialDifficulty = 'medium') {
   // Keep a always-current ref to state for use inside callbacks.
   // This avoids stale closures without adding state to every useCallback dep array.
   const stateRef = useRef(null);
@@ -252,9 +301,9 @@ export function useGameState(puzzle) {
     undefined,
     () => {
       const saved = loadSavedState(puzzle.id);
-      // Merge saved state over a fresh initState so any newly added fields
-      // (e.g. lockedSlots) are always present even for old saves.
-      return saved ? { ...initState(puzzle), ...saved } : initState(puzzle);
+      const difficulty = saved?.difficulty ?? initialDifficulty;
+      // Merge saved state over a fresh initState so any newly added fields are always present.
+      return saved ? { ...initState(puzzle, difficulty), ...saved } : initState(puzzle, difficulty);
     }
   );
 
@@ -278,7 +327,7 @@ export function useGameState(puzzle) {
     const result = matcherRef.current?.match(query);
 
     if (!result) {
-      const cost = getBankMissCost(s.bankMisses);
+      const cost = getBankMissCost(s.bankMisses, s.difficulty);
       dispatch({ type: 'BANK_MISS' });
       return { outcome: 'miss', cost };
     }
@@ -340,7 +389,8 @@ export function useGameState(puzzle) {
 
   const guessCategory = useCallback(async (query) => {
     const s = stateRef.current;
-    if (s.gameStatus !== 'playing') return null;
+    const postWin = s.gameStatus === 'won';
+    if (s.gameStatus !== 'playing' && !postWin) return null;
 
     // Try LLM evaluation; fall back to local Fuse matcher if unavailable
     let matched = false, warm = false, cold = false, hint = null;
@@ -372,6 +422,10 @@ export function useGameState(puzzle) {
       dispatch({ type: 'CATEGORY_HIT' });
       return { outcome: 'hit' };
     }
+    if (postWin) {
+      // post-win bonus guess — no penalty
+      return { outcome: 'miss', warm, cold, hint };
+    }
     const cost = getCategoryMissCost(s.categoryMisses);
     dispatch({ type: 'CATEGORY_MISS' });
     return { outcome: 'miss', cost, warm, cold, hint };
@@ -389,12 +443,10 @@ export function useGameState(puzzle) {
 
     if (hintType === 'revealRankPositionKnown') {
       const topFiveItems = puzzle.bank.filter(b => puzzle.topFive.includes(b.rank));
-      // Only consider items the player has already discovered and that aren't locked
       const candidates = topFiveItems.filter(b => s.discoveredItems[b.rank] && !s.lockedSlots.includes(b.rank - 1));
       item = candidates.length ? candidates[Math.floor(Math.random() * candidates.length)] : null;
       if (!item) {
-        // Charge the fee but don't pin anything — player has no discovered top-5 items
-        const cost = getHintCost(hintType);
+        const cost = getHintCost(hintType, s.difficulty);
         dispatch({ type: 'PURCHASE_HINT', hintType, item: null, slotIndex: null, cost });
         return { item: null, noneFound: true };
       }
@@ -408,21 +460,33 @@ export function useGameState(puzzle) {
         item = unknownCandidates[Math.floor(Math.random() * unknownCandidates.length)];
         slotIndex = item.rank - 1;
       } else {
-        // Fall back to pinning a discovered item at the cheaper price
         const knownCandidates = topFiveItems.filter(b => s.discoveredItems[b.rank] && !s.lockedSlots.includes(b.rank - 1));
         item = knownCandidates.length ? knownCandidates[Math.floor(Math.random() * knownCandidates.length)] : null;
         if (!item) return { item: null };
         slotIndex = item.rank - 1;
-        const cost = getHintCost('revealRankPositionKnown');
+        const cost = getHintCost('revealRankPositionKnown', s.difficulty);
         dispatch({ type: 'PURCHASE_HINT', hintType: 'revealRankPositionKnown', item, slotIndex, cost });
         return { item, fellBackToKnown: true };
       }
     }
 
-    const cost = getHintCost(hintType);
+    const cost = getHintCost(hintType, s.difficulty);
     dispatch({ type: 'PURCHASE_HINT', hintType, item, slotIndex, cost });
     return { item };
   }, [puzzle.bank, puzzle.topFive]);
+
+  const setDifficulty = useCallback((difficulty) => {
+    const s = stateRef.current;
+    const hasStarted = s.bankMisses > 0 || s.rankHistory.length > 0;
+    localStorage.setItem('rankie-difficulty', difficulty);
+    if (!hasStarted) {
+      // Before any action: full reset with new seeds
+      dispatch({ type: 'RESET', initialState: initState(puzzle, difficulty) });
+    } else {
+      // Mid-game downgrade only
+      dispatch({ type: 'SET_DIFFICULTY', difficulty });
+    }
+  }, [puzzle]);
 
   const endGame = useCallback(() => {
     dispatch({ type: 'END_GAME' });
@@ -449,6 +513,7 @@ export function useGameState(puzzle) {
     submitRanking,
     guessCategory,
     purchaseHint,
+    setDifficulty,
     endGame,
   };
 }
