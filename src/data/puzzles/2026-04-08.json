@@ -4,7 +4,7 @@
   "hint": "Think total global footprint — some coffee and pizza chains spread further than you'd expect",
   "seed": [
     { "rank": 3, "name": "Subway",    "aliases": [] },
-    { "rank": 7, "name": "Pizza Hut", "aliases": ["Pizza Hut franchise"] }
+    { "rank": 7, "name": "Pizza Hut", "aliases": [] }
   ],
   "liteSeed": [
     { "rank": 1, "name": "McDonald's",  "aliases": ["McDonalds"] },
@@ -21,7 +21,7 @@
     { "rank": 3,  "name": "Subway",            "aliases": [] },
     { "rank": 4,  "name": "KFC",               "aliases": ["Kentucky Fried Chicken"] },
     { "rank": 5,  "name": "Domino's",          "aliases": ["Dominos", "Domino's Pizza"] },
-    { "rank": 6,  "name": "Burger King",       "aliases": [] },
+    { "rank": 6,  "name": "Burger King",       "aliases": ["BK"] },
     { "rank": 7,  "name": "Pizza Hut",         "aliases": ["Pizza Hut franchise"] },
     { "rank": 8,  "name": "Dunkin'",           "aliases": ["Dunkin", "Dunkin Donuts", "Dunkin' Donuts"] },
     { "rank": 9,  "name": "Krispy Kreme",      "aliases": ["Krispy Kreme Doughnuts"] },

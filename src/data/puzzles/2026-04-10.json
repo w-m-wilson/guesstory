@@ -1,0 +1,32 @@
+{
+  "id": "2026-04-10",
+  "category": "Countries by Number of Data Centers",
+  "hint": "Think about where the internet actually lives — tech hubs, financial centers, and cloud infrastructure",
+  "seed": [
+    { "rank": 1, "name": "United States", "aliases": ["USA", "US", "America"] },
+    { "rank": 4, "name": "China",         "aliases": ["People's Republic of China", "PRC"] }
+  ],
+  "liteSeed": [
+    { "rank": 2, "name": "United Kingdom", "aliases": ["UK", "Britain", "Great Britain", "England"] },
+    { "rank": 3, "name": "Germany",        "aliases": ["Deutschland"] },
+    { "rank": 6, "name": "Canada",         "aliases": [] },
+    { "rank": 9, "name": "Japan",          "aliases": [] }
+  ],
+  "challengeSeed": [
+    { "rank": 5, "name": "France", "aliases": [] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "United States",  "aliases": ["USA", "US", "America"] },
+    { "rank": 2,  "name": "United Kingdom", "aliases": ["UK", "Britain", "Great Britain", "England"] },
+    { "rank": 3,  "name": "Germany",        "aliases": ["Deutschland"] },
+    { "rank": 4,  "name": "China",          "aliases": ["People's Republic of China", "PRC"] },
+    { "rank": 5,  "name": "France",         "aliases": [] },
+    { "rank": 6,  "name": "Canada",         "aliases": [] },
+    { "rank": 7,  "name": "Australia",      "aliases": [] },
+    { "rank": 8,  "name": "India",          "aliases": [] },
+    { "rank": 9,  "name": "Japan",          "aliases": [] },
+    { "rank": 10, "name": "Italy",          "aliases": ["Italia"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://www.statista.com/statistics/1228433/data-centers-worldwide-by-country/"
+}

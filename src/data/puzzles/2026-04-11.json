@@ -1,0 +1,30 @@
+{
+  "id": "2026-04-11",
+  "category": "Countries & Agencies by Pieces of Space Debris",
+  "hint": "Think about who has launched the most rockets over the longest time — older programs leave more behind",
+  "seed": [
+    { "rank": 3, "name": "China", "aliases": ["People's Republic of China", "PRC"] },
+    { "rank": 6, "name": "India", "aliases": [] }
+  ],
+  "liteSeed": [
+    { "rank": 1, "name": "Russia", "aliases": ["USSR", "Soviet Union"] },
+    { "rank": 2, "name": "USA",    "aliases": ["United States", "United States of America", "US", "America"] },
+    { "rank": 5, "name": "Japan",  "aliases": [] },
+    { "rank": 7, "name": "Europe (ESA)", "aliases": ["ESA", "European Space Agency", "Europe", "EU", "European Union", "European Agency"] }
+  ],
+  "challengeSeed": [
+    { "rank": 4, "name": "France", "aliases": [] }
+  ],
+  "bank": [
+    { "rank": 1, "name": "Russia",  "aliases": ["USSR", "Soviet Union"] },
+    { "rank": 2, "name": "USA",     "aliases": ["United States", "United States of America", "US", "America"] },
+    { "rank": 3, "name": "China",   "aliases": ["People's Republic of China", "PRC"] },
+    { "rank": 4, "name": "France",  "aliases": [] },
+    { "rank": 5, "name": "Japan",   "aliases": [] },
+    { "rank": 6, "name": "India",   "aliases": [] },
+    { "rank": 7, "name": "Europe (ESA)", "aliases": ["ESA", "European Space Agency", "Europe", "EU", "European Union", "European Agency"] },
+    { "rank": 8, "name": "UK",      "aliases": ["United Kingdom", "Britain", "Great Britain", "England"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://www.statista.com/chart/28309/countries-creating-the-most-space-debris/"
+}
