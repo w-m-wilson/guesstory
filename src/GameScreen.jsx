@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useLayoutEffect, useRef, useCallback } from 'react'
+import { useState, useMemo, useEffect, useLayoutEffect, useRef } from 'react'
 import { useGameState } from './hooks/useGameState.js'
 import { buildItemKeys } from './utils/itemKeys.js'
 import Header from './components/Header.jsx'
@@ -57,10 +57,8 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
   const [hintsOpen, setHintsOpen] = useState(false)
   const [endScreenDismissed, setEndScreenDismissed] = useState(false)
   const [bankPanelHeight, setBankPanelHeight] = useState(0)
-  const [narration, setNarration] = useState(null)
   const [selectorDismissed, setSelectorDismissed] = useState(() => !!localStorage.getItem('rankie-difficulty'))
   const bankPanelRef = useRef(null)
-  const narrationTimerRef = useRef(null)
 
   const initialDifficulty = useState(() => localStorage.getItem('rankie-difficulty') ?? 'medium')[0]
 
@@ -130,27 +128,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
   const showDifficultySelector = !isTutorial && !selectorDismissed && state.bankMisses === 0 && state.rankHistory.length === 0
 
   function handleSubmitRanking() {
-    const result = submitRanking()
-    if (!result) return
-    const { feedback } = result
-    const slotNames = state.rankSlots.map(s => s?.name ?? null)
-    const attemptNumber = state.rankHistory.length + 1
-    // narration disabled for prod — uncomment to re-enable for local workshopping
-    // clearTimeout(narrationTimerRef.current)
-    // setNarration(null)
-    // fetch('/api/narrate-attempt', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ slots: slotNames, feedback, attemptNumber, coinsRemaining: state.coins }),
-    // })
-    //   .then(r => r.ok ? r.json() : null)
-    //   .then(data => {
-    //     if (data?.narration) {
-    //       setNarration(data.narration)
-    //       narrationTimerRef.current = setTimeout(() => setNarration(null), 4000)
-    //     }
-    //   })
-    //   .catch(() => {})
+    submitRanking()
   }
 
   const gameOver = gameStatus === 'won' || gameStatus === 'abandoned'
@@ -207,12 +185,6 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
           />
         </div>
       </div>
-
-      {narration && (
-        <div key={narration} className="narration-toast shrink-0 px-5 py-2 text-center">
-          <p className="text-xs italic" style={{ color: 'var(--color-text-faint)' }}>{narration}</p>
-        </div>
-      )}
 
       <RankBoard
         rankSlots={state.rankSlots}
