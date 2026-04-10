@@ -271,9 +271,9 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
           </div>
         ) : (
           <>
-            {needsBonusGuess && postWinGuess && (
-              <p className="text-sm text-center fade-in" style={{ color: postWinGuess.correct ? 'var(--color-dot-correct)' : 'var(--color-text-faint)' }}>
-                {postWinGuess.correct ? '✓ Got it!' : `The category was ${category}`}
+            {needsBonusGuess && postWinGuess?.correct && (
+              <p className="text-sm text-center fade-in" style={{ color: 'var(--color-dot-correct)' }}>
+                ✓ Got it!
               </p>
             )}
             {onComplete ? (
