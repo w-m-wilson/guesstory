@@ -5,6 +5,8 @@ export default async function handler(req, res) {
 
   const { query, category } = req.body
   if (!query || !category) return res.status(400).json({ error: 'Missing fields' })
+  if (typeof query !== 'string' || query.length > 200) return res.status(400).json({ error: 'Invalid input' })
+  if (typeof category !== 'string' || category.length > 300) return res.status(400).json({ error: 'Invalid input' })
 
   try {
     const client = new Anthropic()

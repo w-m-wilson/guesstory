@@ -5,6 +5,7 @@ export default async function handler(req, res) {
 
   const { slots, feedback, attemptNumber, coinsRemaining } = req.body
   if (!feedback || !attemptNumber) return res.status(400).json({ error: 'Missing fields' })
+  if (!Array.isArray(feedback) || feedback.length > 10) return res.status(400).json({ error: 'Invalid input' })
 
   const correctCount = feedback.filter(f => f === 'correct').length
   const presentCount = feedback.filter(f => f === 'present').length

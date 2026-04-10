@@ -5,6 +5,8 @@ export default async function handler(req, res) {
 
   const { category, difficulty } = req.body
   if (!category) return res.status(400).json({ error: 'Missing fields' })
+  if (typeof category !== 'string' || category.length > 300) return res.status(400).json({ error: 'Invalid input' })
+  if (difficulty !== undefined && !['lite', 'medium', 'challenge'].includes(difficulty)) return res.status(400).json({ error: 'Invalid input' })
 
   const system = difficulty === 'challenge'
     ? `You are a cryptic oracle for a ranking puzzle. The puzzle's hidden category is: "${category}"\n\n` +

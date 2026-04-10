@@ -95,11 +95,15 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
   const recapReady = !needsBonusGuess || postWinGuess !== null
 
   const [copied, setCopied] = useState(false)
-  const [recap, setRecap] = useState(null)
+  const recapCacheKey = puzzleId ? `recap-${puzzleId}` : null
+  const [recap, setRecap] = useState(() => {
+    try { return recapCacheKey ? (localStorage.getItem(recapCacheKey) ?? null) : null }
+    catch { return null }
+  })
   const [recapLoading, setRecapLoading] = useState(false)
 
   useEffect(() => {
-    if (!recapReady || isTutorial || !category) return
+    if (!recapReady || isTutorial || !category || recap) return
     setRecapLoading(true)
     fetch('/api/game-recap', {
       method: 'POST',
@@ -113,7 +117,14 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
       }),
     })
       .then(r => r.ok ? r.json() : null)
-      .then(data => { setRecap(data?.recap ?? null); setRecapLoading(false) })
+      .then(data => {
+        const text = data?.recap ?? null
+        setRecap(text)
+        setRecapLoading(false)
+        if (text && recapCacheKey) {
+          try { localStorage.setItem(recapCacheKey, text) } catch {}
+        }
+      })
       .catch(() => setRecapLoading(false))
   }, [recapReady]) // eslint-disable-line react-hooks/exhaustive-deps
 

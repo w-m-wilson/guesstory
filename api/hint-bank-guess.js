@@ -5,6 +5,9 @@ export default async function handler(req, res) {
 
   const { guess, category, foundItems } = req.body
   if (!guess || !category) return res.status(400).json({ error: 'Missing fields' })
+  if (typeof guess !== 'string' || guess.length > 200) return res.status(400).json({ error: 'Invalid input' })
+  if (typeof category !== 'string' || category.length > 300) return res.status(400).json({ error: 'Invalid input' })
+  if (foundItems !== undefined && (!Array.isArray(foundItems) || foundItems.length > 20)) return res.status(400).json({ error: 'Invalid input' })
 
   try {
     const client = new Anthropic()
