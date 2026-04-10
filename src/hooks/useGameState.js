@@ -60,7 +60,7 @@ function initState(puzzle, difficulty = 'medium') {
     lockedSlots: [],          // slot indices locked by hints or Lite auto-lock
     confirmedCorrect: [],     // [{ index, item }] — Lite mode: slots confirmed correct
     rankHistory: [],          // [{ slots: [...], feedback: [...] }]
-    categoryGuessed: false,
+    categoryGuessed: (puzzle.revealCategoryFor ?? []).includes(difficulty),
     gameStatus: 'playing',    // 'playing' | 'won' | 'abandoned'
     pendingMatch: null,       // { item, query } | null — awaiting player confirmation
     hailMaryTaken: false,     // one free ranking attempt after going abandoned
@@ -334,13 +334,20 @@ export function useGameState(puzzle, initialDifficulty = 'medium') {
 
     const { item } = result;
 
-    if (s.discoveredItems[item.rank]) {
-      return { outcome: 'known', item };
-    }
-
     if (result.needsConfirmation) {
+      if (s.discoveredItems[item.rank]) {
+        // Fuzzy match landed on an already-found item — treat as a miss
+        // rather than claiming the player meant that item (e.g. "South Carolina" → "North Carolina")
+        const cost = getBankMissCost(s.bankMisses, s.difficulty);
+        dispatch({ type: 'BANK_MISS' });
+        return { outcome: 'miss', cost };
+      }
       dispatch({ type: 'BANK_PENDING', item, query });
       return { outcome: 'pending', item };
+    }
+
+    if (s.discoveredItems[item.rank]) {
+      return { outcome: 'known', item };
     }
 
     dispatch({ type: 'BANK_HIT', item });

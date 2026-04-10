@@ -27,6 +27,7 @@
     { "rank": 9,  "name": "Japan",          "aliases": [] },
     { "rank": 10, "name": "Italy",          "aliases": ["Italia"] }
   ],
+  "revealCategoryFor": ["lite", "medium"],
   "topFive": [1, 2, 3, 4, 5],
   "source": "https://www.statista.com/statistics/1228433/data-centers-worldwide-by-country/"
 }

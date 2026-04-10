@@ -171,7 +171,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
           <h2 className="text-xl font-bold" style={{ color: 'var(--color-text-strong)' }}>
             {won ? 'You got it!' : 'Game over'}
           </h2>
-          {categoryText && (
+          {categoryText && !(needsBonusGuess && postWinGuess === null) && (
             <p className="text-sm mt-2" style={{ color: 'var(--color-text-faint)' }}>
               The category was{' '}
               <span style={{ color: 'var(--color-text-strong)', fontStyle: 'italic' }}>

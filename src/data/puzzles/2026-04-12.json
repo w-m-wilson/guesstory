@@ -1,0 +1,32 @@
+{
+  "id": "2026-04-12",
+  "category": "Social Media Platforms by U.S. Adult Usage",
+  "hint": "Think about which platforms Americans of all ages actually use — not just what's trending",
+  "seed": [
+    { "rank": 4, "name": "TikTok",   "aliases": ["Tik Tok"] },
+    { "rank": 7, "name": "Snapchat", "aliases": ["Snap"] }
+  ],
+  "liteSeed": [
+    { "rank": 1, "name": "YouTube",   "aliases": ["You Tube"] },
+    { "rank": 2, "name": "Facebook",  "aliases": ["FB", "Meta"] },
+    { "rank": 3, "name": "Instagram", "aliases": ["IG", "Insta"] },
+    { "rank": 6, "name": "Reddit",    "aliases": [] }
+  ],
+  "challengeSeed": [
+    { "rank": 8, "name": "X", "aliases": ["Twitter", "X (Twitter)", "X/Twitter"] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "YouTube",   "aliases": ["You Tube"] },
+    { "rank": 2,  "name": "Facebook",  "aliases": ["FB", "Meta"] },
+    { "rank": 3,  "name": "Instagram", "aliases": ["IG", "Insta"] },
+    { "rank": 4,  "name": "TikTok",    "aliases": ["Tik Tok"] },
+    { "rank": 5,  "name": "WhatsApp",  "aliases": ["Whats App"] },
+    { "rank": 6,  "name": "Reddit",    "aliases": [] },
+    { "rank": 7,  "name": "Snapchat",  "aliases": ["Snap"] },
+    { "rank": 8,  "name": "X",         "aliases": ["Twitter", "X (Twitter)", "X/Twitter"] },
+    { "rank": 9,  "name": "Threads",   "aliases": [] },
+    { "rank": 10, "name": "Bluesky",   "aliases": ["Blue Sky"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://www.pewresearch.org/internet/2025/11/20/americans-social-media-use-2025/"
+}
