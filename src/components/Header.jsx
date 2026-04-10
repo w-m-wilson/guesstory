@@ -96,16 +96,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
 
     typeFrom(0, TYPE_MS, cycle)
     return () => clearTimeout(timerRef.current)
-  }, [categoryText])
-
-  // Close input when category is revealed (by hint or correct guess)
-  useEffect(() => {
-    if (categoryText) {
-      setGuessing(false)
-      setQuery('')
-      setLastHint(null)
-    }
-  }, [categoryText])
+  }, [categoryText, categoryAutoReveal])
 
   // Auto-focus input when guess mode opens
   useEffect(() => {

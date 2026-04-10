@@ -76,7 +76,8 @@ function reducer(state, action) {
   // - END_GAME and RESET always pass through
   // - SUBMIT_RANKING passes through once when abandoned and hail mary not yet taken
   const hailMarySubmit = state.gameStatus === 'abandoned' && !state.hailMaryTaken && action.type === 'SUBMIT_RANKING';
-  if (state.gameStatus !== 'playing' && !hailMarySubmit && action.type !== 'END_GAME' && action.type !== 'RESET') {
+  const postWinCategoryHit = state.gameStatus === 'won' && action.type === 'CATEGORY_HIT';
+  if (state.gameStatus !== 'playing' && !hailMarySubmit && !postWinCategoryHit && action.type !== 'END_GAME' && action.type !== 'RESET') {
     return state;
   }
 
@@ -195,7 +196,8 @@ function reducer(state, action) {
       return {
         ...state,
         categoryGuessed: true,
-        coins: state.coins + getCategoryBonus(state.difficulty),
+        // No coin bonus for post-win bonus guess (game already won)
+        coins: state.gameStatus === 'won' ? state.coins : state.coins + getCategoryBonus(state.difficulty),
       };
     }
 
@@ -409,14 +411,11 @@ export function useGameState(puzzle, initialDifficulty = 'medium') {
       });
       if (res.ok) {
         const data = await res.json();
-        console.log('[category]', data);
         ({ matched, warm, cold, hint } = data);
       } else {
-        console.warn('[category] non-ok response:', res.status);
         throw new Error('non-ok response');
       }
-    } catch (err) {
-      console.warn('[category] falling back to local matcher:', err?.message);
+    } catch {
       // Fallback: local fuzzy matcher with closeness-based warm/cold
       const local = matchCategory(query, puzzle.category);
       matched = local.matched;
@@ -436,7 +435,7 @@ export function useGameState(puzzle, initialDifficulty = 'medium') {
     const cost = getCategoryMissCost(s.categoryMisses);
     dispatch({ type: 'CATEGORY_MISS' });
     return { outcome: 'miss', cost, warm, cold, hint };
-  }, [puzzle.category]);
+  }, [puzzle.category, puzzle.hint]);
 
   const purchaseHint = useCallback((hintType) => {
     const s = stateRef.current;

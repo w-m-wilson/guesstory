@@ -82,17 +82,17 @@ function AttemptsPreview({ rankHistory }) {
   )
 }
 
-export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, difficulty = 'medium', category, categoryGuessed, categoryText, categorySource, hailMaryTaken, isTutorial, keyMap, onGuessCategory, onClose, onComplete, completeCTA }) {
+export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, difficulty = 'medium', category, categoryGuessed, categoryText, categorySource, hailMaryTaken, isTutorial, bonusGuessDone, onBonusGuessDone, onGuessCategory, onClose, onComplete, completeCTA }) {
   const won = gameStatus === 'won'
   const showHailMary = gameStatus === 'abandoned' && !hailMaryTaken
   const grade = getGrade(coins)
 
-  // Post-win bonus category guess (only when won without guessing category)
-  const needsBonusGuess = won && !categoryGuessed && !isTutorial
-  const [postWinGuess, setPostWinGuess] = useState(null) // null=pending, { correct }=done
+  // Post-win bonus category guess (only when won without guessing category, and not yet attempted)
+  const needsBonusGuess = won && !categoryGuessed && !isTutorial && !bonusGuessDone
+  const [postWinCorrect, setPostWinCorrect] = useState(false)
   const [bonusQuery, setBonusQuery] = useState('')
   const [bonusLoading, setBonusLoading] = useState(false)
-  const recapReady = !needsBonusGuess || postWinGuess !== null
+  const recapReady = !needsBonusGuess
 
   const [copied, setCopied] = useState(false)
   const recapCacheKey = puzzleId ? `recap-${puzzleId}` : null
@@ -104,6 +104,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
 
   useEffect(() => {
     if (!recapReady || isTutorial || !category || recap) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRecapLoading(true)
     fetch('/api/game-recap', {
       method: 'POST',
@@ -113,7 +114,8 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
         coins,
         won,
         category,
-        categoryGuessed: !!categoryGuessed || !!postWinGuess?.correct,
+        difficulty,
+        categoryGuessed: !!categoryGuessed || postWinCorrect,
       }),
     })
       .then(r => r.ok ? r.json() : null)
@@ -122,7 +124,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
         setRecap(text)
         setRecapLoading(false)
         if (text && recapCacheKey) {
-          try { localStorage.setItem(recapCacheKey, text) } catch {}
+          try { localStorage.setItem(recapCacheKey, text) } catch { /* quota exceeded */ }
         }
       })
       .catch(() => setRecapLoading(false))
@@ -135,7 +137,9 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
     setBonusLoading(true)
     const result = await onGuessCategory?.(q)
     setBonusLoading(false)
-    setPostWinGuess({ correct: result?.outcome === 'hit' })
+    const correct = result?.outcome === 'hit'
+    setPostWinCorrect(correct)
+    onBonusGuessDone?.()
   }
 
   async function handleShare() {
@@ -182,7 +186,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
           <h2 className="text-xl font-bold" style={{ color: 'var(--color-text-strong)' }}>
             {won ? 'You got it!' : 'Game over'}
           </h2>
-          {categoryText && !(needsBonusGuess && postWinGuess === null) && (
+          {categoryText && !needsBonusGuess && (
             <p className="text-sm mt-2" style={{ color: 'var(--color-text-faint)' }}>
               The category was{' '}
               <span style={{ color: 'var(--color-text-strong)', fontStyle: 'italic' }}>
@@ -229,7 +233,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
           </p>
         )}
 
-        {needsBonusGuess && postWinGuess === null ? (
+        {needsBonusGuess ? (
           <div className="flex flex-col gap-2">
             <p className="text-sm font-medium" style={{ color: 'var(--color-text-strong)' }}>
               One guess at the category — what was the theme?
@@ -262,7 +266,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
               </button>
             </form>
             <button
-              onClick={() => setPostWinGuess({ correct: false })}
+              onClick={() => onBonusGuessDone?.()}
               className="text-xs text-center py-1"
               style={{ color: 'var(--color-text-faint)' }}
             >
@@ -271,7 +275,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
           </div>
         ) : (
           <>
-            {needsBonusGuess && postWinGuess?.correct && (
+            {bonusGuessDone && postWinCorrect && (
               <p className="text-sm text-center fade-in" style={{ color: 'var(--color-dot-correct)' }}>
                 ✓ Got it!
               </p>

@@ -22,7 +22,6 @@ export default function BankPanel({
   bankMisses,
   pendingMatch,
   gameOver,
-  category,
   onGuess,
   onConfirm,
   onCancel,
@@ -116,7 +115,6 @@ export default function BankPanel({
   rankSlots.forEach((item, i) => { if (item) rankToSlotIndex[item.rank] = i })
   const placedRanks = new Set(Object.keys(rankToSlotIndex).map(Number))
 
-  const freeMissesLeft = Math.max(0, FREE_MISSES - bankMisses)
   const burningCoins = bankMisses >= FREE_MISSES
   const bankFull = discoveredList.length >= bankTotal
 

@@ -12,6 +12,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
   // Pulse the submit button once when all slots fill for the first time
   useEffect(() => {
     if (allFilled && !prevAllFilled.current) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSubmitReadyKey(k => k + 1)
     }
     prevAllFilled.current = allFilled

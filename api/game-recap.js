@@ -3,9 +3,10 @@ import Anthropic from '@anthropic-ai/sdk'
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
 
-  const { attempts, coins, won, category, categoryGuessed } = req.body
+  const { attempts, coins, won, category, difficulty, categoryGuessed } = req.body
   if (!category) return res.status(400).json({ error: 'Missing fields' })
   if (typeof category !== 'string' || category.length > 300) return res.status(400).json({ error: 'Invalid input' })
+  if (difficulty !== undefined && !['lite', 'medium', 'challenge'].includes(difficulty)) return res.status(400).json({ error: 'Invalid input' })
 
   try {
     const client = new Anthropic()
@@ -13,14 +14,24 @@ export default async function handler(req, res) {
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 100,
       system:
-        `You are a witty, concise narrator writing a 1–2 sentence recap of how a player did in a ranking puzzle game called Reckon. ` +
+        `You are writing a 1–2 sentence recap of a player's game in Reckon, a daily ranking puzzle. ` +
         `The puzzle's category: "${category}". ` +
-        `Style: dry, specific, personal — like a knowledgeable friend recapping a match. ` +
-        `Never be sycophantic. If they struggled, say so honestly but warmly. ` +
+        `Difficulty context — use this to calibrate your tone:\n` +
+        `  Lite: forgiving scoring, answers seeded. 90+ coins = fine. 70+ = decent.\n` +
+        `  Medium: standard. 90+ coins = good. 80+ = solid. Below 60 = rough.\n` +
+        `  Challenge: no seeds, steeper penalties. 90+ coins = genuinely excellent. ` +
+        `80+ = strong. Guessing the category on challenge costs more and is harder — mention it if they did.\n` +
+        `Tone: dry, a little oblique, like a sports columnist who's seen everything. ` +
+        `Find a specific, unexpected angle — comment on something surprising about the numbers, ` +
+        `draw an odd comparison, or let the category's subject inform the voice. ` +
+        `Avoid: "brute-force", "methodically", "systematically", "managed to", "impressive", ` +
+        `"well done", generic encouragement, and any phrasing that could describe any game. ` +
+        `If they lost, don't soften it. If they won cleanly on challenge, say so plainly — that's worth noting. ` +
         `Reply with just the recap, no quotes.`,
       messages: [{
         role: 'user',
         content:
+          `Difficulty: ${difficulty ?? 'medium'}. ` +
           `${attempts} attempt${attempts !== 1 ? 's' : ''}. ` +
           `${coins} coins remaining. ` +
           `${won ? 'Won.' : 'Did not win.'} ` +

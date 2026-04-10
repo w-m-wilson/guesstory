@@ -28,5 +28,6 @@
     { "rank": 10, "name": "Nectarines",   "aliases": ["Nectarine"] }
   ],
   "topFive": [1, 2, 3, 4, 5],
+  "revealCategoryFor": ["lite", "medium", "challenge"],
   "source": "https://www.ers.usda.gov/data-products/fruit-and-vegetable-prices"
 }

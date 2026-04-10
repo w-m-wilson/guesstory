@@ -1,6 +1,5 @@
-import { useState, useMemo, useEffect, useLayoutEffect, useRef } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { useGameState } from './hooks/useGameState.js'
-import { buildItemKeys } from './utils/itemKeys.js'
 import Header from './components/Header.jsx'
 import BankPanel from './components/BankPanel.jsx'
 import GuessHistory from './components/GuessHistory.jsx'
@@ -16,7 +15,7 @@ const DIFFICULTY_META = {
   challenge: { label: 'Challenge', blurb: 'Start from scratch — no hints given' },
 }
 
-function DifficultySelector({ current, onSelect, onDismiss }) {
+function DifficultySelector({ current, onSelect }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"
@@ -56,54 +55,51 @@ function DifficultySelector({ current, onSelect, onDismiss }) {
 export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComplete, isTutorial, tutorialMode = 'learn' }) {
   const [hintsOpen, setHintsOpen] = useState(false)
   const [endScreenDismissed, setEndScreenDismissed] = useState(false)
+  const [bonusGuessDone, setBonusGuessDone] = useState(false)
   const [bankPanelHeight, setBankPanelHeight] = useState(0)
   const [selectorDismissed, setSelectorDismissed] = useState(() => !!localStorage.getItem('rankie-difficulty'))
   const bankPanelRef = useRef(null)
 
   const initialDifficulty = useState(() => localStorage.getItem('rankie-difficulty') ?? 'medium')[0]
 
-  // Build key map once per puzzle (rank → 2-letter key)
-  const keyMap = useMemo(() => buildItemKeys(puzzle.bank), [puzzle])
-
   const game = useGameState(puzzle, initialDifficulty)
 
-  // Derive primitives before the null guard so tutorial effects can reference them safely
+  // Derive primitives needed before null guard
   const discoveredList = game?.discoveredList ?? []
   const tutorialRankSlots = game?.state?.rankSlots ?? [null, null, null, null, null]
   const tutorialRankHistory = game?.state?.rankHistory ?? []
   const tutorialGameStatus = game?.state?.gameStatus ?? 'playing'
 
-  // Tutorial step: null for non-tutorial screens; 0 = welcome overlay
-  const [tutorialStep, setTutorialStep] = useState(() => isTutorial ? 0 : null)
+  // Tutorial step: null for non-tutorial; 0 = welcome overlay. Derived from game state.
+  const [tutorialStarted, setTutorialStarted] = useState(false)
+  function handleTutorialBegin() { setTutorialStarted(true) }
 
-  function handleTutorialBegin() { setTutorialStep(1) }
-
-  // Phase 1 → 2: player has found at least 5 items (learn mode only)
-  useEffect(() => {
-    if (tutorialMode === 'learn' && tutorialStep === 1 && discoveredList.length >= 5) setTutorialStep(2)
-  }, [tutorialMode, tutorialStep, discoveredList.length])
-
-  // Phase 2 → 3: all 5 rank slots are filled (learn mode only)
-  useEffect(() => {
-    if (tutorialMode === 'learn' && tutorialStep === 2 && tutorialRankSlots.every(Boolean)) setTutorialStep(3)
-  }, [tutorialMode, tutorialStep, tutorialRankSlots])
-
-  // Phase 3 → done: player wins (learn mode only — banner stays after first submit to explain dots)
-  useEffect(() => {
-    if (tutorialMode === 'learn' && tutorialStep === 3 && tutorialGameStatus === 'won') {
-      setTutorialStep(4)
+  let tutorialStep = null
+  if (isTutorial) {
+    if (!tutorialStarted) {
+      tutorialStep = 0
+    } else if (tutorialMode === 'learn' && tutorialGameStatus === 'won') {
+      tutorialStep = 4
+    } else if (tutorialMode === 'learn' && tutorialRankSlots.every(Boolean)) {
+      tutorialStep = 3
+    } else if (tutorialMode === 'learn' && discoveredList.length >= 5) {
+      tutorialStep = 2
+    } else {
+      tutorialStep = 1
     }
-  }, [tutorialMode, tutorialStep, tutorialGameStatus])
+  }
 
   // Show end screen when game first ends, and again after hail mary is submitted
   const gameStatus = game?.state.gameStatus
   const hailMaryTaken = game?.state.hailMaryTaken ?? false
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (gameStatus === 'won' || gameStatus === 'abandoned') setEndScreenDismissed(false)
   }, [gameStatus])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (hailMaryTaken) setEndScreenDismissed(false)
   }, [hailMaryTaken])
 
@@ -138,9 +134,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
       <Header
         categoryText={state.categoryGuessed ? puzzle.category : null}
         categoryAutoReveal={
-          (isTutorial && tutorialMode === 'learn')
-            ? (!state.categoryGuessed ? puzzle.category : null)
-            : (['2026-04-04', '2026-04-06'].includes(puzzle.id) && !state.categoryGuessed ? puzzle.category : null)
+          (isTutorial && tutorialMode === 'learn' && !state.categoryGuessed) ? puzzle.category : null
         }
         categoryHint={puzzle.hint ?? null}
         categoryMisses={state.categoryMisses}
@@ -220,7 +214,6 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
         <DifficultySelector
           current={difficulty}
           onSelect={(d) => { setDifficulty(d); setSelectorDismissed(true) }}
-          onDismiss={() => setSelectorDismissed(true)}
         />
       )}
 
@@ -237,7 +230,8 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
           categorySource={puzzle.source ?? null}
           hailMaryTaken={hailMaryTaken}
           isTutorial={isTutorial}
-          keyMap={keyMap}
+          bonusGuessDone={bonusGuessDone}
+          onBonusGuessDone={() => setBonusGuessDone(true)}
           onGuessCategory={guessCategory}
           onClose={
             isTutorial && tutorialMode === 'learn' && gameStatus === 'won'
