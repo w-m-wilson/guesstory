@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-const STORAGE_KEY = 'rankie-appearance'
+const STORAGE_KEY = 'guesstory-appearance'
 
 function loadSaved() {
   try {

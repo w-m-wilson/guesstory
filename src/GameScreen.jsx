@@ -57,10 +57,10 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
   const [endScreenDismissed, setEndScreenDismissed] = useState(false)
   const [bonusGuessDone, setBonusGuessDone] = useState(false)
   const [bankPanelHeight, setBankPanelHeight] = useState(0)
-  const [selectorDismissed, setSelectorDismissed] = useState(() => !!localStorage.getItem('rankie-difficulty'))
+  const [selectorDismissed, setSelectorDismissed] = useState(() => !!localStorage.getItem('guesstory-difficulty'))
   const bankPanelRef = useRef(null)
 
-  const initialDifficulty = useState(() => localStorage.getItem('rankie-difficulty') ?? 'medium')[0]
+  const initialDifficulty = useState(() => localStorage.getItem('guesstory-difficulty') ?? 'medium')[0]
 
   const game = useGameState(puzzle, initialDifficulty)
 

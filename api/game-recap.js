@@ -14,7 +14,7 @@ export default async function handler(req, res) {
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 100,
       system:
-        `You are writing a 1–2 sentence recap of a player's game in Reckon, a daily ranking puzzle. ` +
+        `You are writing a 1–2 sentence recap of a player's game in Guesstory, a daily ranking puzzle. ` +
         `The puzzle's category: "${category}". ` +
         `Difficulty context — use this to calibrate your tone:\n` +
         `  Lite: forgiving scoring, answers seeded. 90+ coins = fine. 70+ = decent.\n` +

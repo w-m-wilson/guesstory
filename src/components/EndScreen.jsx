@@ -24,7 +24,7 @@ const DIFFICULTY_SHARE = { lite: 'Lite', medium: 'Medium', challenge: 'Challenge
 function buildShareText(puzzleId, coins, rankHistory, difficulty) {
   const n = rankHistory.length
   const diff = DIFFICULTY_SHARE[difficulty] ?? 'Medium'
-  const header = `Reckon ${puzzleId} · ${diff}\n${coins}/100 · ${n} attempt${n !== 1 ? 's' : ''}`
+  const header = `Guesstory ${puzzleId} · ${diff}\n${coins}/100 · ${n} attempt${n !== 1 ? 's' : ''}`
 
   const truncated = n > HEAD + TAIL
   const visible = truncated

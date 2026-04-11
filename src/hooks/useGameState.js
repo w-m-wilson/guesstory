@@ -9,7 +9,7 @@ import { GAME_CONFIG, DIFFICULTY_CONFIG } from '../config.js';
 // ---------------------------------------------------------------------------
 
 function storageKey(puzzleId) {
-  return `ranked-state-${puzzleId}`;
+  return `guesstory-state-${puzzleId}`;
 }
 
 function loadSavedState(puzzleId) {
@@ -484,7 +484,7 @@ export function useGameState(puzzle, initialDifficulty = 'medium') {
   const setDifficulty = useCallback((difficulty) => {
     const s = stateRef.current;
     const hasStarted = s.bankMisses > 0 || s.rankHistory.length > 0;
-    localStorage.setItem('rankie-difficulty', difficulty);
+    localStorage.setItem('guesstory-difficulty', difficulty);
     if (!hasStarted) {
       // Before any action: full reset with new seeds
       dispatch({ type: 'RESET', initialState: initState(puzzle, difficulty) });

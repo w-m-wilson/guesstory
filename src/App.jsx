@@ -6,8 +6,8 @@ import GameScreen from './GameScreen.jsx'
 import IntroModal from './components/IntroModal.jsx'
 import SettingsModal from './components/SettingsModal.jsx'
 
-const INTRO_SEEN_KEY = 'rankie-intro-seen'
-const TUTORIAL_SEEN_KEY = 'rankie-tutorial-v2'
+const INTRO_SEEN_KEY = 'guesstory-intro-seen'
+const TUTORIAL_SEEN_KEY = 'guesstory-tutorial-v2'
 
 export default function App() {
   const { puzzle, error } = usePuzzle()
@@ -20,12 +20,12 @@ export default function App() {
 
   function completeTutorialPhase() {
     if (tutorialPhase === 1) {
-      localStorage.removeItem('ranked-state-tutorial-1')
+      localStorage.removeItem('guesstory-state-tutorial-1')
       setTutorialPhase(2)
     } else {
       // Clean up tutorial states and show handoff screen before daily puzzle
-      localStorage.removeItem('ranked-state-tutorial-1')
-      localStorage.removeItem('ranked-state-tutorial-2')
+      localStorage.removeItem('guesstory-state-tutorial-1')
+      localStorage.removeItem('guesstory-state-tutorial-2')
       setShowHandoff(true)
     }
   }
@@ -33,7 +33,7 @@ export default function App() {
   function confirmHandoff() {
     // Reset daily puzzle state if not yet won (so player starts fresh)
     if (puzzle) {
-      const dailyKey = `ranked-state-${puzzle.id}`
+      const dailyKey = `guesstory-state-${puzzle.id}`
       try {
         const saved = JSON.parse(localStorage.getItem(dailyKey))
         if (saved && saved.gameStatus !== 'won') localStorage.removeItem(dailyKey)
@@ -47,8 +47,8 @@ export default function App() {
 
   function replayTutorial() {
     localStorage.removeItem(TUTORIAL_SEEN_KEY)
-    localStorage.removeItem('ranked-state-tutorial-1')
-    localStorage.removeItem('ranked-state-tutorial-2')
+    localStorage.removeItem('guesstory-state-tutorial-1')
+    localStorage.removeItem('guesstory-state-tutorial-2')
     setTutorialPhase(1)
     setTutorialDone(false)
   }
@@ -106,7 +106,7 @@ export default function App() {
             Please rotate to portrait
           </p>
           <p className="text-xs" style={{ color: 'var(--color-text-faint)' }}>
-            Reckon is designed for portrait mode
+            Guesstory is designed for portrait mode
           </p>
         </div>
 
@@ -125,8 +125,8 @@ export default function App() {
             className="pointer-events-auto text-xs px-3 py-1 rounded-full"
             style={{ color: 'var(--color-text-faint)', background: 'var(--color-bg-elevated)' }}
             onClick={() => {
-              localStorage.removeItem('ranked-state-tutorial-1')
-              localStorage.removeItem('ranked-state-tutorial-2')
+              localStorage.removeItem('guesstory-state-tutorial-1')
+              localStorage.removeItem('guesstory-state-tutorial-2')
               localStorage.setItem(TUTORIAL_SEEN_KEY, '1')
               localStorage.setItem(INTRO_SEEN_KEY, '1')
               setTutorialDone(true)
@@ -172,7 +172,7 @@ export default function App() {
           Please rotate to portrait
         </p>
         <p className="text-xs" style={{ color: 'var(--color-text-faint)' }}>
-          Reckon is designed for portrait mode
+          Guesstory is designed for portrait mode
         </p>
       </div>
 

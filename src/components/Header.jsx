@@ -128,13 +128,13 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
       className="shrink-0"
       style={{ borderBottom: '1px solid var(--color-border)' }}
     >
-      {/* Row 1: Reckon wordmark + category text OR guess button */}
+      {/* Row 1: Guesstory wordmark + category text OR guess button */}
       <div className="flex items-center px-4 py-3">
         <span
           className="text-xl tracking-tight shrink-0"
           style={{ fontFamily: "'Rye', serif", color: 'var(--color-text-strong)' }}
         >
-          Reckon
+          Guesstory
         </span>
 
         {onOpenIntro && (

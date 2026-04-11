@@ -15,7 +15,7 @@ export default async function handler(req, res) {
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 80,
       system:
-        `You are a guide in "Reckon", a ranking puzzle game. The hidden category is: "${category}".\n` +
+        `You are a guide in "Guesstory", a ranking puzzle game. The hidden category is: "${category}".\n` +
         `Players type specific named items into a search field to discover them. Each item is a proper noun — a specific named entity that fits the category.\n` +
         `Items found so far: ${foundItems?.length ? foundItems.join(', ') : 'none yet'}\n\n` +
         `The player typed "${guess}" and got a miss. Write ONE short actionable hint (max 20 words):\n` +

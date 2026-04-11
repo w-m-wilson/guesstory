@@ -1,4 +1,4 @@
-# AGENT BRIEF — Reckon
+# AGENT BRIEF — Guesstory
 > Read this fully before touching any code. This is the source of truth for the game, the stack, and the current implementation.
 
 ---
@@ -188,7 +188,7 @@ ranked/
 │   │   ├── EndScreen.jsx        # Score summary, AI recap, share card, post-win category guess
 │   │   ├── FeedbackDots.jsx     # Mastermind dot renderer (● ○ —), spoiler-free mode support
 │   │   ├── GuessHistory.jsx     # Vertical list of past ranking attempts with Mastermind dots
-│   │   ├── Header.jsx           # Reckon wordmark, ? / settings buttons, category guess/reveal
+│   │   ├── Header.jsx           # Guesstory wordmark, ? / settings buttons, category guess/reveal
 │   │   ├── HintModal.jsx        # Hint shop bottom-sheet overlay (5 hint types)
 │   │   ├── IntroModal.jsx       # How-to-play splash (auto-shown on first visit)
 │   │   ├── RankBoard.jsx        # 5 slots, drag-to-reorder, locked-slot support
@@ -247,13 +247,13 @@ ranked/
 }
 ```
 
-State persists to `localStorage` keyed by puzzle ID (`ranked-state-{puzzleId}`). New fields default from `initState()` via merge on load (prevents blank-screen crashes when state shape evolves).
+State persists to `localStorage` keyed by puzzle ID (`guesstory-state-{puzzleId}`). New fields default from `initState()` via merge on load (prevents blank-screen crashes when state shape evolves).
 
 **Other localStorage keys:**
-- `rankie-difficulty` — persisted difficulty choice across sessions
-- `rankie-appearance` — persisted theme and color scheme
-- `rankie-intro-seen` — whether the intro modal has been shown
-- `rankie-tutorial-v2` — whether the tutorial has been completed
+- `guesstory-difficulty` — persisted difficulty choice across sessions
+- `guesstory-appearance` — persisted theme and color scheme
+- `guesstory-intro-seen` — whether the intro modal has been shown
+- `guesstory-tutorial-v2` — whether the tutorial has been completed
 - `recap-{puzzleId}` — cached AI recap text per puzzle
 
 ---
@@ -262,7 +262,7 @@ State persists to `localStorage` keyed by puzzle ID (`ranked-state-{puzzleId}`).
 
 ```
 ┌─────────────────────────────┐
-│ Reckon ?⚙  [Guess category] │  ← Header (? = how-to-play, ⚙ = settings; category guess expands row)
+│ Guesstory ?⚙  [Guess category] │  ← Header (? = how-to-play, ⚙ = settings; category guess expands row)
 ├─────────────────────────────┤
 │ [Guess a name…]  [Guess]    │  ← BankPanel — guess input, free-miss dots
 │ Free misses: ● ● ○           │

@@ -99,7 +99,7 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
           TUTORIAL · GAME 1 OF 2
         </div>
         <h1 className="text-3xl font-black mb-2" style={{ color: 'var(--color-text-strong)' }}>
-          Welcome to Reckon
+          Welcome to Guesstory
         </h1>
         <p className="text-sm max-w-xs mb-6" style={{ color: 'var(--color-text)' }}>
           There's a secret ranked list. Find what's on it and put the top 5 in order.

@@ -1,4 +1,4 @@
-# Reckon
+# Guesstory
 
 A daily mobile-first ranking game. Discover items from a hidden ranked list, then arrange the top 5 in the correct order. Think Wordle × Mastermind × trivia.
 
