@@ -28,13 +28,29 @@ function MissTracker({ misses, difficulty = 'medium' }) {
   )
 }
 
-const TYPEWRITER_FULL   = 'Guess the category'
-const TYPEWRITER_PREFIX = 'Guess '.length
-const TYPE_MS   = 68
-const RETYPE_MS = 110
-const ERASE_MS  = 90
+const TW_PHRASES = [
+  'Guess the category',
+  'Guess the theme',
+  'Guess the pattern',
+  'Guess the connection',
+  'What connects them all?',
+  'Click to name the theme',
+  'Think you know the category?',
+  'Can you spot the pattern?',
+  'Tap to guess the category',
+  "What's the link?",
+  'Name the connection',
+]
+const TYPE_MS   = 55
+const RETYPE_MS = 75
+const ERASE_MS  = 40
 const PAUSE_MS  = 500
-const CYCLE_MS = 60000
+const CYCLE_MS  = 7000
+
+function pickNextPhrase(current) {
+  const pool = TW_PHRASES.filter(s => s !== current)
+  return pool[Math.floor(Math.random() * pool.length)]
+}
 
 export default function Header({ categoryText, categoryAutoReveal, categoryHint, categoryMisses, difficulty = 'medium', onGuessCategory, onOpenIntro, onOpenSettings }) {
   const [guessing, setGuessing] = useState(false)
@@ -68,33 +84,38 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
     return () => clearTimeout(timerRef.current)
   }, [categoryAutoReveal, categoryText])
 
-  // Typewriter: spell out on mount, then erase+retype "category" every ~60s
+  // Typewriter: spell out on mount, then erase+retype a random phrase every CYCLE_MS
   useEffect(() => {
     if (categoryText || categoryAutoReveal) return
 
-    function typeFrom(idx, ms, onDone) {
+    const phraseRef = { current: TW_PHRASES[0] }
+
+    function typeFrom(phrase, idx, ms, onDone) {
       setTwCursor(true)
-      setTwText(TYPEWRITER_FULL.slice(0, idx))
-      if (idx >= TYPEWRITER_FULL.length) { setTwCursor(false); onDone(); return }
-      timerRef.current = setTimeout(() => typeFrom(idx + 1, ms, onDone), ms)
+      setTwText(phrase.slice(0, idx))
+      if (idx >= phrase.length) { setTwCursor(false); onDone(); return }
+      timerRef.current = setTimeout(() => typeFrom(phrase, idx + 1, ms, onDone), ms)
     }
 
-    function eraseTo(len, onDone) {
+    function eraseTo(phrase, len, onDone) {
       setTwCursor(true)
-      setTwText(TYPEWRITER_FULL.slice(0, len))
-      if (len <= TYPEWRITER_PREFIX) { onDone(); return }
-      timerRef.current = setTimeout(() => eraseTo(len - 1, onDone), ERASE_MS)
+      setTwText(phrase.slice(0, len))
+      if (len <= 0) { onDone(); return }
+      timerRef.current = setTimeout(() => eraseTo(phrase, len - 1, onDone), ERASE_MS)
     }
 
-    function cycle() {
+    function cycle(prev) {
       timerRef.current = setTimeout(() => {
-        eraseTo(TYPEWRITER_FULL.length, () => {
-          timerRef.current = setTimeout(() => typeFrom(TYPEWRITER_PREFIX, RETYPE_MS, cycle), PAUSE_MS)
+        const next = pickNextPhrase(phraseRef.current)
+        phraseRef.current = next
+        eraseTo(prev, prev.length, () => {
+          timerRef.current = setTimeout(() => typeFrom(next, 0, RETYPE_MS, () => cycle(next)), PAUSE_MS)
         })
       }, CYCLE_MS)
     }
 
-    typeFrom(0, TYPE_MS, cycle)
+    const initial = phraseRef.current
+    typeFrom(initial, 0, TYPE_MS, () => cycle(initial))
     return () => clearTimeout(timerRef.current)
   }, [categoryText, categoryAutoReveal])
 
@@ -124,135 +145,177 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
   }
 
   return (
-    <header
-      className="shrink-0"
-      style={{ borderBottom: '1px solid var(--color-border)' }}
-    >
-      {/* Row 1: Guesstory wordmark + category text OR guess button */}
-      <div className="flex items-center px-4 py-3">
-        <span
-          className="text-2xl tracking-tight shrink-0"
-          style={{ fontFamily: "'Grenze Gotisch', serif", color: 'var(--color-text-strong)' }}
-        >
-          guesStory
-        </span>
-
-        {onOpenIntro && (
-          <button
-            onClick={onOpenIntro}
-            className="ml-2 shrink-0 text-xs w-5 h-5 rounded-full flex items-center justify-center opacity-70 hover:opacity-100"
-            style={{
-              border: '1px solid var(--color-text-faint)',
-              color: 'var(--color-text-faint)',
-            }}
-            aria-label="How to play"
+    <>
+      <header
+        className="shrink-0"
+        style={{ borderBottom: '1px solid var(--color-border)' }}
+      >
+        <div className="flex items-center px-4 py-4">
+          {/* Left: wordmark */}
+          <span
+            className="text-3xl tracking-tight shrink-0"
+            style={{ fontFamily: "'Grenze Gotisch', serif", color: 'var(--color-text-strong)', transform: 'translateY(-4px)' }}
           >
-            ?
-          </button>
-        )}
-        <button
-          onClick={onOpenSettings}
-          className="ml-1.5 shrink-0 text-xs w-5 h-5 rounded-full flex items-center justify-center opacity-70 hover:opacity-100"
-          style={{ color: 'var(--color-text-faint)' }}
-          aria-label="Settings"
-        >
-          ⚙
-        </button>
+            guesStory
+          </span>
 
-        {categoryText || arDone ? (
-          /* Revealed: show category, wrapping allowed for long names */
-          <div
-            key={categoryText || categoryAutoReveal}
-            className="flex-1 ml-4 fade-in"
-          >
-            <p
-              className="text-xs text-right leading-snug"
-              style={{ color: 'var(--color-text-faint)', textWrap: 'balance' }}
-            >
-              {categoryText || categoryAutoReveal}
-            </p>
-          </div>
-        ) : categoryAutoReveal ? (
-          /* Auto-reveal: typewriter animates the actual category text */
-          <div className="flex-1 ml-4">
-            <p
-              className="text-xs text-right leading-snug"
-              style={{ color: 'var(--color-text-faint)' }}
-            >
-              {arText}{arCursor ? '|' : ''}
-            </p>
-          </div>
-        ) : (
-          /* Not revealed: show guess button + persistent miss tracker */
-          <div className="flex-1 flex flex-col items-end ml-4">
-            {!guessing && (
+          {/* Center: pill — centered within the gap between logo and buttons */}
+          <div className="flex-1 flex justify-center px-3">
+            {categoryText || arDone ? (
+              <div
+                key={categoryText || categoryAutoReveal}
+                className="fade-in rounded-full px-4 py-1 text-center"
+                style={{
+                  border: '1px solid var(--color-border)',
+                  background: 'var(--color-bg-elevated)',
+                  minWidth: '150px',
+                  maxWidth: '220px',
+                  overflow: 'hidden',
+                }}
+              >
+                <p className="text-sm leading-snug truncate" style={{ color: 'var(--color-text-faint)' }}>
+                  {categoryText || categoryAutoReveal}
+                </p>
+              </div>
+            ) : categoryAutoReveal ? (
+              <div
+                className="rounded-full px-4 py-1 text-center"
+                style={{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)', minWidth: '150px', maxWidth: '220px' }}
+              >
+                <p className="text-sm leading-snug" style={{ color: 'var(--color-text-faint)' }}>
+                  {arText}{arCursor ? '|' : ''}
+                </p>
+              </div>
+            ) : (
               <button
                 onClick={() => setGuessing(true)}
-                className="text-xs px-2 py-1 rounded-lg"
+                className="rounded-full px-4 py-1 text-sm text-center"
+                style={{
+                  color: 'var(--color-text)',
+                  border: '1px solid var(--color-border)',
+                  background: 'var(--color-bg-elevated)',
+                  whiteSpace: 'nowrap',
+                  minWidth: '150px',
+                  maxWidth: '220px',
+                }}
               >
-                <span style={{ color: 'var(--color-text)' }}>
-                  {twText}{twCursor ? '|' : ''}</span>
+                {twText}{twCursor ? '|' : ''}
               </button>
             )}
-            {!guessing && categoryMisses > 0 && (
-              <MissTracker misses={categoryMisses} difficulty={difficulty} />
-            )}
           </div>
-        )}
-      </div>
 
-      {/* Row 2: guess input (only when actively guessing + not yet revealed) */}
+          {/* Right: help + menu */}
+          <div className="flex items-center gap-1.5">
+            {onOpenIntro && (
+              <button
+                onClick={onOpenIntro}
+                className="shrink-0 text-xs w-6 h-6 rounded-full flex items-center justify-center opacity-50 hover:opacity-80"
+                style={{ border: '1px solid var(--color-text-faint)', color: 'var(--color-text-faint)' }}
+                aria-label="How to play"
+              >
+                ?
+              </button>
+            )}
+            <button
+              onClick={onOpenSettings}
+              className="shrink-0 flex flex-col items-center justify-center gap-[4px] w-6 h-6 opacity-50 hover:opacity-80"
+              aria-label="Menu"
+            >
+              {[0,1,2].map(i => (
+                <span key={i} style={{ display: 'block', width: '14px', height: '1.5px', borderRadius: '1px', background: 'var(--color-text-faint)' }} />
+              ))}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Category guess modal — top sheet */}
       {guessing && !categoryText && (
-        <div className="px-4 pb-3 slide-down">
-          <form onSubmit={handleSubmit} className="flex gap-2">
-            <input
-              ref={inputRef}
-              type="text"
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              placeholder="What's the theme?"
-              className="flex-1 rounded-lg px-3 py-1.5 text-sm outline-none"
-              style={{
-                background: 'var(--color-bg-elevated)',
-                color: 'var(--color-text)',
-                border: '1px solid var(--color-border)',
-                fontSize: '16px',
-              }}
-              autoComplete="off"
-              autoCorrect="off"
-              autoCapitalize="off"
-              spellCheck={false}
-            />
-            <button
-              type="submit"
-              disabled={!query.trim() || loading}
-              className="px-3 py-1.5 rounded-lg text-sm font-medium shrink-0 disabled:opacity-40"
-              style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
-            >
-              {loading ? '…' : '→'}
-            </button>
-            <button
-              type="button"
-              onClick={() => setGuessing(false)}
-              className="px-2 py-1.5 text-sm"
-              style={{ color: 'var(--color-text-faint)' }}
-            >
-              ✕
-            </button>
-          </form>
+        <div
+          className="fixed inset-0 z-40 flex items-start justify-center"
+          style={{ background: 'rgba(0,0,0,0.45)' }}
+          onClick={() => setGuessing(false)}
+        >
+          <div
+            className="w-full max-w-[430px] flex flex-col gap-4 px-5 pt-5 pb-6 slide-down"
+            style={{
+              background: 'var(--color-bg)',
+              borderBottom: '1px solid var(--color-border)',
+              borderRadius: '0 0 1.25rem 1.25rem',
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Sheet header */}
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-base font-bold" style={{ color: 'var(--color-text-strong)' }}>
+                  Guess the category
+                </p>
+                <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-faint)' }}>
+                  What's the ranking theme? Earn a bonus for getting it right.
+                </p>
+              </div>
+              <button
+                onClick={() => setGuessing(false)}
+                className="text-lg leading-none ml-4 mt-0.5 opacity-40 hover:opacity-70"
+                style={{ color: 'var(--color-text-faint)' }}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
 
-          <div className="flex items-start justify-between mt-1.5 gap-3">
-            {categoryMisses > 0
-              ? <MissTracker misses={categoryMisses} difficulty={difficulty} />
-              : <span />}
+            {/* Miss tracker */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs" style={{ color: 'var(--color-text-faint)' }}>
+                {categoryMisses === 0 ? 'Free guesses:' : 'Misses:'}
+              </span>
+              <MissTracker misses={categoryMisses} difficulty={difficulty} />
+            </div>
+
+            {/* Input */}
+            <form onSubmit={handleSubmit} className="flex gap-2">
+              <input
+                ref={inputRef}
+                type="text"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="The theme is…"
+                className="flex-1 rounded-xl px-3 py-2.5 text-sm outline-none"
+                style={{
+                  background: 'var(--color-bg-elevated)',
+                  color: 'var(--color-text)',
+                  border: '1px solid var(--color-border)',
+                  fontSize: '16px',
+                }}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
+              />
+              <button
+                type="submit"
+                disabled={!query.trim() || loading}
+                className="px-4 py-2.5 rounded-xl text-sm font-semibold shrink-0 disabled:opacity-40"
+                style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
+              >
+                {loading ? '…' : 'Guess'}
+              </button>
+            </form>
+
+            {/* Hint feedback */}
             {lastHint && (
-              <p key={lastHint.text} className="text-xs fade-in text-right" style={{ color: 'var(--color-text-faint)' }}>
+              <p
+                key={lastHint.text}
+                className="text-sm fade-in text-center"
+                style={{ color: lastHint.warm ? 'var(--color-dot-present)' : 'var(--color-text-faint)' }}
+              >
                 {lastHint.text}
               </p>
             )}
           </div>
         </div>
       )}
-    </header>
+    </>
   )
 }

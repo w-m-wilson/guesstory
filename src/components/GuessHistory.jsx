@@ -1,55 +1,10 @@
-/**
- * GuessHistory — vertical list of past ranking submissions.
- *
- * Two-column layout per row:
- *   Left:  item names in submission order (full if they fit, truncated+faded if not)
- *   Right: Mastermind feedback dots
- *            ● = in top 5, correct position  ('correct')
- *            ○ = in top 5, wrong position    ('present')
- *            nothing = not in top 5          ('absent' / 'empty')
- *            — = shown when ALL slots give nothing
- */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
-export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow, topInset = 0, difficulty = 'medium' }) {
+export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow, topInset = 0 }) {
   const hasLiveSlot = rankSlots?.some(Boolean)
-  const containerRef = useRef(null)
   const scrollRef = useRef(null)
-  const [compact, setCompact] = useState(false)
-  const compactRef = useRef(false)
   const [scrolledPast, setScrolledPast] = useState(false)
 
-  // After every render, check if the names in the first visible row overflow
-  // their container. If so, switch all rows to compact (truncated+faded) mode.
-  // One-way latch: once compact is needed, don't flip back — probing a compact
-  // row always shows it fitting, which would otherwise cause oscillation.
-  useLayoutEffect(() => {
-    if (compactRef.current) return
-
-    const el = containerRef.current
-    if (!el) return
-
-    const check = () => {
-      const probe = el.querySelector('[data-names-row]')
-      if (!probe) return
-      const children = [...probe.children]
-      if (children.length === 0) return
-      // Each cell is a grid column (1fr). If any cell's text overflows its column,
-      // scrollWidth will exceed clientWidth.
-      const anyOverflow = children.some(c => c.scrollWidth > c.clientWidth + 1)
-      if (anyOverflow) {
-        compactRef.current = true
-        setCompact(true)
-      }
-    }
-
-    check()
-    const ro = new ResizeObserver(check)
-    ro.observe(el)
-    return () => ro.disconnect()
-  }, [rankHistory, rankSlots])
-
-  // Track scroll position to drive the top fade
   useEffect(() => {
     const el = scrollRef.current
     if (!el) return
@@ -58,7 +13,6 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
     return () => el.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Auto-scroll to bottom when a new attempt is added (newest row is just above live row)
   useEffect(() => {
     const el = scrollRef.current
     if (!el) return
@@ -69,13 +23,10 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
 
   return (
     <div
-      ref={containerRef}
       className="px-4 pt-1 pb-0 flex flex-col min-h-0"
       style={{ position: 'absolute', top: topInset, bottom: 0, left: 0, right: 0, zIndex: 0 }}
     >
-      {/* History list — flex-1 so it uses all space above the pinned live row */}
       <div className="flex-1 min-h-0 flex flex-col relative">
-        {/* Top fade — appears when content has scrolled past the top edge */}
         {scrolledPast && (
           <div
             className="absolute top-0 left-0 right-0 z-10 pointer-events-none"
@@ -97,129 +48,168 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
                 key={attemptIndex}
                 slots={slots}
                 feedback={feedback}
-                compact={compact}
                 attemptNumber={attemptIndex + 1}
                 isLatest={attemptIndex === rankHistory.length - 1}
-                liteDots={difficulty === 'lite'}
                 onPick={() => onPickHistoryRow?.(slots)}
               />
             ))}
-            <div className="h-2 shrink-0" aria-hidden="true" />
+            <div className="h-1 shrink-0" aria-hidden="true" />
           </div>
         </div>
       </div>
+
       {hasLiveSlot && (
         <div
           className="shrink-0 z-20 border-t"
-          style={{
-            background: 'var(--color-bg)',
-            borderColor: 'var(--color-border)',
-          }}
+          style={{ background: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
         >
-          <LiveRow slots={rankSlots} compact={compact} />
+          <LiveRow slots={rankSlots} />
         </div>
       )}
     </div>
   )
 }
 
-function NameCell({ item, compact, faint }) {
-  const name = item?.name ?? '—'
-  const baseStyle = {
-    color: item
-      ? (faint ? 'var(--color-text-faint)' : 'var(--color-text)')
-      : 'var(--color-text-faint)',
-    minWidth: 0,
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    ...(compact && {
-      WebkitMaskImage: 'linear-gradient(to right, black 55%, transparent 95%)',
-      maskImage: 'linear-gradient(to right, black 55%, transparent 95%)',
-    }),
-  }
+const INDENT = '1.5rem' // attempt number column width + gap
 
-  return (
-    <span className="text-[11px] font-semibold" style={baseStyle}>
-      {name}
-    </span>
-  )
-}
+function AttemptRow({ slots, feedback, attemptNumber, isLatest, onPick }) {
+  const sortedFeedback = [...feedback].sort((a, b) => {
+    const order = { correct: 0, present: 1 }
+    return (order[a] ?? 2) - (order[b] ?? 2)
+  })
 
-function NamesGrid({ slots, compact }) {
-  return (
-    <div
-      className="flex-1 min-w-0 overflow-hidden"
-      data-names-row
-      style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${slots.length}, 1fr)`,
-        gap: '0 0.375rem',
-        alignItems: 'center',
-      }}
-    >
-      {slots.map((item, i) => (
-        <NameCell key={i} item={item} compact={compact} />
-      ))}
-    </div>
-  )
-}
+  const correctCount = feedback.filter(f => f === 'correct').length
+  const accentColor = correctCount === 5
+    ? 'var(--color-dot-correct)'
+    : correctCount > 0
+      ? 'var(--color-dot-present)'
+      : 'var(--color-border)'
 
-function LiveRow({ slots, compact }) {
-  return (
-    <div className="flex items-center gap-2" style={{ opacity: 0.4 }}>
-      <span
-        className="text-[10px] font-medium w-5 shrink-0"
-        style={{ color: 'var(--color-text-faint)' }}
-      >
-        →
-      </span>
-      <NamesGrid slots={slots} compact={compact} />
-      {/* Keep live-row width aligned with historical rows' feedback column */}
-      <div className="shrink-0" style={{ minWidth: '3.5rem' }} aria-hidden="true" />
-    </div>
-  )
-}
+  const nameRef = useRef(null)
+  const [compact, setCompact] = useState(false)
 
-function AttemptRow({ slots, feedback, compact, attemptNumber, isLatest, liteDots, onPick }) {
+  useLayoutEffect(() => {
+    const el = nameRef.current
+    if (!el) return
+    setCompact(el.scrollWidth > el.clientWidth)
+  }, [slots])
+
+  const names = slots.map(s => s?.name ?? '—')
+  const displayText = compact
+    ? names.map(n => n.length > 5 ? n.slice(0, 5) : n).join(' · ')
+    : names.join(' · ')
 
   return (
     <button
       type="button"
-      className={`flex items-center gap-2 w-full text-left cursor-pointer rounded-md appearance-none p-0 border-0 bg-transparent ${isLatest ? 'attempt-new' : 'fade-in'}`}
+      className={`w-full text-left cursor-pointer appearance-none border-0 p-0 ${isLatest ? 'attempt-new' : ''}`}
       onClick={onPick}
+      style={{
+        background: 'var(--color-bg-elevated)',
+        borderRadius: '8px',
+        borderLeft: `3px solid ${accentColor}`,
+        padding: '3px 8px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+      }}
     >
       {/* Attempt number */}
       <span
-        className="text-[10px] font-medium w-5 shrink-0 tabular-nums"
-        style={{ color: 'var(--color-text-faint)' }}
+        className="tabular-nums shrink-0"
+        style={{ fontSize: '9px', color: 'var(--color-text-faint)', width: '0.9rem', textAlign: 'right' }}
       >
-        #{attemptNumber}
+        {attemptNumber}
       </span>
 
-      {/* Left column: submitted names in order */}
-      <NamesGrid slots={slots} compact={compact} />
+      {/* Names — flex-1, fades to right, compacts only if it actually overflows */}
+      <span
+        ref={nameRef}
+        className="flex-1 min-w-0"
+        style={{
+          fontSize: '13px',
+          color: 'var(--color-text)',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          WebkitMaskImage: 'linear-gradient(to right, black 75%, transparent 100%)',
+          maskImage: 'linear-gradient(to right, black 75%, transparent 100%)',
+        }}
+      >
+        {displayText}
+      </span>
 
-      {/* Right column: Mastermind feedback — ●s then ○s then —s; in Lite mode unsorted (positional) */}
-      <div className="flex items-center gap-0.5 shrink-0 justify-end" style={{ minWidth: '3.5rem' }}>
-        {(liteDots ? feedback : [...feedback].sort((a, b) => {
-          const order = { correct: 0, present: 1 }
-          return (order[a] ?? 2) - (order[b] ?? 2)
-        })).map((f, i) => {
-          if (f === 'correct') {
-            return (
-              <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-dot-correct)' }}>●</span>
-            )
-          }
-          if (f === 'present') {
-            return (
-              <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-dot-present)' }}>○</span>
-            )
-          }
-          return (
-            <span key={i} className="text-xs leading-none" style={{ color: 'var(--color-text-faint)', opacity: 0.4 }}>—</span>
-          )
-        })}
+      {/* Sorted Mastermind dots — fixed-width cells for column alignment */}
+      <div className="flex items-center shrink-0">
+        {sortedFeedback.map((f, i) => (
+          <span
+            key={i}
+            style={{
+              fontSize: '17px',
+              lineHeight: 1,
+              width: '19px',
+              textAlign: 'center',
+              display: 'inline-block',
+              color: f === 'correct' ? 'var(--color-dot-correct)'
+                   : f === 'present' ? 'var(--color-dot-present)'
+                   : 'var(--color-text-faint)',
+              opacity: f !== 'correct' && f !== 'present' ? 0.2 : 1,
+            }}
+          >
+            {f === 'correct' ? '●' : f === 'present' ? '○' : '—'}
+          </span>
+        ))}
       </div>
     </button>
+  )
+}
+
+function LiveRow({ slots }) {
+  const nameRef = useRef(null)
+  const [compact, setCompact] = useState(false)
+
+  useLayoutEffect(() => {
+    const el = nameRef.current
+    if (!el) return
+    setCompact(el.scrollWidth > el.clientWidth)
+  }, [slots])
+
+  const rawNames = slots.filter(Boolean).map(s => s.name)
+  const names = compact
+    ? rawNames.map(n => n.length > 5 ? n.slice(0, 5) : n).join(' · ')
+    : rawNames.join(' · ')
+  return (
+    <div
+      style={{
+        background: 'var(--color-bg-elevated)',
+        borderRadius: '8px',
+        borderLeft: '3px solid var(--color-border)',
+        padding: '3px 8px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '6px',
+        opacity: 0.45,
+      }}
+    >
+      <span style={{ width: '0.9rem', flexShrink: 0 }} />
+      <span
+        ref={nameRef}
+        className="flex-1 min-w-0"
+        style={{
+          fontSize: '13px',
+          color: 'var(--color-text)',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          WebkitMaskImage: 'linear-gradient(to right, black 75%, transparent 100%)',
+          maskImage: 'linear-gradient(to right, black 75%, transparent 100%)',
+        }}
+      >
+        {names || '·····'}
+      </span>
+      <div className="flex items-center shrink-0">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <span key={i} style={{ fontSize: '13px', lineHeight: 1, width: '16px', textAlign: 'center', display: 'inline-block', color: 'var(--color-text-faint)', opacity: 0.3 }}>·</span>
+        ))}
+      </div>
+    </div>
   )
 }

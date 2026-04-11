@@ -23,7 +23,7 @@
   --color-border:       #e5ddc8;  /* very light tan — whisper lines */
   --color-action:       #776050;  /* muted leather — placed pills, submit */
   --color-action-text:  #fdf6e3;  /* cream on walnut */
-  --color-dot-correct:  #6b7a38;  /* muted olive green — right */
+  --color-dot-correct:  #4c5728;  /* muted olive green — right */
   --color-dot-present:  #9e844e;  /* warm amber — wrong spot */
   --color-dot-absent:   #cec8b4;  /* warm faint — not in top 5 */
   --color-miss:         #9b5040;  /* muted brick/clay — miss feedback */
@@ -262,6 +262,15 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+/* ── Desktop card rounding ── */
+@media (min-width: 431px) {
+  #root {
+    border-bottom-left-radius: 1.5rem;
+    border-bottom-right-radius: 1.5rem;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+  }
 }
 
 /* ── Portrait-only nudge (touch devices in landscape) ── */

@@ -58,7 +58,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
       style={{
         position: 'relative',
         zIndex: 10,
-        background: 'var(--color-bg)',
+        background: 'var(--color-bg-elevated)',
         borderTop: '1px solid var(--color-border)',
       }}
     >
@@ -96,23 +96,29 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
               style={{ touchAction: isDraggable ? 'none' : 'auto' }}
             >
               <span
-                className="text-sm font-medium w-4 text-right shrink-0"
-                style={{ color: locked ? 'var(--color-text-strong)' : 'var(--color-text-faint)' }}
+                className="text-sm font-bold tabular-nums shrink-0"
+                style={{
+                  color: 'var(--color-dot-present)',
+                  width: '1.25rem',
+                  textAlign: 'right',
+                  opacity: item ? 1 : 0.4,
+                }}
               >
-                {position}.
+                {position}
               </span>
 
               <div
                 className="flex-1 flex items-center rounded-lg px-3 py-1.5 min-w-0"
                 style={{
-                  background: isDragging
-                    ? 'var(--color-bg)'
-                    : locked ? 'var(--color-border)' : 'var(--color-bg-elevated)',
-                  border: `1px solid ${
-                    isDragging
-                      ? 'var(--color-text)'
-                      : locked ? 'var(--color-text-faint)' : 'var(--color-border)'
-                  }`,
+                  background: locked ? 'var(--color-border)' : 'var(--color-bg)',
+                  ...(item && !isDragging ? {
+                    borderTop: `1px solid ${locked ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
+                    borderRight: `1px solid ${locked ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
+                    borderBottom: `1px solid ${locked ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
+                    borderLeft: `3px solid ${locked ? 'var(--color-text-faint)' : 'var(--color-action)'}`,
+                  } : {
+                    border: `1px solid ${isDragging ? 'var(--color-text)' : locked ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
+                  }),
                   boxShadow: isDragging ? '0 4px 12px rgba(0,0,0,0.25)' : 'none',
                   minHeight: '36px',
                   opacity: isDragging ? 0.85 : 1,
@@ -141,18 +147,34 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                       <span
                         className="shrink-0 select-none"
                         style={{
-                          color: isDragging ? 'var(--color-text)' : 'var(--color-text-faint)',
                           cursor: isDragging ? 'grabbing' : 'grab',
-                          opacity: isDragging ? 1 : 0.55,
-                          transition: 'opacity 0.1s, color 0.1s',
-                          fontSize: '1.25rem',
-                          lineHeight: 1,
                           padding: '4px 6px',
                           margin: '-4px -4px -4px 2px',
                           touchAction: 'none',
+                          display: 'inline-grid',
+                          gridTemplateColumns: 'repeat(2, 3px)',
+                          gridTemplateRows: 'repeat(3, 3px)',
+                          gap: '2.5px',
+                          alignItems: 'center',
+                          alignContent: 'center',
                         }}
                         aria-hidden="true"
-                      >⠿</span>
+                      >
+                        {Array.from({ length: 6 }).map((_, i) => (
+                          <span
+                            key={i}
+                            style={{
+                              width: '3px',
+                              height: '3px',
+                              borderRadius: '50%',
+                              background: isDragging ? 'var(--color-text)' : 'var(--color-text-faint)',
+                              opacity: isDragging ? 1 : 0.72,
+                              transition: 'background 0.1s, opacity 0.1s',
+                              display: 'block',
+                            }}
+                          />
+                        ))}
+                      </span>
                     )}
                   </>
                 ) : (
@@ -173,7 +195,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
         disabled={!hasAnySlot}
         className={`mt-3 w-full py-2 rounded-lg text-sm font-semibold disabled:opacity-30${allFilled && submitReadyKey > 0 ? ' submit-ready' : ''}`}
         style={{
-          background: hasAnySlot ? 'var(--color-action)' : 'var(--color-bg-elevated)',
+          background: hasAnySlot ? 'var(--color-action)' : 'var(--color-border)',
           color: hasAnySlot ? 'var(--color-action-text)' : 'var(--color-text-faint)',
         }}
       >
