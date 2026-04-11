@@ -70,7 +70,7 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', onSet
           <span
             key={coins}
             className="coin-pulse text-xl font-bold tabular-nums"
-            style={{ color: 'var(--color-text-strong)' }}
+            style={{ color: 'var(--color-dot-present)' }}
           >
             {coins}
           </span>
@@ -79,7 +79,7 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', onSet
             <span
               key={id}
               className="coin-float absolute left-6 text-base font-bold"
-              style={{ color: 'var(--color-text-strong)', top: '-6px' }}
+              style={{ color: positive ? 'var(--color-dot-present)' : 'var(--color-text-faint)', top: '-6px' }}
             >
               {positive ? `+${amount}` : `−${amount}`}
             </span>

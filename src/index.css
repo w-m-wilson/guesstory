@@ -12,8 +12,72 @@
   --color-sol-base3:  #FDF6E3;
 }
 
-/* ── Semantic layer — gruvbox light (default) ── */
+/* ── Guesstory light ── */
 :root,
+[data-theme="guesstory-light"] {
+  --color-bg:           #fdf6e3;  /* cream — solarized base3 */
+  --color-bg-elevated:  #f2ead8;  /* soft step — pills/slots blend gently */
+  --color-text:         #88705e;  /* warm taupe-brown — readable, not stark */
+  --color-text-strong:  #675848;  /* grey-brown — labels only */
+  --color-text-faint:   #c0b89e;  /* warm khaki — annotations */
+  --color-border:       #e5ddc8;  /* very light tan — whisper lines */
+  --color-action:       #776050;  /* muted leather — placed pills, submit */
+  --color-action-text:  #fdf6e3;  /* cream on walnut */
+  --color-dot-correct:  #6b7a38;  /* muted olive green — right */
+  --color-dot-present:  #9e844e;  /* warm amber — wrong spot */
+  --color-dot-absent:   #cec8b4;  /* warm faint — not in top 5 */
+  --color-miss:         #9b5040;  /* muted brick/clay — miss feedback */
+}
+
+/* ── Guesstory dark ── */
+[data-theme="guesstory-dark"] {
+  --color-bg:           #1C1510;  /* espresso — leather binding */
+  --color-bg-elevated:  #2A1D14;  /* soft lift — less jump from bg */
+  --color-text:         #c4b896;  /* warm khaki — comfortable read */
+  --color-text-strong:  #d8d0bc;  /* warm off-white — softened */
+  --color-text-faint:   #7a6448;  /* muted saddle — annotations */
+  --color-border:       #38281a;  /* dark warm border */
+  --color-action:       #8a7050;  /* muted leather — placed pills, submit */
+  --color-action-text:  #1C1510;  /* espresso on leather */
+  --color-dot-correct:  #7a8a40;  /* muted olive green — right */
+  --color-dot-present:  #936639;  /* Toffee Brown — wrong spot */
+  --color-dot-absent:   #38281a;  /* border tone — absent */
+  --color-miss:         #b06858;  /* muted clay — miss feedback */
+}
+
+/* ── Guesstory Colorful light ── */
+[data-theme="guesstory-colorful-light"] {
+  --color-bg:           #c2c5aa;
+  --color-bg-elevated:  #a4ac86;
+  --color-text:         #582f0e;
+  --color-text-strong:  #333d29;
+  --color-text-faint:   #7f4f24;
+  --color-border:       #a4ac86;
+  --color-action:       #414833;
+  --color-action-text:  #c2c5aa;
+  --color-dot-correct:  #333d29;
+  --color-dot-present:  #936639;
+  --color-dot-absent:   #c2c5aa;
+  --color-miss:         #8b4a30;
+}
+
+/* ── Guesstory Colorful dark ── */
+[data-theme="guesstory-colorful-dark"] {
+  --color-bg:           #414833;
+  --color-bg-elevated:  #4d5540;
+  --color-text:         #c2c5aa;
+  --color-text-strong:  #EDEAE3;
+  --color-text-faint:   #656d4a;
+  --color-border:       #333d29;
+  --color-action:       #c2c5aa;
+  --color-action-text:  #414833;
+  --color-dot-correct:  #a4ac86;
+  --color-dot-present:  #936639;
+  --color-dot-absent:   #333d29;
+  --color-miss:         #a06050;
+}
+
+/* ── Gruvbox light ── */
 [data-theme="gruvbox-light"] {
   --color-bg:           #F2EAD5;
   --color-bg-elevated:  #E4D9C3;
@@ -21,9 +85,28 @@
   --color-text-strong:  #3C3836;
   --color-text-faint:   #928374;
   --color-border:       #CEC4AC;
+  --color-action:       #3C3836;
+  --color-action-text:  #F2EAD5;
   --color-dot-correct:  #3C3836;
   --color-dot-present:  #928374;
   --color-dot-absent:   #CEC4AC;
+  --color-miss:         #9d5040;
+}
+
+/* ── Gruvbox dark ── */
+[data-theme="gruvbox-dark"] {
+  --color-bg:           #282828;
+  --color-bg-elevated:  #3C3836;
+  --color-text:         #BDAE93;
+  --color-text-strong:  #EBDBB2;
+  --color-text-faint:   #928374;
+  --color-border:       #504945;
+  --color-action:       #EBDBB2;
+  --color-action-text:  #282828;
+  --color-dot-correct:  #EBDBB2;
+  --color-dot-present:  #928374;
+  --color-dot-absent:   #504945;
+  --color-miss:         #cc6655;
 }
 
 /* ── Solarized light ── */
@@ -34,9 +117,12 @@
   --color-text-strong:  #586E75;
   --color-text-faint:   #93A1A1;
   --color-border:       #EEE8D5;
+  --color-action:       #586E75;
+  --color-action-text:  #FDF6E3;
   --color-dot-correct:  #586E75;
   --color-dot-present:  #93A1A1;
   --color-dot-absent:   #D3CDB8;
+  --color-miss:         #cb4b16;
 }
 
 /* ── Solarized dark ── */
@@ -47,9 +133,76 @@
   --color-text-strong:  #93A1A1;
   --color-text-faint:   #586E75;
   --color-border:       #073642;
+  --color-action:       #93A1A1;
+  --color-action-text:  #002B36;
   --color-dot-correct:  #EEE8D5;
   --color-dot-present:  #93A1A1;
   --color-dot-absent:   #073642;
+  --color-miss:         #dc7060;
+}
+
+/* ── Minimal light ── */
+[data-theme="minimal-light"] {
+  --color-bg:           #FFFFFF;
+  --color-bg-elevated:  #F2F2F2;
+  --color-text:         #555555;
+  --color-text-strong:  #111111;
+  --color-text-faint:   #AAAAAA;
+  --color-border:       #E8E8E8;
+  --color-action:       #111111;
+  --color-action-text:  #FFFFFF;
+  --color-dot-correct:  #111111;
+  --color-dot-present:  #888888;
+  --color-dot-absent:   #DDDDDD;
+  --color-miss:         #aa4444;
+}
+
+/* ── Minimal dark ── */
+[data-theme="minimal-dark"] {
+  --color-bg:           #111111;
+  --color-bg-elevated:  #1E1E1E;
+  --color-text:         #BBBBBB;
+  --color-text-strong:  #FFFFFF;
+  --color-text-faint:   #666666;
+  --color-border:       #2A2A2A;
+  --color-action:       #FFFFFF;
+  --color-action-text:  #111111;
+  --color-dot-correct:  #FFFFFF;
+  --color-dot-present:  #888888;
+  --color-dot-absent:   #2A2A2A;
+  --color-miss:         #cc6655;
+}
+
+/* ── Bailly light (rose & sage) ── */
+[data-theme="bailly-light"] {
+  --color-bg:           #FEF2F5;
+  --color-bg-elevated:  #FBDFE8;
+  --color-text:         #6B3D52;
+  --color-text-strong:  #4A1F35;
+  --color-text-faint:   #BA849A;
+  --color-border:       #F5C8D8;
+  --color-action:       #4A1F35;
+  --color-action-text:  #FEF2F5;
+  --color-dot-correct:  #4A1F35;
+  --color-dot-present:  #BA849A;
+  --color-dot-absent:   #F5C8D8;
+  --color-miss:         #9b4060;
+}
+
+/* ── Bailly dark ── */
+[data-theme="bailly-dark"] {
+  --color-bg:           #270D1A;
+  --color-bg-elevated:  #3C1628;
+  --color-text:         #E0A8BC;
+  --color-text-strong:  #F5D0DF;
+  --color-text-faint:   #7A4560;
+  --color-border:       #3C1628;
+  --color-action:       #F5D0DF;
+  --color-action-text:  #270D1A;
+  --color-dot-correct:  #F5D0DF;
+  --color-dot-present:  #7A4560;
+  --color-dot-absent:   #3C1628;
+  --color-miss:         #c06080;
 }
 
 /* System dark fallback before JS sets data-theme */
@@ -61,75 +214,13 @@
     --color-text-strong:  #EBDBB2;
     --color-text-faint:   #928374;
     --color-border:       #504945;
+    --color-action:       #EBDBB2;
+    --color-action-text:  #282828;
     --color-dot-correct:  #EBDBB2;
     --color-dot-present:  #928374;
     --color-dot-absent:   #504945;
+    --color-miss:         #cc6655;
   }
-}
-
-/* ── Minimal light ── */
-[data-theme="minimal-light"] {
-  --color-bg:           #FFFFFF;
-  --color-bg-elevated:  #F2F2F2;
-  --color-text:         #555555;
-  --color-text-strong:  #111111;
-  --color-text-faint:   #AAAAAA;
-  --color-border:       #E8E8E8;
-  --color-dot-correct:  #111111;
-  --color-dot-present:  #888888;
-  --color-dot-absent:   #DDDDDD;
-}
-
-/* ── Minimal dark ── */
-[data-theme="minimal-dark"] {
-  --color-bg:           #111111;
-  --color-bg-elevated:  #1E1E1E;
-  --color-text:         #BBBBBB;
-  --color-text-strong:  #FFFFFF;
-  --color-text-faint:   #666666;
-  --color-border:       #2A2A2A;
-  --color-dot-correct:  #FFFFFF;
-  --color-dot-present:  #888888;
-  --color-dot-absent:   #2A2A2A;
-}
-
-/* ── Gruvbox dark ── */
-[data-theme="gruvbox-dark"] {
-  --color-bg:           #282828;
-  --color-bg-elevated:  #3C3836;
-  --color-text:         #BDAE93;
-  --color-text-strong:  #EBDBB2;
-  --color-text-faint:   #928374;
-  --color-border:       #504945;
-  --color-dot-correct:  #EBDBB2;
-  --color-dot-present:  #928374;
-  --color-dot-absent:   #504945;
-}
-
-/* ── Bailly light (rose & sage) ── */
-[data-theme="bailly-light"] {
-  --color-bg:           #FEF2F5;
-  --color-bg-elevated:  #FBDFE8;
-  --color-text:         #6B3D52;
-  --color-text-strong:  #4A1F35;
-  --color-text-faint:   #BA849A;
-  --color-border:       #F5C8D8;
-  --color-dot-correct:  #4A1F35;
-  --color-dot-present:  #BA849A;
-  --color-dot-absent:   #F5C8D8;
-}
-
-/* ── Bailly dark ── */
-[data-theme="bailly-dark"] {
-  --color-bg:           #270D1A;
-  --color-bg-elevated:  #3C1628;
-  --color-text:         #E0A8BC;
-  --color-text-strong:  #F5D0DF;
-  --color-text-faint:   #7A4560;
-  --color-border:       #3C1628;
-  --color-dot-correct:  #F5D0DF;
-  --color-dot-present:  #7A4560;
-  --color-dot-absent:   #3C1628;
 }
 
 /* ── Hide scrollbars globally (scroll still works) ── */
@@ -155,7 +246,7 @@ body {
   overscroll-behavior: none;
   background: var(--color-bg);
   color: var(--color-text);
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: 'Jost', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   color-scheme: light dark;
   user-select: none;
@@ -216,6 +307,23 @@ body {
   pointer-events: none;
 }
 
+/* ── Input feedback placeholder colour (driven by --feedback-color inline prop) ── */
+.input-feedback::placeholder {
+  color: var(--feedback-color);
+  opacity: 1;
+}
+
+/* ── Counter row miss flash ── */
+@keyframes rowFlash {
+  0%   { background-color: transparent; }
+  18%  { background-color: color-mix(in srgb, var(--color-miss) 12%, transparent); }
+  100% { background-color: transparent; }
+}
+.row-flash {
+  animation: rowFlash 1.1s ease-out forwards;
+  border-radius: 4px;
+}
+
 /* ── Miss feedback shake ── */
 @keyframes shakeFadeIn {
   0%   { opacity: 0; transform: translateX(0); }
@@ -229,12 +337,15 @@ body {
 
 /* ── Free-circle drain ── */
 @keyframes circleDrain {
-  0%   { transform: scale(1.5); opacity: 1; }
-  55%  { transform: scale(0);   opacity: 0; }
-  100% { transform: scale(1);   opacity: 1; }
+  0%   { transform: scale(1)   rotate(0deg);   opacity: 1; }
+  18%  { transform: scale(2)   rotate(-18deg); opacity: 1; }
+  32%  { transform: scale(1.7) rotate(12deg);  opacity: 1; }
+  58%  { transform: scale(0)   rotate(0deg);   opacity: 0; }
+  74%  { transform: scale(0);                  opacity: 0; }
+  100% { transform: scale(1)   rotate(0deg);   opacity: 1; }
 }
 .circle-drain {
-  animation: circleDrain 0.42s ease-in-out;
+  animation: circleDrain 0.62s ease-in-out;
   display: inline-block;
 }
 

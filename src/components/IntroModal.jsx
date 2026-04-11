@@ -141,8 +141,8 @@ export default function IntroModal({ onClose, onReplayTutorial }) {
             onClick={onClose}
             className="w-full py-2.5 rounded-xl text-sm font-semibold"
             style={{
-              background: 'var(--color-text-strong)',
-              color: 'var(--color-bg)',
+              background: 'var(--color-action)',
+              color: 'var(--color-action-text)',
             }}
           >
             Got it — let's play

@@ -213,7 +213,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
         {/* Score + attempts side by side */}
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-5xl font-black tabular-nums" style={{ color: 'var(--color-text-strong)' }}>
+            <p className="text-5xl font-black tabular-nums" style={{ color: 'var(--color-dot-present)' }}>
               {coins}
             </p>
             <p className="text-sm mt-1" style={{ color: 'var(--color-text-faint)' }}>
@@ -260,7 +260,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
                 type="submit"
                 disabled={!bonusQuery.trim() || bonusLoading}
                 className="px-3 py-1.5 rounded-lg text-sm font-semibold shrink-0 disabled:opacity-40"
-                style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+                style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
               >
                 {bonusLoading ? '…' : '→'}
               </button>
@@ -284,7 +284,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
               <button
                 onClick={() => { onClose(); onComplete(); }}
                 className="w-full py-2.5 rounded-xl text-sm font-semibold"
-                style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+                style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
               >
                 {completeCTA ?? 'Play today\'s puzzle →'}
               </button>
@@ -292,7 +292,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
               <button
                 onClick={onClose}
                 className="w-full py-2.5 rounded-xl text-sm font-semibold"
-                style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+                style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
               >
                 Take your Hail Mary →
               </button>
@@ -300,7 +300,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
               <button
                 onClick={handleShare}
                 className="w-full py-2.5 rounded-xl text-sm font-semibold"
-                style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+                style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
               >
                 {copied ? 'Copied!' : 'Share result'}
               </button>

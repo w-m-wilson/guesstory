@@ -35,16 +35,16 @@ function DifficultySelector({ current, onSelect }) {
             onClick={() => onSelect(key)}
             className="flex items-center justify-between w-full rounded-xl px-4 py-3 text-left"
             style={{
-              background: current === key ? 'var(--color-text-strong)' : 'var(--color-bg-elevated)',
-              border: `1px solid ${current === key ? 'var(--color-text-strong)' : 'var(--color-border)'}`,
-              color: current === key ? 'var(--color-bg)' : 'var(--color-text)',
+              background: current === key ? 'var(--color-action)' : 'var(--color-bg-elevated)',
+              border: `1px solid ${current === key ? 'var(--color-action)' : 'var(--color-border)'}`,
+              color: current === key ? 'var(--color-action-text)' : 'var(--color-text)',
             }}
           >
             <div>
               <p className="text-sm font-semibold">{label}</p>
-              <p className="text-xs mt-0.5" style={{ color: current === key ? 'var(--color-bg)' : 'var(--color-text-faint)', opacity: current === key ? 0.75 : 1 }}>{blurb}</p>
+              <p className="text-xs mt-0.5" style={{ color: current === key ? 'var(--color-action-text)' : 'var(--color-text-faint)', opacity: current === key ? 0.75 : 1 }}>{blurb}</p>
             </div>
-            {current === key && <span className="text-sm ml-3 shrink-0" style={{ color: 'var(--color-bg)', opacity: 0.7 }}>✓</span>}
+            {current === key && <span className="text-sm ml-3 shrink-0" style={{ color: 'var(--color-action-text)', opacity: 0.7 }}>✓</span>}
           </button>
         ))}
       </div>

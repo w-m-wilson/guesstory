@@ -15,7 +15,7 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
         >
           <div
             className="mb-6 px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase"
-            style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+            style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
           >
             TUTORIAL · GAME 2 OF 2
           </div>
@@ -49,7 +49,7 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
           <button
             onClick={onBegin}
             className="w-full max-w-xs py-3.5 rounded-xl text-base font-bold"
-            style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+            style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
           >
             Let's go →
           </button>
@@ -61,22 +61,22 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
     return (
       <div
         className="shrink-0 px-4 py-3"
-        style={{ background: 'var(--color-text-strong)', borderBottom: '1px solid var(--color-border)' }}
+        style={{ background: 'var(--color-action)', borderBottom: '1px solid var(--color-border)' }}
       >
         <p
           className="text-xs font-black uppercase tracking-widest mb-1.5"
-          style={{ color: 'var(--color-bg)', opacity: 0.65 }}
+          style={{ color: 'var(--color-action-text)', opacity: 0.65 }}
         >
           TUTORIAL · GAME 2 OF 2
         </p>
         <div className="flex flex-col gap-1">
-          <p className="text-xs" style={{ color: 'var(--color-bg)', opacity: 0.9 }}>
+          <p className="text-xs" style={{ color: 'var(--color-action-text)', opacity: 0.9 }}>
             <strong>Guess category</strong> (top right) for +15 bonus coins
           </p>
-          <p className="text-xs" style={{ color: 'var(--color-bg)', opacity: 0.9 }}>
+          <p className="text-xs" style={{ color: 'var(--color-action-text)', opacity: 0.9 }}>
             <strong>Hint shop</strong>: tap the hints button at the bottom right
           </p>
-          <p className="text-xs" style={{ color: 'var(--color-bg)', opacity: 0.9 }}>
+          <p className="text-xs" style={{ color: 'var(--color-action-text)', opacity: 0.9 }}>
             Not all items are in the top 5, so you might not need to unlock them all!
           </p>
         </div>
@@ -94,7 +94,7 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
       >
         <div
           className="mb-5 px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase"
-          style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+          style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
         >
           TUTORIAL · GAME 1 OF 2
         </div>
@@ -108,20 +108,20 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
         {/* Phone mockup */}
         <div className="mb-7 mx-auto relative" style={{ width: '180px' }}>
           {/* Side buttons */}
-          <div className="absolute rounded-r-sm" style={{ left: '-5px', top: '72px', width: '4px', height: '28px', background: 'var(--color-text-strong)' }} />
-          <div className="absolute rounded-r-sm" style={{ left: '-5px', top: '110px', width: '4px', height: '44px', background: 'var(--color-text-strong)' }} />
-          <div className="absolute rounded-l-sm" style={{ right: '-5px', top: '90px', width: '4px', height: '52px', background: 'var(--color-text-strong)' }} />
+          <div className="absolute rounded-r-sm" style={{ left: '-5px', top: '72px', width: '4px', height: '28px', background: 'var(--color-action)' }} />
+          <div className="absolute rounded-r-sm" style={{ left: '-5px', top: '110px', width: '4px', height: '44px', background: 'var(--color-action)' }} />
+          <div className="absolute rounded-l-sm" style={{ right: '-5px', top: '90px', width: '4px', height: '52px', background: 'var(--color-action)' }} />
 
           <div
             className="rounded-[32px] overflow-hidden flex flex-col"
             style={{
-              border: '4px solid var(--color-text-strong)',
+              border: '4px solid var(--color-action)',
               background: 'var(--color-bg)',
               minHeight: '340px',
             }}
           >
             {/* Top speaker + camera */}
-            <div className="flex justify-center items-center gap-2 pt-3 pb-2 px-6" style={{ background: 'var(--color-text-strong)' }}>
+            <div className="flex justify-center items-center gap-2 pt-3 pb-2 px-6" style={{ background: 'var(--color-action)' }}>
               <div className="rounded-full" style={{ width: '6px', height: '6px', background: 'var(--color-bg)', opacity: 0.25 }} />
               <div className="rounded-full" style={{ width: '40px', height: '6px', background: 'var(--color-bg)', opacity: 0.2 }} />
             </div>
@@ -153,7 +153,7 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
         <button
           onClick={onBegin}
           className="w-full max-w-xs py-3.5 rounded-xl text-base font-bold"
-          style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+          style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
         >
           Let's go →
         </button>
@@ -190,22 +190,22 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
   return (
     <div
       className="shrink-0 px-4 py-3"
-      style={{ background: 'var(--color-text-strong)', borderBottom: '1px solid var(--color-border)' }}
+      style={{ background: 'var(--color-action)', borderBottom: '1px solid var(--color-border)' }}
     >
       <p
         className="text-xs font-black uppercase tracking-widest mb-1"
-        style={{ color: 'var(--color-bg)', opacity: 0.65 }}
+        style={{ color: 'var(--color-action-text)', opacity: 0.65 }}
       >
         TUTORIAL · GAME 1 OF 2
       </p>
-      <p className="text-sm font-bold mb-0.5" style={{ color: 'var(--color-bg)' }}>
+      <p className="text-sm font-bold mb-0.5" style={{ color: 'var(--color-action-text)' }}>
         {label}
       </p>
-      <p className="text-xs" style={{ color: 'var(--color-bg)', opacity: 0.85 }}>
+      <p className="text-xs" style={{ color: 'var(--color-action-text)', opacity: 0.85 }}>
         {instruction}
       </p>
       {progress && (
-        <p className="text-xs mt-1.5 font-semibold" style={{ color: 'var(--color-bg)', opacity: 0.7 }}>
+        <p className="text-xs mt-1.5 font-semibold" style={{ color: 'var(--color-action-text)', opacity: 0.7 }}>
           {progress}
         </p>
       )}

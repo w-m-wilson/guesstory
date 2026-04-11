@@ -34,21 +34,35 @@ export default function BankPanel({
   const [animatingCircleIdx, setAnimatingCircleIdx] = useState(null)
   const [penaltyKey, setPenaltyKey] = useState(0)
   const [showLeftFade, setShowLeftFade] = useState(false)
+  const [showBankMsg, setShowBankMsg] = useState(false)
+  const [rowFlashKey, setRowFlashKey] = useState(0)
   const feedbackTimer = useRef(null)
   const haikuTimerRef = useRef(null)
+  const bankMsgTimer = useRef(null)
   const inputRef = useRef(null)
   const bankScrollRef = useRef(null)
+
+  const burningCoins = bankMisses >= FREE_MISSES
+  const bankFull = discoveredList.length >= bankTotal
 
   function showFeedback(type, message) {
     clearTimeout(feedbackTimer.current)
     setFeedback({ type, message, ts: Date.now() })
-    feedbackTimer.current = setTimeout(() => setFeedback(null), 2500)
+    feedbackTimer.current = setTimeout(() => setFeedback(null), 1200)
   }
 
   useEffect(() => () => {
     clearTimeout(feedbackTimer.current)
     clearTimeout(haikuTimerRef.current)
+    clearTimeout(bankMsgTimer.current)
   }, [])
+
+  useEffect(() => {
+    if (bankFull) {
+      setShowBankMsg(true)
+      bankMsgTimer.current = setTimeout(() => setShowBankMsg(false), 2500)
+    }
+  }, [bankFull])
 
   useEffect(() => {
     function updateLeftFade() {
@@ -88,17 +102,12 @@ export default function BankPanel({
     } else if (result.outcome === 'known') {
       showFeedback('known', `Already discovered`)
     } else if (result.outcome === 'miss') {
+      setRowFlashKey(k => k + 1)
+      showFeedback('miss', `${q} — not in bank`)
       if (!burningCoins) {
         setAnimatingCircleIdx(bankMisses)
-        const remaining = Math.max(0, FREE_MISSES - bankMisses - 1)
-        if (remaining > 0) {
-          showFeedback('miss', `Not in the bank — ${remaining} free ${remaining === 1 ? 'miss' : 'misses'} left`)
-        } else {
-          showFeedback('miss', `Not in the bank — last free miss used`)
-        }
       } else {
         setPenaltyKey(k => k + 1)
-        showFeedback('miss', `Not in the bank`)
       }
     }
     // 'pending' is handled by ConfirmMatch appearing
@@ -115,9 +124,6 @@ export default function BankPanel({
   rankSlots.forEach((item, i) => { if (item) rankToSlotIndex[item.rank] = i })
   const placedRanks = new Set(Object.keys(rankToSlotIndex).map(Number))
 
-  const burningCoins = bankMisses >= FREE_MISSES
-  const bankFull = discoveredList.length >= bankTotal
-
   return (
     <div className="flex flex-col" style={{ position: 'relative', zIndex: 10, background: 'var(--color-bg)' }}>
       {/* Guess input — hidden once bank is fully discovered */}
@@ -131,14 +137,34 @@ export default function BankPanel({
             type="search"
             value={query}
             onChange={e => setQuery(e.target.value)}
-            placeholder={pendingMatch ? 'Confirm or cancel below…' : 'Submit a guess for the bank…'}
+            placeholder={
+              feedback ? feedback.message
+              : pendingMatch ? 'Confirm or cancel below…'
+              : 'Submit a guess for the bank…'
+            }
             disabled={!!pendingMatch || gameOver}
-            className="flex-1 rounded-lg px-3 py-2 text-sm outline-none"
-            style={{
+            className={`flex-1 rounded-lg px-3 py-2 text-sm outline-none${feedback ? ' input-feedback' : ''}`}
+            style={feedback ? (() => {
+              const c = feedback.type === 'hit'
+                ? 'var(--color-dot-correct)'
+                : feedback.type === 'miss'
+                  ? 'var(--color-miss)'
+                  : 'var(--color-text-faint)'
+              return {
+                '--feedback-color': c,
+                background: `color-mix(in srgb, ${c} 8%, var(--color-bg-elevated))`,
+                border: `1px solid color-mix(in srgb, ${c} 45%, transparent)`,
+                boxShadow: `0 0 0 2.5px color-mix(in srgb, ${c} 18%, transparent)`,
+                color: 'var(--color-text)',
+                fontSize: '16px',
+                transition: 'box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease',
+              }
+            })() : {
               background: 'var(--color-bg-elevated)',
               color: 'var(--color-text)',
               border: '1px solid var(--color-border)',
-              fontSize: '16px',  /* prevents iOS Safari zoom on focus */
+              fontSize: '16px',
+              transition: 'box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease',
             }}
             autoComplete="off"
             autoCorrect="off"
@@ -150,8 +176,8 @@ export default function BankPanel({
             disabled={!!pendingMatch || !query.trim() || gameOver}
             className="px-3 py-2 rounded-lg text-sm font-medium shrink-0 disabled:opacity-40"
             style={{
-              background: 'var(--color-text-strong)',
-              color: 'var(--color-bg)',
+              background: 'var(--color-action)',
+              color: 'var(--color-action-text)',
             }}
           >
             Guess
@@ -159,10 +185,14 @@ export default function BankPanel({
         </form>
 
         {/* Free-miss indicator or coin cost notice */}
-        <div className="mt-1.5 flex items-center gap-1.5 h-5" style={{ position: 'relative' }}>
+        <div
+          key={rowFlashKey}
+          className={`mt-1.5 flex items-center gap-1.5 h-5 min-w-0${rowFlashKey > 0 ? ' row-flash' : ''}`}
+          style={{ position: 'relative' }}
+        >
           {!burningCoins ? (
             <>
-              <span className="text-xs" style={{ color: 'var(--color-text-faint)' }}>
+              <span className="text-xs shrink-0" style={{ color: 'var(--color-text-faint)' }}>
                 Free misses:
               </span>
               {Array.from({ length: FREE_MISSES }).map((_, i) => {
@@ -171,7 +201,7 @@ export default function BankPanel({
                 return (
                   <span
                     key={i}
-                    className={`text-xs${isAnimating ? ' circle-drain' : ''}`}
+                    className={`text-xs shrink-0${isAnimating ? ' circle-drain' : ''}`}
                     onAnimationEnd={isAnimating ? () => setAnimatingCircleIdx(null) : undefined}
                     style={{
                       color: consumed && !isAnimating ? 'var(--color-text-faint)' : 'var(--color-text-strong)',
@@ -185,7 +215,7 @@ export default function BankPanel({
             </>
           ) : (
             <>
-              <span className="text-xs" style={{ color: 'var(--color-text-faint)' }}>
+              <span className="text-xs shrink-0" style={{ color: 'var(--color-text-faint)' }}>
                 −1 coin per miss
               </span>
               {penaltyKey > 0 && (
@@ -199,7 +229,7 @@ export default function BankPanel({
               )}
             </>
           )}
-          <span className="ml-auto text-xs" style={{ color: 'var(--color-text-faint)' }}>
+          <span className="ml-auto text-xs shrink-0 pl-1" style={{ color: 'var(--color-text-faint)' }}>
             {discoveredList.length}/{bankTotal} found
           </span>
         </div>
@@ -214,21 +244,6 @@ export default function BankPanel({
             />
           </div>
         )}
-
-        {/* Inline feedback (hidden when confirm prompt is showing) */}
-        {!pendingMatch && feedback && (
-          <p
-            key={feedback.ts}
-            className={`text-xs mt-1 ${feedback.type === 'miss' ? 'shake-fade-in' : 'fade-in'}`}
-            style={{
-              color: feedback.type === 'hit'
-                ? 'var(--color-text-strong)'
-                : 'var(--color-text-faint)',
-            }}
-          >
-            {feedback.message}
-          </p>
-        )}
         {/* Haiku directional hint — appears on 2nd+ miss */}
         {!pendingMatch && haikuHint && (
           <p key={haikuHint} className="fade-in text-xs mt-0.5 italic" style={{ color: 'var(--color-text-faint)' }}>
@@ -237,13 +252,18 @@ export default function BankPanel({
         )}
       </div>}
 
-      {/* Bank complete banner */}
-      {bankFull && (
+      {/* Bank complete banner — fades after 2.5s */}
+      {bankFull && showBankMsg && (
         <div
-          className="bank-complete px-4 pt-3 pb-2 shrink-0 text-center text-sm font-medium"
-          style={{ color: 'var(--color-text-strong)' }}
+          className="bank-complete shrink-0 mx-4 my-2 px-4 py-2.5 rounded-xl text-center"
+          style={{
+            background: 'color-mix(in srgb, var(--color-dot-correct) 10%, var(--color-bg))',
+            border: '1px solid color-mix(in srgb, var(--color-dot-correct) 25%, transparent)',
+          }}
         >
-          You got them all!
+          <p className="text-sm font-semibold" style={{ color: 'var(--color-dot-correct)' }}>
+            ✓ You got them all!
+          </p>
         </div>
       )}
 
@@ -277,15 +297,15 @@ export default function BankPanel({
                             }}
                             className="fade-in flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap"
                             style={{
-                              background: placed ? 'var(--color-text-strong)' : 'var(--color-bg-elevated)',
-                              color: placed ? 'var(--color-bg)' : 'var(--color-text)',
+                              background: placed ? 'var(--color-action)' : 'var(--color-bg-elevated)',
+                              color: placed ? 'var(--color-action-text)' : 'var(--color-text)',
                               border: '1px solid var(--color-border)',
                             }}
                           >
                             {item.seeded && (
                               <span
                                 className="text-xs"
-                                style={{ color: placed ? 'var(--color-bg)' : 'var(--color-text-faint)' }}
+                                style={{ color: placed ? 'var(--color-action-text)' : 'var(--color-text-faint)' }}
                                 title="Given at start"
                               >
                                 ★

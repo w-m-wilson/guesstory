@@ -173,8 +173,8 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
         disabled={!hasAnySlot}
         className={`mt-3 w-full py-2 rounded-lg text-sm font-semibold disabled:opacity-30${allFilled && submitReadyKey > 0 ? ' submit-ready' : ''}`}
         style={{
-          background: hasAnySlot ? 'var(--color-text-strong)' : 'var(--color-bg-elevated)',
-          color: hasAnySlot ? 'var(--color-bg)' : 'var(--color-text-faint)',
+          background: hasAnySlot ? 'var(--color-action)' : 'var(--color-bg-elevated)',
+          color: hasAnySlot ? 'var(--color-action-text)' : 'var(--color-text-faint)',
         }}
       >
         Submit Ranking

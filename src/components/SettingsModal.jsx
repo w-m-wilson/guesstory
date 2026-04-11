@@ -5,7 +5,9 @@ const MODES = [
 ]
 
 const SCHEMES = [
-  { key: 'gruvbox',   label: 'Gruvbox',   description: 'Retro earthy tones' },
+  { key: 'guesstory',          label: 'Guesstory',          description: 'Warm neutral' },
+  { key: 'guesstory-colorful', label: 'Guesstory Colorful', description: 'Forest green' },
+  { key: 'gruvbox',            label: 'Gruvbox',            description: 'Retro earthy tones' },
   { key: 'solarized', label: 'Solarized', description: 'Warm amber tones' },
   { key: 'minimal',   label: 'Minimal',   description: 'Clean black & white' },
   { key: 'bailly',    label: 'Bailly',    description: 'Rose & sage' },
@@ -107,6 +109,8 @@ export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose 
 
 // Representative swatches (always shown in their fixed colors, not theme-aware)
 const SWATCHES = {
+  guesstory:          ['#fdf6e3', '#ece5ce', '#582f0e'],
+  'guesstory-colorful': ['#c2c5aa', '#a4ac86', '#414833'],
   gruvbox:   ['#F2EAD5', '#E4D9C3', '#3C3836'],
   solarized: ['#FDF6E3', '#EEE8D5', '#586E75'],
   minimal:   ['#FFFFFF', '#F0F0F0', '#111111'],

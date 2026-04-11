@@ -71,7 +71,7 @@ export default function App() {
         >
           <div
             className="mb-5 w-12 h-12 rounded-full flex items-center justify-center text-xl"
-            style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+            style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
           >
             ✓
           </div>
@@ -87,7 +87,7 @@ export default function App() {
           <button
             onClick={confirmHandoff}
             className="w-full max-w-xs py-3.5 rounded-xl text-base font-bold"
-            style={{ background: 'var(--color-text-strong)', color: 'var(--color-bg)' }}
+            style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
           >
             Play today's puzzle →
           </button>

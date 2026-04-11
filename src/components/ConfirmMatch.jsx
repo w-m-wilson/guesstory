@@ -20,8 +20,8 @@ export default function ConfirmMatch({ item, onConfirm, onCancel }) {
         onClick={onConfirm}
         className="px-2 py-0.5 rounded text-xs font-medium"
         style={{
-          background: 'var(--color-text-strong)',
-          color: 'var(--color-bg)',
+          background: 'var(--color-action)',
+          color: 'var(--color-action-text)',
         }}
       >
         Yes
