@@ -1,40 +1,7 @@
-import { useState, useRef, useEffect } from 'react'
-
-function LegendPopup({ onClose }) {
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ background: 'rgba(0,0,0,0.4)' }}
-      onClick={onClose}
-    >
-      <div
-        className="rounded-2xl px-5 py-4 mx-6"
-        style={{ background: 'var(--color-bg)', minWidth: '220px' }}
-        onClick={e => e.stopPropagation()}
-      >
-        <p className="text-xs font-semibold mb-3" style={{ color: 'var(--color-text-strong)' }}>What the dots mean</p>
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2.5">
-            <span style={{ fontSize: '15px', color: 'var(--color-dot-correct)', width: '1rem', textAlign: 'center' }}>●</span>
-            <span className="text-sm" style={{ color: 'var(--color-text)' }}>Right item, right spot</span>
-          </div>
-          <div className="flex items-center gap-2.5">
-            <span style={{ fontSize: '15px', color: 'var(--color-dot-present)', width: '1rem', textAlign: 'center' }}>○</span>
-            <span className="text-sm" style={{ color: 'var(--color-text)' }}>Right item, wrong spot</span>
-          </div>
-          <div className="flex items-center gap-2.5">
-            <span style={{ fontSize: '15px', color: 'var(--color-text-faint)', opacity: 0.4, width: '1rem', textAlign: 'center' }}>—</span>
-            <span className="text-sm" style={{ color: 'var(--color-text)' }}>Not in the top 5</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+import { useRef, useEffect, useState } from 'react'
 
 
-export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMoveSlot, onSubmit }) {
-  const [showLegend, setShowLegend] = useState(false)
+export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMoveSlot, onSubmit, tutorialStep }) {
   const filledCount = rankSlots.filter(Boolean).length
   const hasAnySlot = filledCount > 0
   const hasMinItems = filledCount >= 5
@@ -97,18 +64,6 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
         borderTop: '1px solid var(--color-border)',
       }}
     >
-      <div className="flex items-center justify-end mb-1">
-        <button
-          onClick={() => setShowLegend(true)}
-          className="flex items-center gap-1 py-0.5 px-1 -mr-1 rounded"
-          aria-label="What do the dots mean?"
-        >
-          <span style={{ fontSize: '11px', color: 'var(--color-dot-correct)' }}>●</span>
-          <span style={{ fontSize: '11px', color: 'var(--color-dot-present)' }}>○</span>
-          <span style={{ fontSize: '11px', color: 'var(--color-text-faint)', opacity: 0.4 }}>—</span>
-        </button>
-      </div>
-      {showLegend && <LegendPopup onClose={() => setShowLegend(false)} />}
       {/* Slots */}
       <div
         className="flex flex-col gap-0.5"
@@ -224,7 +179,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
         key={submitReadyKey}
         onClick={onSubmit}
         disabled={!hasMinItems}
-        className={`mt-2 w-full py-2 rounded-lg text-sm font-semibold disabled:opacity-30${allFilled && submitReadyKey > 0 ? ' submit-ready' : ''}`}
+        className={`mt-2 w-full py-2 rounded-lg text-sm font-semibold disabled:opacity-30${allFilled && submitReadyKey > 0 ? ' submit-ready' : ''}${tutorialStep === 3 && allFilled ? ' tutorial-pulse' : ''}`}
         style={{
           background: hasMinItems ? 'var(--color-action)' : 'var(--color-border)',
           color: hasMinItems ? 'var(--color-action-text)' : 'var(--color-text-faint)',

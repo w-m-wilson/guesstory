@@ -1,5 +1,58 @@
 import { useEffect, useRef, useState } from 'react'
 
+function ScoreExplainerPopup({ feedback, onClose }) {
+  const correctCount = feedback.filter(f => f === 'correct').length
+  const presentCount = feedback.filter(f => f === 'present').length
+  const topFiveCount = correctCount + presentCount
+  const absentCount  = 5 - topFiveCount
+
+  let message
+  if (correctCount === 5) {
+    message = 'All 5 items are in exactly the right spot — perfect score!'
+  } else if (topFiveCount === 0) {
+    message = `None of your 5 guesses are in the top 5. Try completely different items.`
+  } else {
+    const inTop5Part = topFiveCount === 1
+      ? `1 of your guesses is somewhere in the top 5`
+      : `${topFiveCount} of your guesses are somewhere in the top 5`
+    const rightSpotPart = correctCount === 0
+      ? `but none are in the right spot yet`
+      : correctCount === 1
+        ? `and 1 is in exactly the right spot`
+        : `and ${correctCount} are in exactly the right spot`
+    const absentPart = absentCount === 0
+      ? ``
+      : absentCount === 1
+        ? ` The other 1 isn't in the top 5 at all.`
+        : ` The other ${absentCount} aren't in the top 5 at all.`
+    message = `${inTop5Part}, ${rightSpotPart}.${absentPart} The dots don't tell you which items are which — just the counts.`
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center px-6"
+      style={{ background: 'rgba(0,0,0,0.45)' }}
+      onClick={e => { e.stopPropagation(); onClose() }}
+    >
+      <div
+        className="w-full max-w-xs rounded-2xl p-5 fade-in"
+        style={{ background: 'var(--color-bg)' }}
+        onClick={e => e.stopPropagation()}
+      >
+        <p className="text-sm font-semibold mb-2" style={{ color: 'var(--color-text-strong)' }}>What this score means</p>
+        <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--color-text)' }}>{message}</p>
+        <button
+          onClick={onClose}
+          className="w-full py-2 rounded-xl text-sm font-semibold"
+          style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
+        >
+          Got it
+        </button>
+      </div>
+    </div>
+  )
+}
+
 const CARD_SPACING = 32   // px between card bottom edges
 const PX_PER_CARD  = 52   // px of drag to advance one card
 const BOTTOM_PAD   = 8    // px from area bottom to front card bottom
@@ -11,6 +64,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
 
   // focusIndex: which card is in the foreground (0=oldest, total-1=latest)
   const [focusIndex, setFocusIndex] = useState(Math.max(0, total - 1))
+  const [explainerFeedback, setExplainerFeedback] = useState(null)
   const [dragOffset, setDragOffset] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
   const dragStartY = useRef(null)
@@ -108,7 +162,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
                 else onPickHistoryRow?.(slots)
               }}
             >
-              <AttemptRow slots={slots} feedback={feedback} attemptNumber={i + 1} isFocused={isFocused} />
+              <AttemptRow slots={slots} feedback={feedback} attemptNumber={i + 1} isFocused={isFocused} onShowExplainer={setExplainerFeedback} />
             </div>
           )
         })}
@@ -126,11 +180,14 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
           <LiveRow slots={rankSlots} />
         </div>
       )}
+      {explainerFeedback && (
+        <ScoreExplainerPopup feedback={explainerFeedback} onClose={() => setExplainerFeedback(null)} />
+      )}
     </div>
   )
 }
 
-function AttemptRow({ slots, feedback, attemptNumber, isFocused }) {
+function AttemptRow({ slots, feedback, attemptNumber, isFocused, onShowExplainer }) {
   const sortedFeedback = [...feedback].sort((a, b) => {
     const order = { correct: 0, present: 1 }
     return (order[a] ?? 2) - (order[b] ?? 2)
@@ -142,44 +199,50 @@ function AttemptRow({ slots, feedback, attemptNumber, isFocused }) {
   const names = slots.map(s => s?.name ?? '—')
 
   return (
-    <div style={{
-      background: isFocused ? 'var(--color-bg-elevated)' : 'transparent',
-      borderRadius: '8px',
-      borderLeft: `3px solid ${accentColor}`,
-      padding: '5px 8px',
-      display: 'flex', alignItems: 'center', gap: '6px',
-      transition: 'background 0.38s cubic-bezier(0.22,1,0.36,1)',
-    }}>
-      <span className="tabular-nums shrink-0" style={{ fontSize: '9px', color: 'var(--color-text-faint)', width: '0.9rem', textAlign: 'right' }}>
-        {attemptNumber}
-      </span>
-      <div className="flex-1 min-w-0 flex items-center" style={{ overflow: 'hidden' }}>
-        {names.map((name, i) => (
-          <span key={i} style={{ display: 'contents' }}>
-            {i > 0 && <span className="shrink-0" style={{ fontSize: '13px', color: 'var(--color-text-faint)', padding: '0 4px' }}>·</span>}
-            <span className="min-w-0" style={{
-              fontSize: '13px',
-              color: 'var(--color-text)',
-              whiteSpace: 'nowrap', overflow: 'hidden', flexShrink: 1,
-              WebkitMaskImage: 'linear-gradient(to right, black 24px, transparent 44px)',
-              maskImage: 'linear-gradient(to right, black 24px, transparent 44px)',
-            }}>{name}</span>
-          </span>
-        ))}
+    <>
+      <div style={{
+        background: isFocused ? 'var(--color-bg-elevated)' : 'transparent',
+        borderRadius: '8px',
+        borderLeft: `3px solid ${accentColor}`,
+        padding: '5px 8px',
+        display: 'flex', alignItems: 'center', gap: '6px',
+        transition: 'background 0.38s cubic-bezier(0.22,1,0.36,1)',
+      }}>
+        <span className="tabular-nums shrink-0" style={{ fontSize: '9px', color: 'var(--color-text-faint)', width: '0.9rem', textAlign: 'right' }}>
+          {attemptNumber}
+        </span>
+        <div className="flex-1 min-w-0 flex items-center" style={{ overflow: 'hidden' }}>
+          {names.map((name, i) => (
+            <span key={i} style={{ display: 'contents' }}>
+              {i > 0 && <span className="shrink-0" style={{ fontSize: '13px', color: 'var(--color-text-faint)', padding: '0 4px' }}>·</span>}
+              <span className="min-w-0" style={{
+                fontSize: '13px',
+                color: 'var(--color-text)',
+                whiteSpace: 'nowrap', overflow: 'hidden', flexShrink: 1,
+                WebkitMaskImage: 'linear-gradient(to right, black 24px, transparent 44px)',
+                maskImage: 'linear-gradient(to right, black 24px, transparent 44px)',
+              }}>{name}</span>
+            </span>
+          ))}
+        </div>
+        <button
+          onClick={e => { e.stopPropagation(); onShowExplainer(feedback) }}
+          className="flex items-center shrink-0"
+          aria-label="What does this score mean?"
+        >
+          {sortedFeedback.map((f, i) => (
+            <span key={i} style={{
+              fontSize: '13px', lineHeight: 1,
+              width: '15px', textAlign: 'center', display: 'inline-block',
+              color: f === 'correct' ? 'var(--color-dot-correct)' : f === 'present' ? 'var(--color-dot-present)' : 'var(--color-text-faint)',
+              opacity: f !== 'correct' && f !== 'present' ? 0.2 : 1,
+            }}>
+              {f === 'correct' ? '●' : f === 'present' ? '○' : '—'}
+            </span>
+          ))}
+        </button>
       </div>
-      <div className="flex items-center shrink-0">
-        {sortedFeedback.map((f, i) => (
-          <span key={i} style={{
-            fontSize: '13px', lineHeight: 1,
-            width: '15px', textAlign: 'center', display: 'inline-block',
-            color: f === 'correct' ? 'var(--color-dot-correct)' : f === 'present' ? 'var(--color-dot-present)' : 'var(--color-text-faint)',
-            opacity: f !== 'correct' && f !== 'present' ? 0.2 : 1,
-          }}>
-            {f === 'correct' ? '●' : f === 'present' ? '○' : '—'}
-          </span>
-        ))}
-      </div>
-    </div>
+    </>
   )
 }
 

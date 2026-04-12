@@ -22,6 +22,7 @@ export default function BankPanel({
   bankMisses,
   pendingMatch,
   gameOver,
+  tutorialStep,
   onGuess,
   onConfirm,
   onCancel,
@@ -36,6 +37,7 @@ export default function BankPanel({
   const [showLeftFade, setShowLeftFade] = useState(false)
   const [showBankMsg, setShowBankMsg] = useState(false)
   const [rowFlashKey, setRowFlashKey] = useState(0)
+  const [hasGuessed, setHasGuessed] = useState(false)
   const feedbackTimer = useRef(null)
   const haikuTimerRef = useRef(null)
   const bankMsgTimer = useRef(null)
@@ -79,6 +81,7 @@ export default function BankPanel({
   function handleSubmit(e) {
     e.preventDefault()
     if (gameOver) return
+    setHasGuessed(true)
     const q = query.trim()
     if (!q) return
 
@@ -170,7 +173,7 @@ export default function BankPanel({
           )}
 
           {/* Input with overlay for idle/feedback state text */}
-          <div className="flex-1 relative">
+          <div className={`flex-1 relative${tutorialStep === 1 && !hasGuessed ? ' tutorial-pulse' : ''}`}>
             {query === '' && (
               <span
                 className="absolute inset-0 flex items-center px-3 pointer-events-none text-sm select-none"
@@ -278,15 +281,16 @@ export default function BankPanel({
                       const globalIdx = col * 2 + rowIdx
                       if (item) {
                         const placed = placedRanks.has(item.rank)
-                        return (
+                        const nudge = tutorialStep === 2 && !placed
+                        const pill = (
                           <button
-                            key={item.rank}
                             onClick={() => placed ? onRemoveSlot(rankToSlotIndex[item.rank]) : onPlaceItem(item)}
+                            key={item.rank}
                             className="fade-in flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap"
                             style={{
                               background: placed ? 'var(--color-pill)' : 'var(--color-bg-elevated)',
                               color: placed ? 'var(--color-pill-text)' : 'var(--color-text)',
-                              border: '1px solid var(--color-border)',
+                              border: nudge ? '1px solid transparent' : '1px solid var(--color-border)',
                             }}
                           >
                             {item.seeded && <span className="text-xs" style={{ color: placed ? 'var(--color-pill-text)' : 'var(--color-text-faint)' }}>★</span>}
@@ -294,6 +298,9 @@ export default function BankPanel({
                             {placed && <span className="text-xs opacity-70">✕</span>}
                           </button>
                         )
+                        return nudge
+                          ? <span key={item.rank} className="pill-trace-wrap">{pill}</span>
+                          : <span key={item.rank}>{pill}</span>
                       }
                       return (
                         <div

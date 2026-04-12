@@ -61,7 +61,8 @@ function initState(puzzle, difficulty = 'medium') {
 
   // Stable random display order for bank pills — shuffled once at init so
   // pill positions never reveal ranking information.
-  const bankDisplayOrder = shuffleArray(puzzle.bank.map(b => b.rank));
+  // Tutorial puzzles may pin a fixed order for readability.
+  const bankDisplayOrder = puzzle.bankDisplayOrder ?? shuffleArray(puzzle.bank.map(b => b.rank));
 
   return {
     coins: GAME_CONFIG.startingCoins,

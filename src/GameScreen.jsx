@@ -1,4 +1,78 @@
 import { useState, useEffect, useLayoutEffect, useRef } from 'react'
+
+const PRIMERS = {
+  step2: {
+    icon: '👆',
+    title: 'Now rank them',
+    body: 'Tap any discovered item to place it in a slot. Fill all 5, then submit your ranking.',
+  },
+  step3: {
+    icon: '🎯',
+    title: 'Ready to submit',
+    body: 'All 5 slots filled. Hit Submit to see how close you are.',
+  },
+  feedback: {
+    icon: null,
+    title: 'Reading your feedback',
+    body: (
+      <>
+        <div style={{ marginBottom: '12px', fontSize: '13px', lineHeight: 1.5 }}>
+          After each submission, dots show how close you were:
+        </div>
+        {/* Example guess row */}
+        <div style={{ background: 'var(--color-bg-elevated)', borderRadius: '10px', padding: '10px 12px', marginBottom: '12px', fontSize: '12px' }}>
+          <div style={{ color: 'var(--color-text-faint)', marginBottom: '6px', fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Example guess</div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ color: 'var(--color-text)' }}>three · one · five · two · four</span>
+            <span style={{ letterSpacing: '2px', marginLeft: '8px', whiteSpace: 'nowrap' }}>
+              <span style={{ color: 'var(--color-dot-correct)' }}>●</span>
+              <span style={{ color: 'var(--color-dot-present)' }}>○</span>
+              <span style={{ color: 'var(--color-text-faint)', opacity: 0.4 }}>—</span>
+              <span style={{ color: 'var(--color-text-faint)', opacity: 0.4 }}>—</span>
+              <span style={{ color: 'var(--color-text-faint)', opacity: 0.4 }}>—</span>
+            </span>
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '13px' }}>
+          <div><span style={{ color: 'var(--color-dot-correct)', fontWeight: 700 }}>●</span> <span style={{ color: 'var(--color-text)' }}>three is in the right spot (#1)</span></div>
+          <div><span style={{ color: 'var(--color-dot-present)', fontWeight: 700 }}>○</span> <span style={{ color: 'var(--color-text)' }}>one belongs in the top 5, but not #2</span></div>
+          <div><span style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>—</span> <span style={{ color: 'var(--color-text)' }}>five, two, four aren't in the top 5</span></div>
+        </div>
+        <div style={{ marginTop: '12px', fontSize: '12px', color: 'var(--color-text-faint)' }}>
+          Adjust and resubmit. Tap <strong style={{ color: 'var(--color-text)' }}>Hints</strong> to spend coins for extra help.
+        </div>
+      </>
+    ),
+  },
+}
+
+function TutorialPrimerModal({ primerKey, onClose }) {
+  const { icon, title, body } = PRIMERS[primerKey]
+  return (
+    <div
+      className="fixed inset-0 z-60 flex items-center justify-center px-6"
+      style={{ background: 'rgba(0,0,0,0.45)' }}
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-xs rounded-2xl p-6 fade-in"
+        style={{ background: 'var(--color-bg)' }}
+        onClick={e => e.stopPropagation()}
+      >
+        {icon && <div className="text-2xl mb-3 text-center" aria-hidden="true">{icon}</div>}
+        <p className="text-base font-bold mb-3" style={{ color: 'var(--color-text-strong)', textAlign: icon ? 'center' : 'left' }}>{title}</p>
+        <div className="mb-5" style={{ color: 'var(--color-text)' }}>{body}</div>
+        <button
+          onClick={onClose}
+          className="w-full py-2.5 rounded-xl text-sm font-semibold"
+          style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
+        >
+          Got it
+        </button>
+      </div>
+    </div>
+  )
+}
 import { useGameState } from './hooks/useGameState.js'
 import Header from './components/Header.jsx'
 import BankPanel from './components/BankPanel.jsx'
@@ -89,6 +163,26 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
     }
   }
 
+  // Tutorial primers: fire once per key
+  const [activePrimer, setActivePrimer] = useState(null)
+  const shownPrimers = useRef(new Set())
+  function showPrimer(key) {
+    if (shownPrimers.current.has(key)) return
+    shownPrimers.current.add(key)
+    setActivePrimer(key)
+  }
+
+  useEffect(() => {
+    if (!isTutorial || !tutorialStarted) return
+    if (tutorialStep === 2) showPrimer('step2')
+    if (tutorialStep === 3) showPrimer('step3')
+  }, [isTutorial, tutorialStarted, tutorialStep])
+
+  useEffect(() => {
+    if (!isTutorial || !tutorialStarted || tutorialMode !== 'explore') return
+    if (tutorialRankHistory.length === 1) showPrimer('feedback')
+  }, [isTutorial, tutorialStarted, tutorialMode, tutorialRankHistory.length])
+
   // Show end screen when game first ends, and again after hail mary is submitted
   const gameStatus = game?.state.gameStatus
   const hailMaryTaken = game?.state.hailMaryTaken ?? false
@@ -171,6 +265,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
             pendingMatch={state.pendingMatch}
             gameOver={gameOver}
             category={puzzle.category}
+            tutorialStep={isTutorial && tutorialStarted ? tutorialStep : null}
             onGuess={guessBankItem}
             onConfirm={confirmPending}
             onCancel={cancelPending}
@@ -186,7 +281,12 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
         onRemoveSlot={removeSlot}
         onMoveSlot={moveSlot}
         onSubmit={handleSubmitRanking}
+        tutorialStep={isTutorial && tutorialStarted ? tutorialStep : null}
       />
+
+      {activePrimer && (
+        <TutorialPrimerModal primerKey={activePrimer} onClose={() => setActivePrimer(null)} />
+      )}
 
       <ScoreBar
         coins={state.coins}

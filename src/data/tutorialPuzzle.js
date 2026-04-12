@@ -14,6 +14,8 @@ export const TUTORIAL_PUZZLE_1 = {
     { rank: 4, name: 'four',  aliases: ['4'] },
     { rank: 5, name: 'five',  aliases: ['5'] },
   ],
+  // Fixed left-to-right order: seeds (one, two) always appear top-left / bottom-left
+  bankDisplayOrder: [1, 2, 3, 4, 5],
   topFive: [1, 2, 3, 4, 5],
 }
 
@@ -38,5 +40,7 @@ export const TUTORIAL_PUZZLE_2 = {
     { rank: 9,  name: 'two',   aliases: ['2']  },
     { rank: 10, name: 'one',   aliases: ['1']  },
   ],
+  // Fixed left-to-right order: seeds (ten, nine) always appear top-left / bottom-left
+  bankDisplayOrder: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
   topFive: [1, 2, 3, 4, 5],
 }

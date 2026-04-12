@@ -105,47 +105,53 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
           There's a secret ranked list. Find what's on it and put the top 5 in order.
         </p>
 
-        {/* Phone mockup */}
+        {/* Phone mockup — modern flat slab */}
         <div className="mb-7 mx-auto relative" style={{ width: '180px' }}>
-          {/* Side buttons */}
-          <div className="absolute rounded-r-sm" style={{ left: '-5px', top: '72px', width: '4px', height: '28px', background: 'var(--color-action)' }} />
-          <div className="absolute rounded-r-sm" style={{ left: '-5px', top: '110px', width: '4px', height: '44px', background: 'var(--color-action)' }} />
-          <div className="absolute rounded-l-sm" style={{ right: '-5px', top: '90px', width: '4px', height: '52px', background: 'var(--color-action)' }} />
+          {/* Volume buttons (left) */}
+          <div className="absolute rounded-l-sm" style={{ left: '-4px', top: '68px',  width: '3px', height: '22px', background: 'var(--color-action)' }} />
+          <div className="absolute rounded-l-sm" style={{ left: '-4px', top: '98px',  width: '3px', height: '36px', background: 'var(--color-action)' }} />
+          {/* Power button (right) */}
+          <div className="absolute rounded-r-sm" style={{ right: '-4px', top: '88px', width: '3px', height: '44px', background: 'var(--color-action)' }} />
 
           <div
-            className="rounded-[32px] overflow-hidden flex flex-col"
+            className="rounded-[28px] overflow-hidden flex flex-col"
             style={{
-              border: '4px solid var(--color-action)',
+              border: '3px solid var(--color-action)',
               background: 'var(--color-bg)',
               minHeight: '340px',
             }}
           >
-            {/* Top speaker + camera */}
-            <div className="flex justify-center items-center gap-2 pt-3 pb-2 px-6" style={{ background: 'var(--color-action)' }}>
-              <div className="rounded-full" style={{ width: '6px', height: '6px', background: 'var(--color-bg)', opacity: 0.25 }} />
-              <div className="rounded-full" style={{ width: '40px', height: '6px', background: 'var(--color-bg)', opacity: 0.2 }} />
+            {/* Status bar with punch-hole camera */}
+            <div className="flex items-center justify-between px-4 pt-2 pb-1" style={{ background: 'var(--color-bg)' }}>
+              <span style={{ fontSize: '8px', fontWeight: 700, color: 'var(--color-text-faint)', opacity: 0.5 }}>9:41</span>
+              <div className="rounded-full" style={{ width: '8px', height: '8px', background: 'var(--color-action)', opacity: 0.6 }} />
+              <div className="flex items-center gap-0.5" style={{ opacity: 0.5 }}>
+                <div className="rounded-sm" style={{ width: '10px', height: '5px', border: '1px solid var(--color-text-faint)' }}>
+                  <div className="rounded-sm" style={{ width: '6px', height: '3px', background: 'var(--color-text-faint)', margin: '1px 1px' }} />
+                </div>
+              </div>
             </div>
 
             {/* FIND zone */}
             <div className="px-4 py-3" style={{ background: 'var(--color-bg-elevated)', borderBottom: '1px solid var(--color-border)' }}>
-              <p className="text-[9px] font-black tracking-widest uppercase mb-1" style={{ color: 'var(--color-text-faint)', opacity: 0.55 }}>① Find</p>
-              <p className="text-xs font-semibold leading-snug" style={{ color: 'var(--color-text-strong)' }}>Type items to discover them</p>
+              <p className="text-[10px] font-black tracking-widest uppercase mb-1" style={{ color: 'var(--color-text)' }}>Find</p>
+              <p className="text-sm font-bold leading-snug" style={{ color: 'var(--color-text-strong)' }}>Type items to discover them</p>
             </div>
 
             {/* History zone */}
             <div className="flex-1 px-4 py-5 flex items-center justify-center" style={{ borderBottom: '1px solid var(--color-border)' }}>
-              <p className="text-xs text-center" style={{ color: 'var(--color-text-faint)', opacity: 0.4 }}>attempts +{'\n'}feedback</p>
+              <p className="text-xs font-semibold text-center" style={{ color: 'var(--color-text)' }}>attempts + feedback</p>
             </div>
 
             {/* RANK zone */}
             <div className="px-4 py-3" style={{ background: 'var(--color-bg-elevated)' }}>
-              <p className="text-[9px] font-black tracking-widest uppercase mb-1" style={{ color: 'var(--color-text-faint)', opacity: 0.55 }}>② Rank</p>
-              <p className="text-xs font-semibold leading-snug" style={{ color: 'var(--color-text-strong)' }}>Order top 5, then submit</p>
+              <p className="text-[10px] font-black tracking-widest uppercase mb-1" style={{ color: 'var(--color-text)' }}>Rank</p>
+              <p className="text-sm font-bold leading-snug" style={{ color: 'var(--color-text-strong)' }}>Order top 5, then submit</p>
             </div>
 
-            {/* Home bar */}
-            <div className="flex justify-center py-2.5" style={{ background: 'var(--color-bg)' }}>
-              <div className="rounded-full" style={{ width: '44px', height: '4px', background: 'var(--color-border)' }} />
+            {/* Gesture bar */}
+            <div className="flex justify-center py-2" style={{ background: 'var(--color-bg)' }}>
+              <div className="rounded-full" style={{ width: '36px', height: '3px', background: 'var(--color-text-faint)', opacity: 0.3 }} />
             </div>
           </div>
         </div>

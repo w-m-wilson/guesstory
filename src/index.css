@@ -430,3 +430,36 @@ body {
 .submit-ready {
   animation: submitReady 0.55s ease-out;
 }
+
+/* ── Tutorial nudge pulse (input bar) ── */
+@keyframes tutorialPulse {
+  0%, 100% { box-shadow: 0 0 0 0px color-mix(in srgb, var(--color-action) 0%, transparent); }
+  50%       { box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-action) 45%, transparent); }
+}
+.tutorial-pulse {
+  animation: tutorialPulse 1.6s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+/* ── Tutorial pill trace (bank items) ── */
+@property --pill-trace-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes pillTrace {
+  to { --pill-trace-angle: 360deg; }
+}
+.pill-trace-wrap {
+  display: inline-flex;
+  border-radius: 9999px;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--pill-trace-angle),
+    transparent 0%,
+    var(--color-action) 15%,
+    var(--color-action) 65%,
+    transparent 80%
+  );
+  animation: pillTrace 2.8s linear infinite;
+}
