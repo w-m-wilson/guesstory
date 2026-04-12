@@ -1,0 +1,32 @@
+{
+  "id": "2026-04-16",
+  "category": "Nintendo Franchises by Total Sales",
+  "hint": "Ranked by total units sold across all games in each franchise",
+  "seed": [
+    { "rank": 5, "name": "Donkey Kong",       "aliases": ["DK"] },
+    { "rank": 7, "name": "Super Smash Bros.", "aliases": ["Smash Bros", "Smash Brothers", "SSB"] }
+  ],
+  "liteSeed": [
+    { "rank": 1, "name": "Mario",    "aliases": ["Super Mario", "Mario Kart", "Mario Party", "Mario Sports", "Mario RPG", "Luigi's Mansion", "Mario Puzzle Games", "Paper Mario", "Mario & Luigi", "Dr. Mario", "Wario"] },
+    { "rank": 2, "name": "Pokémon",  "aliases": ["Pokemon"] },
+    { "rank": 4, "name": "Zelda",    "aliases": ["The Legend of Zelda", "Legend of Zelda", "Link"] },
+    { "rank": 6, "name": "Animal Crossing", "aliases": ["AC", "ACNH"] }
+  ],
+  "challengeSeed": [
+    { "rank": 9, "name": "Nintendo Sports", "aliases": ["Color TV Game"] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "Mario",            "aliases": ["Super Mario", "Mario Kart", "Mario Party", "Mario Sports", "Mario RPG", "Luigi's Mansion", "Mario Puzzle Games", "Paper Mario", "Mario & Luigi", "Dr. Mario", "Wario"] },
+    { "rank": 2,  "name": "Pokémon",          "aliases": ["Pokemon"] },
+    { "rank": 3,  "name": "Wii Series",       "aliases": ["Wii Sports", "Wii Fit", "Wii Play", "Wii Music", "Wii"] },
+    { "rank": 4,  "name": "Zelda",            "aliases": ["The Legend of Zelda", "Legend of Zelda", "Link"] },
+    { "rank": 5,  "name": "Donkey Kong",      "aliases": ["DK", "DK Country", "Donkey Kong Country"] },
+    { "rank": 6,  "name": "Animal Crossing",  "aliases": ["AC", "ACNH"] },
+    { "rank": 7,  "name": "Super Smash Bros.","aliases": ["Smash Bros", "Smash Brothers", "SSB", "Super Smash Brothers"] },
+    { "rank": 8,  "name": "Kirby",            "aliases": [] },
+    { "rank": 9,  "name": "Nintendo Sports",  "aliases": ["Color TV Game"] },
+    { "rank": 10, "name": "Game & Watch",     "aliases": ["Game and Watch"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://vgsales.fandom.com/wiki/Nintendo"
+}

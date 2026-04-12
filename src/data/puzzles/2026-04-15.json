@@ -1,0 +1,32 @@
+{
+  "id": "2026-04-15",
+  "category": "U.S. Presidents by Age at Inauguration",
+  "hint": "Ranked by how old each president was on the day they were sworn in",
+  "seed": [
+    { "rank": 4, "name": "William Henry Harrison", "aliases": ["W.H. Harrison", "WHH"] },
+    { "rank": 7, "name": "Zachary Taylor",         "aliases": [] }
+  ],
+  "liteSeed": [
+    { "rank": 1,  "name": "Donald Trump",   "aliases": ["Trump", "Donald J. Trump"] },
+    { "rank": 2,  "name": "Joe Biden",      "aliases": ["Biden", "Joseph Biden"] },
+    { "rank": 3,  "name": "Ronald Reagan",  "aliases": ["Reagan"] },
+    { "rank": 9,  "name": "Andrew Jackson", "aliases": ["Jackson"] }
+  ],
+  "challengeSeed": [
+    { "rank": 5, "name": "James Buchanan", "aliases": ["Buchanan"] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "Donald Trump",           "aliases": ["Trump", "Donald J. Trump"] },
+    { "rank": 2,  "name": "Joe Biden",              "aliases": ["Biden", "Joseph Biden"] },
+    { "rank": 3,  "name": "Ronald Reagan",          "aliases": ["Reagan"] },
+    { "rank": 4,  "name": "William Henry Harrison", "aliases": ["W.H. Harrison", "WHH", "Harrison"] },
+    { "rank": 5,  "name": "James Buchanan",         "aliases": ["Buchanan"] },
+    { "rank": 6,  "name": "George H.W. Bush",       "aliases": ["Bush Sr.", "Bush Sr", "George Bush Sr", "GHWB"] },
+    { "rank": 7,  "name": "Zachary Taylor",         "aliases": ["Taylor"] },
+    { "rank": 8,  "name": "Dwight Eisenhower",      "aliases": ["Eisenhower", "Ike", "Dwight D. Eisenhower"] },
+    { "rank": 9,  "name": "Andrew Jackson",         "aliases": ["Jackson"] },
+    { "rank": 10, "name": "John Adams",             "aliases": ["Adams"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://potus.com/presidential-facts/age-at-inauguration/"
+}
