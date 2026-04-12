@@ -1,0 +1,32 @@
+{
+  "id": "2026-04-13",
+  "category": "Animal Groups by Heaviest Extant Land Mammal",
+  "hint": "Ranked by weight — which animal is the heaviest? Some entries cover a whole family of species",
+  "seed": [
+    { "rank": 4, "name": "Giraffe", "aliases": [] },
+    { "rank": 7, "name": "Yak",     "aliases": [] }
+  ],
+  "liteSeed": [
+    { "rank": 1, "name": "Elephant",     "aliases": ["Elephants"] },
+    { "rank": 2, "name": "Rhinoceros",   "aliases": ["Rhino", "Rhinos", "Rhinoceroses"] },
+    { "rank": 3, "name": "Hippopotamus", "aliases": ["Hippo", "Hippos", "Hippopotamuses"] },
+    { "rank": 9, "name": "Camel",        "aliases": ["Camels"] }
+  ],
+  "challengeSeed": [
+    { "rank": 10, "name": "Bear", "aliases": ["Bears"] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "Elephant",     "aliases": ["Elephants"] },
+    { "rank": 2,  "name": "Rhinoceros",   "aliases": ["Rhino", "Rhinos", "Rhinoceroses"] },
+    { "rank": 3,  "name": "Hippopotamus", "aliases": ["Hippo", "Hippos", "Hippopotamuses"] },
+    { "rank": 4,  "name": "Giraffe",      "aliases": ["Giraffes"] },
+    { "rank": 5,  "name": "Cattle",       "aliases": ["Cow", "Cows", "Bull", "Bulls", "Gaur", "Ox", "Oxen", "Bos"] },
+    { "rank": 6,  "name": "Bison",        "aliases": ["Buffalo", "Buffalos", "Buffaloes", "American Bison", "European Bison"] },
+    { "rank": 7,  "name": "Yak",          "aliases": ["Yaks"] },
+    { "rank": 8,  "name": "Eland",        "aliases": ["Elands"] },
+    { "rank": 9,  "name": "Camel",        "aliases": ["Camels", "Dromedary", "Dromedaries"] },
+    { "rank": 10, "name": "Bear",         "aliases": ["Bears", "Polar Bear", "Polar Bears"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://en.wikipedia.org/wiki/List_of_heaviest_land_mammals"
+}
