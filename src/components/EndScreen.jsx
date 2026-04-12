@@ -242,16 +242,6 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
             >
               {recapLoading ? '···' : recap}
             </p>
-            {!recapLoading && (
-              <button
-                onClick={handleRecapReset}
-                className="shrink-0 text-xs leading-none mt-0.5"
-                style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}
-                aria-label="Regenerate narrative"
-              >
-                ↺
-              </button>
-            )}
           </div>
         )}
 
