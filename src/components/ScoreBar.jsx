@@ -88,13 +88,12 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', onSet
           {/* Difficulty badge */}
           <button
             onClick={canSwitch ? () => setPickerOpen(p => !p) : undefined}
-            className="text-[9px] font-black tracking-widest rounded px-1.5 py-0.5"
+            className="text-[10px] font-black tracking-widest rounded-md px-2 py-0.5"
             style={{
-              color: 'var(--color-text-faint)',
+              color: 'var(--color-text-strong)',
               background: 'var(--color-bg-elevated)',
-              border: '1px solid var(--color-border)',
+              border: '1.5px solid var(--color-border)',
               cursor: canSwitch ? 'pointer' : 'default',
-              opacity: canSwitch ? 1 : 0.6,
             }}
             aria-label={canSwitch ? 'Change difficulty' : `Difficulty: ${DIFFICULTY_NAMES[difficulty]}`}
           >
@@ -105,11 +104,11 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', onSet
         {/* Reset button — truly centered via absolute positioning */}
         <button
           onClick={onReset}
-          className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-lg"
+          className="absolute left-1/2 -translate-x-1/2 flex items-center text-base px-2 py-1 rounded-lg"
           style={{ color: 'var(--color-text-faint)' }}
           aria-label="Reset session"
         >
-          ↺ Reset
+          ↺
         </button>
 
         {/* Results or Hints */}
