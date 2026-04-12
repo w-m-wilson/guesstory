@@ -60,7 +60,7 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', onSet
       )}
 
       <div
-        className="flex items-center justify-between px-4 py-3 shrink-0"
+        className="relative flex items-center justify-between px-4 py-3 shrink-0"
         style={{ borderTop: '1px solid var(--color-border)' }}
       >
         {/* Coin display + difficulty badge */}
@@ -102,10 +102,10 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', onSet
           </button>
         </div>
 
-        {/* Reset button — center */}
+        {/* Reset button — truly centered via absolute positioning */}
         <button
           onClick={onReset}
-          className="text-xs font-medium px-2 py-1 rounded-lg"
+          className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-lg"
           style={{ color: 'var(--color-text-faint)' }}
           aria-label="Reset session"
         >

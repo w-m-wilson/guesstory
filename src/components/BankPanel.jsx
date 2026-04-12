@@ -43,7 +43,7 @@ export default function BankPanel({
   const bankScrollRef = useRef(null)
 
   const burningCoins = bankMisses >= FREE_MISSES
-  const bankFull = discoveredList.length >= bankTotal
+  const bankFull = discoveredList.filter(Boolean).length >= bankTotal
 
   function showFeedback(type, message) {
     clearTimeout(feedbackTimer.current)
@@ -74,7 +74,7 @@ export default function BankPanel({
     updateLeftFade()
     window.addEventListener('resize', updateLeftFade)
     return () => window.removeEventListener('resize', updateLeftFade)
-  }, [discoveredList.length])
+  }, [discoveredList.filter(Boolean).length])
 
   function handleSubmit(e) {
     e.preventDefault()

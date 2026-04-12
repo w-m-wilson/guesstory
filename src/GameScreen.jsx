@@ -82,7 +82,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
       tutorialStep = 4
     } else if (tutorialMode === 'learn' && tutorialRankSlots.every(Boolean)) {
       tutorialStep = 3
-    } else if (tutorialMode === 'learn' && discoveredList.length >= 5) {
+    } else if (tutorialMode === 'learn' && discoveredList.filter(Boolean).length >= 5) {
       tutorialStep = 2
     } else {
       tutorialStep = 1
@@ -147,7 +147,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
       {isTutorial && tutorialStep !== null && (
         <TutorialBanner
           step={tutorialStep}
-          discoveredCount={discoveredList.length}
+          discoveredCount={discoveredList.filter(Boolean).length}
           rankHistoryLength={tutorialRankHistory.length}
           onBegin={handleTutorialBegin}
           mode={tutorialMode}
@@ -201,7 +201,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
       {hintsOpen && (
         <HintModal
           coins={state.coins}
-          allBankFound={discoveredList.length >= puzzle.bank.length}
+          allBankFound={discoveredList.filter(Boolean).length >= puzzle.bank.length}
           categoryGuessed={state.categoryGuessed}
           category={puzzle.category}
           difficulty={difficulty}

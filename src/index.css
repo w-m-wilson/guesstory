@@ -408,13 +408,6 @@ body {
 }
 
 /* ── New attempt row entrance (more emphatic than plain fade-in) ── */
-@keyframes attemptNew {
-  0%   { opacity: 0; transform: translateY(4px); }
-  50%  { opacity: 1; transform: translateY(0); }
-  65%  { background: var(--color-bg-elevated); }
-  100% { opacity: 1; background: transparent; }
-}
-.attempt-new { animation: attemptNew 0.5s ease-out; }
 
 /* ── Dot legend flash (on first submission) ── */
 @keyframes legendFlash {

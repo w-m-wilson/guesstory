@@ -102,6 +102,15 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
     catch { return null }
   })
   const [recapLoading, setRecapLoading] = useState(false)
+  const [recapKey, setRecapKey] = useState(0)
+
+  function handleRecapReset() {
+    if (recapCacheKey) {
+      try { localStorage.removeItem(recapCacheKey) } catch { /* quota */ }
+    }
+    setRecap(null)
+    setRecapKey(k => k + 1)
+  }
 
   useEffect(() => {
     if (!recapReady || isTutorial || !category || recap) return
@@ -129,7 +138,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
         }
       })
       .catch(() => setRecapLoading(false))
-  }, [recapReady]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [recapReady, recapKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleBonusGuess(e) {
     e.preventDefault()
@@ -226,12 +235,24 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
 
         {/* Haiku recap — async, shimmer while loading */}
         {!isTutorial && (recapLoading || recap) && (
-          <p
-            className={`text-xs italic text-center${recapLoading ? ' animate-pulse' : ' fade-in'}`}
-            style={{ color: 'var(--color-text-faint)' }}
-          >
-            {recapLoading ? '···' : recap}
-          </p>
+          <div className="flex items-start gap-2">
+            <p
+              className={`flex-1 text-xs italic text-center${recapLoading ? ' animate-pulse' : ' fade-in'}`}
+              style={{ color: 'var(--color-text-faint)' }}
+            >
+              {recapLoading ? '···' : recap}
+            </p>
+            {!recapLoading && (
+              <button
+                onClick={handleRecapReset}
+                className="shrink-0 text-xs leading-none mt-0.5"
+                style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}
+                aria-label="Regenerate narrative"
+              >
+                ↺
+              </button>
+            )}
+          </div>
         )}
 
         {needsBonusGuess ? (

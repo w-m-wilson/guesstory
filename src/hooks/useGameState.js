@@ -44,11 +44,24 @@ function seedsForDifficulty(puzzle, difficulty) {
   return merge(medium, challenge) // medium
 }
 
+function shuffleArray(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 function initState(puzzle, difficulty = 'medium') {
   const discoveredItems = {};
   for (const item of seedsForDifficulty(puzzle, difficulty)) {
     discoveredItems[item.rank] = { ...item, seeded: true };
   }
+
+  // Stable random display order for bank pills — shuffled once at init so
+  // pill positions never reveal ranking information.
+  const bankDisplayOrder = shuffleArray(puzzle.bank.map(b => b.rank));
 
   return {
     coins: GAME_CONFIG.startingCoins,
@@ -60,6 +73,7 @@ function initState(puzzle, difficulty = 'medium') {
     lockedSlots: [],          // slot indices locked by hints or Lite auto-lock
     confirmedCorrect: [],     // [{ index, item }] — Lite mode: slots confirmed correct
     rankHistory: [],          // [{ slots: [...], feedback: [...] }]
+    bankDisplayOrder,
     categoryGuessed: (puzzle.revealCategoryFor ?? []).includes(difficulty),
     gameStatus: 'playing',    // 'playing' | 'won' | 'abandoned'
     pendingMatch: null,       // { item, query } | null — awaiting player confirmation
@@ -443,7 +457,8 @@ export function useGameState(puzzle, initialDifficulty = 'medium') {
     let slotIndex = null;
 
     if (hintType === 'revealBankItem') {
-      item = puzzle.bank.find(b => !s.discoveredItems[b.rank]) ?? null;
+      const undiscovered = puzzle.bank.filter(b => !s.discoveredItems[b.rank]);
+      item = undiscovered.length ? undiscovered[Math.floor(Math.random() * undiscovered.length)] : null;
       if (!item) return { item: null };
     }
 
@@ -505,8 +520,10 @@ export function useGameState(puzzle, initialDifficulty = 'medium') {
 
   return {
     state,
-    // Sorted array of discovered bank items for easy rendering
-    discoveredList: Object.values(state.discoveredItems).sort((a, b) => a.rank - b.rank),
+    // Fixed-length array (item | null) in stable shuffled display order.
+    // Positions never change as items are discovered, so ghost pills don't move
+    // and the layout doesn't leak ranking information.
+    discoveredList: state.bankDisplayOrder.map(rank => state.discoveredItems[rank] ?? null),
     // Actions
     resetGame,
     guessBankItem,
