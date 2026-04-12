@@ -160,7 +160,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
               <p
                 key={categoryText || categoryAutoReveal}
                 className="fade-in text-sm text-right"
-                style={{ color: 'var(--color-text-faint)', fontStyle: 'italic', textWrap: 'balance' }}
+                style={{ color: 'var(--color-text-faint)', fontStyle: 'italic', textWrap: 'balance', lineHeight: 1.2 }}
               >
                 {categoryText || categoryAutoReveal}
               </p>

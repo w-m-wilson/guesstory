@@ -54,7 +54,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
 
   return (
     <div
-      className="shrink-0 px-4 pt-2 pb-2"
+      className="shrink-0 px-4 pt-1.5 pb-2"
       style={{
         position: 'relative',
         zIndex: 10,
@@ -62,7 +62,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
         borderTop: '1px solid var(--color-border)',
       }}
     >
-      <div className="flex items-start justify-between mb-2 gap-3">
+      <div className="flex items-start justify-between mb-1 gap-3">
         <p className="text-[9px] font-black tracking-widest uppercase shrink-0 pt-px" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
           Rank
         </p>
@@ -80,7 +80,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
       </div>
       {/* Slots */}
       <div
-        className="flex flex-col gap-1"
+        className="flex flex-col gap-0.5"
       >
         {rankSlots.map((item, index) => {
           const position = index + 1
@@ -120,7 +120,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                     border: `1px solid ${isDragging ? 'var(--color-text)' : locked ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
                   }),
                   boxShadow: isDragging ? '0 4px 12px rgba(0,0,0,0.25)' : 'none',
-                  minHeight: '36px',
+                  minHeight: '32px',
                   opacity: isDragging ? 0.85 : 1,
                   transform: isDragging ? 'scale(1.02)' : 'scale(1)',
                   transition: 'box-shadow 0.15s, border-color 0.15s, transform 0.1s, opacity 0.1s',
@@ -193,7 +193,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
         key={submitReadyKey}
         onClick={onSubmit}
         disabled={!hasAnySlot}
-        className={`mt-3 w-full py-2 rounded-lg text-sm font-semibold disabled:opacity-30${allFilled && submitReadyKey > 0 ? ' submit-ready' : ''}`}
+        className={`mt-2 w-full py-2 rounded-lg text-sm font-semibold disabled:opacity-30${allFilled && submitReadyKey > 0 ? ' submit-ready' : ''}`}
         style={{
           background: hasAnySlot ? 'var(--color-action)' : 'var(--color-border)',
           color: hasAnySlot ? 'var(--color-action-text)' : 'var(--color-text-faint)',

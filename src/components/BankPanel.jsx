@@ -127,8 +127,8 @@ export default function BankPanel({
   return (
     <div className="flex flex-col" style={{ position: 'relative', zIndex: 10, background: 'var(--color-bg)' }}>
       {/* Guess input — hidden once bank is fully discovered */}
-      {!bankFull && <div className="px-4 pt-2 pb-2 shrink-0" style={{ borderBottom: '1px solid var(--color-border)' }}>
-        <p className="text-[9px] font-black tracking-widest uppercase mb-2" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
+      {!bankFull && <div className="px-4 pt-1.5 pb-2 shrink-0" style={{ borderBottom: '1px solid var(--color-border)' }}>
+        <p className="text-[9px] font-black tracking-widest uppercase mb-1.5" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
           Find
         </p>
         <form onSubmit={handleSubmit} className="flex gap-2">

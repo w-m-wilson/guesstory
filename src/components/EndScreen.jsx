@@ -21,10 +21,11 @@ function feedbackDots({ feedback }) {
 
 const DIFFICULTY_SHARE = { lite: 'Lite', medium: 'Medium', challenge: 'Challenge' }
 
-function buildShareText(puzzleId, coins, rankHistory, difficulty) {
+function buildShareText(puzzleId, coins, rankHistory, difficulty, gotCategory) {
   const n = rankHistory.length
   const diff = DIFFICULTY_SHARE[difficulty] ?? 'Medium'
-  const header = `Guesstory ${puzzleId} · ${diff}\n${coins}/100 · ${n} attempt${n !== 1 ? 's' : ''}`
+  const categoryLine = gotCategory ? ' · named the category' : ''
+  const header = `Guesstory ${puzzleId} · ${diff}\n${coins}/100 · ${n} attempt${n !== 1 ? 's' : ''}${categoryLine}`
 
   const truncated = n > HEAD + TAIL
   const visible = truncated
@@ -143,7 +144,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
   }
 
   async function handleShare() {
-    const text = buildShareText(puzzleId, coins, rankHistory, difficulty)
+    const text = buildShareText(puzzleId, coins, rankHistory, difficulty, !!categoryGuessed || postWinCorrect)
     if (navigator.share) {
       try {
         await navigator.share({ text })

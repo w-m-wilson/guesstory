@@ -41,7 +41,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
           className="flex-1 min-h-0 overflow-y-auto"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          <div className="flex flex-col gap-1 justify-end min-h-full">
+          <div className="flex flex-col gap-1.5 justify-end min-h-full">
             <div className="h-1 shrink-0" aria-hidden="true" />
             {rankHistory.map(({ slots, feedback }, attemptIndex) => (
               <AttemptRow
@@ -96,7 +96,7 @@ function AttemptRow({ slots, feedback, attemptNumber, isLatest, onPick }) {
         background: 'var(--color-bg-elevated)',
         borderRadius: '8px',
         borderLeft: `3px solid ${accentColor}`,
-        padding: '3px 8px',
+        padding: '5px 8px',
         display: 'flex',
         alignItems: 'center',
         gap: '6px',
@@ -115,7 +115,7 @@ function AttemptRow({ slots, feedback, attemptNumber, isLatest, onPick }) {
         {names.map((name, i) => (
           <span key={i} style={{ display: 'contents' }}>
             {i > 0 && (
-              <span className="shrink-0" style={{ fontSize: '13px', color: 'var(--color-text-faint)', padding: '0 1px' }}> · </span>
+              <span className="shrink-0" style={{ fontSize: '13px', color: 'var(--color-text-faint)', padding: '0 4px' }}>·</span>
             )}
             <span
               className="min-w-0"
@@ -125,8 +125,8 @@ function AttemptRow({ slots, feedback, attemptNumber, isLatest, onPick }) {
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 flexShrink: 1,
-                WebkitMaskImage: 'linear-gradient(to right, black 38px, transparent 62px)',
-                maskImage: 'linear-gradient(to right, black 38px, transparent 62px)',
+                WebkitMaskImage: 'linear-gradient(to right, black 24px, transparent 44px)',
+                maskImage: 'linear-gradient(to right, black 24px, transparent 44px)',
               }}
             >
               {name}
@@ -168,7 +168,7 @@ function LiveRow({ slots }) {
         background: 'var(--color-bg-elevated)',
         borderRadius: '8px',
         borderLeft: '3px solid var(--color-border)',
-        padding: '3px 8px',
+        padding: '5px 8px',
         display: 'flex',
         alignItems: 'center',
         gap: '6px',
@@ -182,7 +182,7 @@ function LiveRow({ slots }) {
         ) : names.map((name, i) => (
           <span key={i} style={{ display: 'contents' }}>
             {i > 0 && (
-              <span className="shrink-0" style={{ fontSize: '13px', color: 'var(--color-text-faint)', padding: '0 1px' }}> · </span>
+              <span className="shrink-0" style={{ fontSize: '13px', color: 'var(--color-text-faint)', padding: '0 4px' }}>·</span>
             )}
             <span
               className="min-w-0"
@@ -192,8 +192,8 @@ function LiveRow({ slots }) {
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 flexShrink: 1,
-                WebkitMaskImage: 'linear-gradient(to right, black 38px, transparent 62px)',
-                maskImage: 'linear-gradient(to right, black 38px, transparent 62px)',
+                WebkitMaskImage: 'linear-gradient(to right, black 24px, transparent 44px)',
+                maskImage: 'linear-gradient(to right, black 24px, transparent 44px)',
               }}
             >
               {name}
