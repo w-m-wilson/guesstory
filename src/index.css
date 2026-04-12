@@ -21,8 +21,10 @@
   --color-text-strong:  #675848;  /* grey-brown — labels only */
   --color-text-faint:   #c0b89e;  /* warm khaki — annotations */
   --color-border:       #e5ddc8;  /* very light tan — whisper lines */
-  --color-action:       #776050;  /* muted leather — placed pills, submit */
+  --color-action:       #776050;  /* muted leather — submit button, primary CTA */
   --color-action-text:  #fdf6e3;  /* cream on walnut */
+  --color-pill:         var(--color-action);     /* default: same as action */
+  --color-pill-text:    var(--color-action-text);
   --color-dot-correct:  #4c5728;  /* muted olive green — right */
   --color-dot-present:  #9e844e;  /* warm amber — wrong spot */
   --color-dot-absent:   #cec8b4;  /* warm faint — not in top 5 */
@@ -31,51 +33,22 @@
 
 /* ── Guesstory dark ── */
 [data-theme="guesstory-dark"] {
-  --color-bg:           #1C1510;  /* espresso — leather binding */
-  --color-bg-elevated:  #2A1D14;  /* soft lift — less jump from bg */
-  --color-text:         #c4b896;  /* warm khaki — comfortable read */
-  --color-text-strong:  #d8d0bc;  /* warm off-white — softened */
-  --color-text-faint:   #7a6448;  /* muted saddle — annotations */
-  --color-border:       #38281a;  /* dark warm border */
-  --color-action:       #8a7050;  /* muted leather — placed pills, submit */
-  --color-action-text:  #1C1510;  /* espresso on leather */
-  --color-dot-correct:  #7a8a40;  /* muted olive green — right */
-  --color-dot-present:  #936639;  /* Toffee Brown — wrong spot */
-  --color-dot-absent:   #38281a;  /* border tone — absent */
+  --color-bg:           #0d0905;  /* deep espresso */
+  --color-bg-elevated:  #221508;  /* candlelit lift — more separation */
+  --color-text:         #c9bc9a;  /* aged parchment */
+  --color-text-strong:  #e2d7bb;  /* warm off-white */
+  --color-text-faint:   #7a6a48;  /* muted saddle — annotations */
+  --color-border:       #2a1e10;  /* dark warm edge */
+  --color-action:       #c8b990;  /* muted parchment — primary CTA (submit button) */
+  --color-action-text:  #0d0905;  /* espresso on parchment */
+  --color-pill:         #4a3218;  /* warm leather — placed pills, distinct from CTA */
+  --color-pill-text:    #c8b990;  /* parchment on leather */
+  --color-dot-correct:  #8a9a50;  /* olive — lifted for dark bg */
+  --color-dot-present:  #b87838;  /* warm amber */
+  --color-dot-absent:   #2a1e10;  /* border tone — absent */
   --color-miss:         #b06858;  /* muted clay — miss feedback */
 }
 
-/* ── Guesstory Colorful light ── */
-[data-theme="guesstory-colorful-light"] {
-  --color-bg:           #c2c5aa;
-  --color-bg-elevated:  #a4ac86;
-  --color-text:         #582f0e;
-  --color-text-strong:  #333d29;
-  --color-text-faint:   #7f4f24;
-  --color-border:       #a4ac86;
-  --color-action:       #414833;
-  --color-action-text:  #c2c5aa;
-  --color-dot-correct:  #333d29;
-  --color-dot-present:  #936639;
-  --color-dot-absent:   #c2c5aa;
-  --color-miss:         #8b4a30;
-}
-
-/* ── Guesstory Colorful dark ── */
-[data-theme="guesstory-colorful-dark"] {
-  --color-bg:           #414833;
-  --color-bg-elevated:  #4d5540;
-  --color-text:         #c2c5aa;
-  --color-text-strong:  #EDEAE3;
-  --color-text-faint:   #656d4a;
-  --color-border:       #333d29;
-  --color-action:       #c2c5aa;
-  --color-action-text:  #414833;
-  --color-dot-correct:  #a4ac86;
-  --color-dot-present:  #936639;
-  --color-dot-absent:   #333d29;
-  --color-miss:         #a06050;
-}
 
 /* ── Gruvbox light ── */
 [data-theme="gruvbox-light"] {
@@ -208,18 +181,20 @@
 /* System dark fallback before JS sets data-theme */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --color-bg:           #282828;
-    --color-bg-elevated:  #3C3836;
-    --color-text:         #BDAE93;
-    --color-text-strong:  #EBDBB2;
-    --color-text-faint:   #928374;
-    --color-border:       #504945;
-    --color-action:       #EBDBB2;
-    --color-action-text:  #282828;
-    --color-dot-correct:  #EBDBB2;
-    --color-dot-present:  #928374;
-    --color-dot-absent:   #504945;
-    --color-miss:         #cc6655;
+    --color-bg:           #0d0905;
+    --color-bg-elevated:  #221508;
+    --color-text:         #c9bc9a;
+    --color-text-strong:  #e2d7bb;
+    --color-text-faint:   #7a6a48;
+    --color-border:       #2a1e10;
+    --color-action:       #c8b990;
+    --color-action-text:  #0d0905;
+    --color-pill:         #4a3218;
+    --color-pill-text:    #c8b990;
+    --color-dot-correct:  #8a9a50;
+    --color-dot-present:  #b87838;
+    --color-dot-absent:   #2a1e10;
+    --color-miss:         #b06858;
   }
 }
 

@@ -297,15 +297,15 @@ export default function BankPanel({
                             }}
                             className="fade-in flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap"
                             style={{
-                              background: placed ? 'var(--color-action)' : 'var(--color-bg-elevated)',
-                              color: placed ? 'var(--color-action-text)' : 'var(--color-text)',
+                              background: placed ? 'var(--color-pill)' : 'var(--color-bg-elevated)',
+                              color: placed ? 'var(--color-pill-text)' : 'var(--color-text)',
                               border: '1px solid var(--color-border)',
                             }}
                           >
                             {item.seeded && (
                               <span
                                 className="text-xs"
-                                style={{ color: placed ? 'var(--color-action-text)' : 'var(--color-text-faint)' }}
+                                style={{ color: placed ? 'var(--color-pill-text)' : 'var(--color-text-faint)' }}
                                 title="Given at start"
                               >
                                 ★

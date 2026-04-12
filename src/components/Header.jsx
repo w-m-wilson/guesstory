@@ -154,7 +154,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
           {/* Left: wordmark */}
           <span
             className="text-3xl tracking-tight shrink-0"
-            style={{ fontFamily: "'Grenze Gotisch', serif", color: 'var(--color-text-strong)', transform: 'translateY(-4px)' }}
+            style={{ fontFamily: "'Grenze Gotisch', serif", color: 'var(--color-action)', transform: 'translateY(-4px)' }}
           >
             guesStory
           </span>
