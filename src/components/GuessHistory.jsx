@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow, topInset = 0 }) {
   const hasLiveSlot = rankSlots?.some(Boolean)
@@ -85,19 +85,7 @@ function AttemptRow({ slots, feedback, attemptNumber, isLatest, onPick }) {
       ? 'var(--color-dot-present)'
       : 'var(--color-border)'
 
-  const nameRef = useRef(null)
-  const [compact, setCompact] = useState(false)
-
-  useLayoutEffect(() => {
-    const el = nameRef.current
-    if (!el) return
-    setCompact(el.scrollWidth > el.clientWidth)
-  }, [slots])
-
   const names = slots.map(s => s?.name ?? '—')
-  const displayText = compact
-    ? names.map(n => n.length > 5 ? n.slice(0, 5) : n).join(' · ')
-    : names.join(' · ')
 
   return (
     <button
@@ -122,21 +110,30 @@ function AttemptRow({ slots, feedback, attemptNumber, isLatest, onPick }) {
         {attemptNumber}
       </span>
 
-      {/* Names — flex-1, fades to right, compacts only if it actually overflows */}
-      <span
-        ref={nameRef}
-        className="flex-1 min-w-0"
-        style={{
-          fontSize: '13px',
-          color: 'var(--color-text)',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          WebkitMaskImage: 'linear-gradient(to right, black 75%, transparent 100%)',
-          maskImage: 'linear-gradient(to right, black 75%, transparent 100%)',
-        }}
-      >
-        {displayText}
-      </span>
+      {/* Names — each item fades independently if it overflows */}
+      <div className="flex-1 min-w-0 flex items-center" style={{ overflow: 'hidden' }}>
+        {names.map((name, i) => (
+          <span key={i} style={{ display: 'contents' }}>
+            {i > 0 && (
+              <span className="shrink-0" style={{ fontSize: '13px', color: 'var(--color-text-faint)', padding: '0 1px' }}> · </span>
+            )}
+            <span
+              className="min-w-0"
+              style={{
+                fontSize: '13px',
+                color: 'var(--color-text)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                flexShrink: 1,
+                WebkitMaskImage: 'linear-gradient(to right, black 38px, transparent 62px)',
+                maskImage: 'linear-gradient(to right, black 38px, transparent 62px)',
+              }}
+            >
+              {name}
+            </span>
+          </span>
+        ))}
+      </div>
 
       {/* Sorted Mastermind dots — fixed-width cells for column alignment */}
       <div className="flex items-center shrink-0">
@@ -164,19 +161,7 @@ function AttemptRow({ slots, feedback, attemptNumber, isLatest, onPick }) {
 }
 
 function LiveRow({ slots }) {
-  const nameRef = useRef(null)
-  const [compact, setCompact] = useState(false)
-
-  useLayoutEffect(() => {
-    const el = nameRef.current
-    if (!el) return
-    setCompact(el.scrollWidth > el.clientWidth)
-  }, [slots])
-
-  const rawNames = slots.filter(Boolean).map(s => s.name)
-  const names = compact
-    ? rawNames.map(n => n.length > 5 ? n.slice(0, 5) : n).join(' · ')
-    : rawNames.join(' · ')
+  const names = slots.filter(Boolean).map(s => s.name)
   return (
     <div
       style={{
@@ -191,20 +176,31 @@ function LiveRow({ slots }) {
       }}
     >
       <span style={{ width: '0.9rem', flexShrink: 0 }} />
-      <span
-        ref={nameRef}
-        className="flex-1 min-w-0"
-        style={{
-          fontSize: '13px',
-          color: 'var(--color-text)',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          WebkitMaskImage: 'linear-gradient(to right, black 75%, transparent 100%)',
-          maskImage: 'linear-gradient(to right, black 75%, transparent 100%)',
-        }}
-      >
-        {names || '·····'}
-      </span>
+      <div className="flex-1 min-w-0 flex items-center" style={{ overflow: 'hidden' }}>
+        {names.length === 0 ? (
+          <span style={{ fontSize: '13px', color: 'var(--color-text)' }}>·····</span>
+        ) : names.map((name, i) => (
+          <span key={i} style={{ display: 'contents' }}>
+            {i > 0 && (
+              <span className="shrink-0" style={{ fontSize: '13px', color: 'var(--color-text-faint)', padding: '0 1px' }}> · </span>
+            )}
+            <span
+              className="min-w-0"
+              style={{
+                fontSize: '13px',
+                color: 'var(--color-text)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                flexShrink: 1,
+                WebkitMaskImage: 'linear-gradient(to right, black 38px, transparent 62px)',
+                maskImage: 'linear-gradient(to right, black 38px, transparent 62px)',
+              }}
+            >
+              {name}
+            </span>
+          </span>
+        ))}
+      </div>
       <div className="flex items-center shrink-0">
         {Array.from({ length: 5 }).map((_, i) => (
           <span key={i} style={{ fontSize: '13px', lineHeight: 1, width: '16px', textAlign: 'center', display: 'inline-block', color: 'var(--color-text-faint)', opacity: 0.3 }}>·</span>

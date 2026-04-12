@@ -29,17 +29,12 @@ function MissTracker({ misses, difficulty = 'medium' }) {
 }
 
 const TW_PHRASES = [
-  'Guess the category',
-  'Guess the theme',
-  'Guess the pattern',
-  'Guess the connection',
-  'What connects them all?',
-  'Click to name the theme',
-  'Think you know the category?',
-  'Can you spot the pattern?',
   'Tap to guess the category',
-  "What's the link?",
-  'Name the connection',
+  'Tap to guess the theme',
+  'Tap to name the connection',
+  'Tap to name the theme',
+  'Think you know? Tap here',
+  'Tap to guess the pattern',
 ]
 const TYPE_MS   = 55
 const RETYPE_MS = 75
@@ -162,21 +157,13 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
           {/* Center: pill — centered within the gap between logo and buttons */}
           <div className="flex-1 flex justify-center px-3">
             {categoryText || arDone ? (
-              <div
+              <p
                 key={categoryText || categoryAutoReveal}
-                className="fade-in rounded-full px-4 py-1 text-center"
-                style={{
-                  border: '1px solid var(--color-border)',
-                  background: 'var(--color-bg-elevated)',
-                  minWidth: '150px',
-                  maxWidth: '220px',
-                  overflow: 'hidden',
-                }}
+                className="fade-in text-sm text-right"
+                style={{ color: 'var(--color-text-faint)', fontStyle: 'italic', textWrap: 'balance' }}
               >
-                <p className="text-sm leading-snug truncate" style={{ color: 'var(--color-text-faint)' }}>
-                  {categoryText || categoryAutoReveal}
-                </p>
-              </div>
+                {categoryText || categoryAutoReveal}
+              </p>
             ) : categoryAutoReveal ? (
               <div
                 className="rounded-full px-4 py-1 text-center"
@@ -192,7 +179,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                 className="rounded-full px-4 py-1 text-sm text-center"
                 style={{
                   color: 'var(--color-action)',
-                  border: '1.5px solid var(--color-action)',
+                  border: '1px solid var(--color-text-faint)',
                   background: 'transparent',
                   whiteSpace: 'nowrap',
                   minWidth: '150px',
