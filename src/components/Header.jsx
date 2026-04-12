@@ -45,7 +45,7 @@ const TYPE_MS   = 55
 const RETYPE_MS = 75
 const ERASE_MS  = 40
 const PAUSE_MS  = 500
-const CYCLE_MS  = 7000
+const CYCLE_MS  = 25000
 
 function pickNextPhrase(current) {
   const pool = TW_PHRASES.filter(s => s !== current)
@@ -191,12 +191,13 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                 onClick={() => setGuessing(true)}
                 className="rounded-full px-4 py-1 text-sm text-center"
                 style={{
-                  color: 'var(--color-text)',
-                  border: '1px solid var(--color-border)',
-                  background: 'var(--color-bg-elevated)',
+                  color: 'var(--color-action)',
+                  border: '1.5px solid var(--color-action)',
+                  background: 'transparent',
                   whiteSpace: 'nowrap',
                   minWidth: '150px',
                   maxWidth: '220px',
+                  fontWeight: 500,
                 }}
               >
                 {twText}{twCursor ? '|' : ''}
