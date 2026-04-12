@@ -2,7 +2,9 @@ import { useState, useRef, useEffect } from 'react'
 
 
 export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMoveSlot, onSubmit }) {
-  const hasAnySlot = rankSlots.some(Boolean)
+  const filledCount = rankSlots.filter(Boolean).length
+  const hasAnySlot = filledCount > 0
+  const hasMinItems = filledCount >= 5
   const allFilled = rankSlots.every(Boolean)
   const [dragIndex, setDragIndex] = useState(null)
   const [submitReadyKey, setSubmitReadyKey] = useState(0)
@@ -192,11 +194,11 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
       <button
         key={submitReadyKey}
         onClick={onSubmit}
-        disabled={!hasAnySlot}
+        disabled={!hasMinItems}
         className={`mt-2 w-full py-2 rounded-lg text-sm font-semibold disabled:opacity-30${allFilled && submitReadyKey > 0 ? ' submit-ready' : ''}`}
         style={{
-          background: hasAnySlot ? 'var(--color-action)' : 'var(--color-border)',
-          color: hasAnySlot ? 'var(--color-action-text)' : 'var(--color-text-faint)',
+          background: hasMinItems ? 'var(--color-action)' : 'var(--color-border)',
+          color: hasMinItems ? 'var(--color-action-text)' : 'var(--color-text-faint)',
         }}
       >
         Submit Ranking

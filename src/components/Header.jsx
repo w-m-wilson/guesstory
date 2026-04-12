@@ -197,8 +197,8 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
             {onOpenIntro && (
               <button
                 onClick={onOpenIntro}
-                className="shrink-0 text-xs w-6 h-6 rounded-full flex items-center justify-center opacity-50 hover:opacity-80"
-                style={{ border: '1px solid var(--color-text-faint)', color: 'var(--color-text-faint)' }}
+                className="shrink-0 text-xs w-6 h-6 rounded-full flex items-center justify-center opacity-75 hover:opacity-100"
+                style={{ border: '1.5px solid var(--color-text)', color: 'var(--color-text)', fontWeight: 700 }}
                 aria-label="How to play"
               >
                 ?
@@ -206,11 +206,11 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
             )}
             <button
               onClick={onOpenSettings}
-              className="shrink-0 flex flex-col items-center justify-center gap-[4px] w-6 h-6 opacity-50 hover:opacity-80"
+              className="shrink-0 flex flex-col items-center justify-center gap-[4px] w-6 h-6 opacity-75 hover:opacity-100"
               aria-label="Menu"
             >
               {[0,1,2].map(i => (
-                <span key={i} style={{ display: 'block', width: '14px', height: '1.5px', borderRadius: '1px', background: 'var(--color-text-faint)' }} />
+                <span key={i} style={{ display: 'block', width: '14px', height: '2px', borderRadius: '1px', background: 'var(--color-text)' }} />
               ))}
             </button>
           </div>
