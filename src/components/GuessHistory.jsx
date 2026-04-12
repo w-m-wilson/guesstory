@@ -1,6 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
+
+function sortFeedbackForDots(feedback) {
+  return [...feedback].sort((a, b) => {
+    const order = { correct: 0, present: 1 }
+    return (order[a] ?? 2) - (order[b] ?? 2)
+  })
+}
 
 function ScoreExplainerPopup({ feedback, onClose }) {
+  const sortedFeedback = sortFeedbackForDots(feedback)
   const correctCount = feedback.filter(f => f === 'correct').length
   const presentCount = feedback.filter(f => f === 'present').length
   const topFiveCount = correctCount + presentCount
@@ -28,18 +37,44 @@ function ScoreExplainerPopup({ feedback, onClose }) {
     message = `${inTop5Part}, ${rightSpotPart}.${absentPart} The dots don't tell you which items are which — just the counts.`
   }
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center px-6"
-      style={{ background: 'rgba(0,0,0,0.45)' }}
-      onClick={e => { e.stopPropagation(); onClose() }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="score-explainer-title"
+      className="fixed inset-0 z-[55] flex items-center justify-center px-6"
+      style={{ background: 'rgba(0,0,0,0.5)' }}
+      onClick={onClose}
     >
       <div
         className="w-full max-w-xs rounded-2xl p-5 fade-in"
         style={{ background: 'var(--color-bg)' }}
         onClick={e => e.stopPropagation()}
       >
-        <p className="text-sm font-semibold mb-2" style={{ color: 'var(--color-text-strong)' }}>What this score means</p>
+        <div
+          className="flex items-center justify-center gap-0.5 rounded-xl px-3 py-3 mb-4"
+          style={{ background: 'var(--color-bg-elevated)' }}
+          role="img"
+          aria-label={`Score feedback: ${correctCount} in the right spot, ${presentCount} in the top five but wrong spot, ${absentCount} not in the top five`}
+        >
+          {sortedFeedback.map((f, i) => (
+            <span
+              key={i}
+              style={{
+                fontSize: '22px',
+                lineHeight: 1,
+                width: '1.35rem',
+                textAlign: 'center',
+                display: 'inline-block',
+                color: f === 'correct' ? 'var(--color-dot-correct)' : f === 'present' ? 'var(--color-dot-present)' : 'var(--color-text-faint)',
+                opacity: f !== 'correct' && f !== 'present' ? 0.22 : 1,
+              }}
+            >
+              {f === 'correct' ? '●' : f === 'present' ? '○' : '—'}
+            </span>
+          ))}
+        </div>
+        <p id="score-explainer-title" className="text-sm font-semibold mb-2" style={{ color: 'var(--color-text-strong)' }}>What this score means</p>
         <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--color-text)' }}>{message}</p>
         <button
           onClick={onClose}
@@ -49,7 +84,8 @@ function ScoreExplainerPopup({ feedback, onClose }) {
           Got it
         </button>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
 
@@ -188,10 +224,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
 }
 
 function AttemptRow({ slots, feedback, attemptNumber, isFocused, onShowExplainer }) {
-  const sortedFeedback = [...feedback].sort((a, b) => {
-    const order = { correct: 0, present: 1 }
-    return (order[a] ?? 2) - (order[b] ?? 2)
-  })
+  const sortedFeedback = sortFeedbackForDots(feedback)
   const correctCount = feedback.filter(f => f === 'correct').length
   const accentColor  = correctCount === 5
     ? 'var(--color-dot-correct)'
