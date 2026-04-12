@@ -1,0 +1,32 @@
+{
+  "id": "2026-04-14",
+  "category": "Most Common Male Names in the U.S.",
+  "hint": "Ranked by total births — these are the names given to the most American men over all time",
+  "seed": [
+    { "rank": 4, "name": "Michael", "aliases": ["Mike"] },
+    { "rank": 7, "name": "Joseph",  "aliases": ["Joe"] }
+  ],
+  "liteSeed": [
+    { "rank": 1,  "name": "James",   "aliases": ["Jim", "Jimmy"] },
+    { "rank": 2,  "name": "John",    "aliases": ["Johnny"] },
+    { "rank": 5,  "name": "William", "aliases": ["Will", "Bill", "Billy"] },
+    { "rank": 10, "name": "Thomas",  "aliases": ["Tom", "Tommy"] }
+  ],
+  "challengeSeed": [
+    { "rank": 9, "name": "Charles", "aliases": ["Charlie", "Chuck"] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "James",   "aliases": ["Jim", "Jimmy"] },
+    { "rank": 2,  "name": "John",    "aliases": ["Johnny"] },
+    { "rank": 3,  "name": "Robert",  "aliases": ["Rob", "Bob", "Bobby"] },
+    { "rank": 4,  "name": "Michael", "aliases": ["Mike"] },
+    { "rank": 5,  "name": "William", "aliases": ["Will", "Bill", "Billy"] },
+    { "rank": 6,  "name": "David",   "aliases": ["Dave"] },
+    { "rank": 7,  "name": "Joseph",  "aliases": ["Joe"] },
+    { "rank": 8,  "name": "Richard", "aliases": ["Rich", "Rick", "Dick"] },
+    { "rank": 9,  "name": "Charles", "aliases": ["Charlie", "Chuck"] },
+    { "rank": 10, "name": "Thomas",  "aliases": ["Tom", "Tommy"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://namecensus.com/first-names/common-male-first-names/"
+}
