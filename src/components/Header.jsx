@@ -277,9 +277,9 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                   fontSize: '16px',
                 }}
                 autoComplete="off"
-                autoCorrect="off"
-                autoCapitalize="off"
-                spellCheck={false}
+                autoCorrect="on"
+                autoCapitalize="sentences"
+                spellCheck={true}
               />
               <button
                 type="submit"

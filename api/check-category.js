@@ -20,6 +20,7 @@ export default async function handler(req, res) {
         `"yes" — the guess captures the spirit of both subject and metric. Be very generous:\n` +
         `  • Any synonym, shorthand, or partial for the subject is fine\n` +
         `  • Any phrasing that points at the same metric dimension counts — vague words (size, amount, number, rank, order), direction words (most to least, descending, biggest first), or even approximate domain words all count\n` +
+        `  • Inverted phrasing is fine — "most-used social media" is equivalent to "social media by users". Leading with the metric dimension is just as valid as leading with the subject.\n` +
         `  • If you're on the fence, verdict is yes. hint: null\n` +
         `"warm" — subject is clearly right but metric is absent or a different dimension entirely:\n` +
         `  • No metric: warmly affirm the subject, then explain the game format — e.g. "exactly the right subject! categories here are always '[thing] by [how they're ranked]' — what's the ranking dimension?" Never name or hint at the actual metric.\n` +
