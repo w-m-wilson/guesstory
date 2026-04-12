@@ -228,9 +228,9 @@ export default function BankPanel({
                 transition: 'box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease',
               }}
               autoComplete="off"
-              autoCorrect="off"
-              autoCapitalize="off"
-              spellCheck={false}
+              autoCorrect="on"
+              autoCapitalize="sentences"
+              spellCheck={true}
             />
           </div>
         </form>
