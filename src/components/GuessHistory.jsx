@@ -263,13 +263,69 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
   )
 }
 
+/** Opaque on the left; soft fade only on the right edge (no left-side dimming). */
+const NAME_FADE_MASK = 'linear-gradient(to right, black 0%, black calc(100% - 14px), transparent 100%)'
+
+/** Five equal columns (#1–#5): strict alignment; long names fade at clipped edges (no ellipsis). */
+function HistoryRankNamesTrack({ slots, variant }) {
+  const isLive = variant === 'live'
+  const cells = Array.from({ length: 5 }, (_, i) => slots[i] ?? null)
+  return (
+    <div
+      className="min-w-0 flex-1"
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
+        alignItems: 'center',
+        columnGap: '6px',
+        marginInlineEnd: '14px',
+      }}
+    >
+      {cells.map((slot, i) => {
+        const label = slot?.name
+        const placeholder = isLive ? '·' : '—'
+        return (
+          <div
+            key={i}
+            title={label ?? undefined}
+            style={{
+              minWidth: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <span
+              style={{
+                width: '100%',
+                fontSize: '13px',
+                lineHeight: 1.25,
+                color: label ? 'var(--color-text)' : 'var(--color-text-faint)',
+                opacity: label ? 1 : (isLive ? 0.5 : 0.85),
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textAlign: 'center',
+                WebkitMaskImage: label ? NAME_FADE_MASK : 'none',
+                maskImage: label ? NAME_FADE_MASK : 'none',
+                WebkitMaskSize: '100% 100%',
+                maskSize: '100% 100%',
+              }}
+            >
+              {label ?? placeholder}
+            </span>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 function AttemptRow({ slots, feedback, attemptNumber, isFocused, onShowExplainer }) {
   const sortedFeedback = sortFeedbackForDots(feedback)
   const correctCount = feedback.filter(f => f === 'correct').length
   const accentColor  = correctCount === 5
     ? 'var(--color-dot-correct)'
     : correctCount > 0 ? 'var(--color-dot-present)' : 'var(--color-border)'
-  const names = slots.map(s => s?.name ?? '—')
 
   return (
     <>
@@ -284,20 +340,7 @@ function AttemptRow({ slots, feedback, attemptNumber, isFocused, onShowExplainer
         <span className="tabular-nums shrink-0" style={{ fontSize: '9px', color: 'var(--color-text-faint)', width: '0.9rem', textAlign: 'right' }}>
           {attemptNumber}
         </span>
-        <div className="flex-1 min-w-0 flex items-center" style={{ overflow: 'hidden' }}>
-          {names.map((name, i) => (
-            <span key={i} style={{ display: 'contents' }}>
-              {i > 0 && <span className="shrink-0" style={{ fontSize: '13px', color: 'var(--color-text-faint)', padding: '0 4px' }}>·</span>}
-              <span className="min-w-0" style={{
-                fontSize: '13px',
-                color: 'var(--color-text)',
-                whiteSpace: 'nowrap', overflow: 'hidden', flexShrink: 1,
-                WebkitMaskImage: 'linear-gradient(to right, black 24px, transparent 44px)',
-                maskImage: 'linear-gradient(to right, black 24px, transparent 44px)',
-              }}>{name}</span>
-            </span>
-          ))}
-        </div>
+        <HistoryRankNamesTrack slots={slots} variant="history" />
         <button
           onClick={e => { e.stopPropagation(); onShowExplainer(feedback) }}
           className="flex items-center shrink-0"
@@ -320,7 +363,6 @@ function AttemptRow({ slots, feedback, attemptNumber, isFocused, onShowExplainer
 }
 
 function LiveRow({ slots }) {
-  const names = slots.filter(Boolean).map(s => s.name)
   return (
     <div style={{
       background: 'var(--color-bg-elevated)', borderRadius: '8px',
@@ -328,22 +370,7 @@ function LiveRow({ slots }) {
       margin: '0 12px', display: 'flex', alignItems: 'center', gap: '6px', opacity: 0.45,
     }}>
       <span style={{ width: '0.9rem', flexShrink: 0 }} />
-      <div className="flex-1 min-w-0 flex items-center" style={{ overflow: 'hidden' }}>
-        {names.length === 0
-          ? <span style={{ fontSize: '13px', color: 'var(--color-text)' }}>·····</span>
-          : names.map((name, i) => (
-            <span key={i} style={{ display: 'contents' }}>
-              {i > 0 && <span className="shrink-0" style={{ fontSize: '13px', color: 'var(--color-text-faint)', padding: '0 4px' }}>·</span>}
-              <span className="min-w-0" style={{
-                fontSize: '13px', color: 'var(--color-text)',
-                whiteSpace: 'nowrap', overflow: 'hidden', flexShrink: 1,
-                WebkitMaskImage: 'linear-gradient(to right, black 24px, transparent 44px)',
-                maskImage: 'linear-gradient(to right, black 24px, transparent 44px)',
-              }}>{name}</span>
-            </span>
-          ))
-        }
-      </div>
+      <HistoryRankNamesTrack slots={slots} variant="live" />
       <div className="flex items-center shrink-0">
         {Array.from({ length: 5 }).map((_, i) => (
           <span key={i} style={{ fontSize: '13px', lineHeight: 1, width: '16px', textAlign: 'center', display: 'inline-block', color: 'var(--color-text-faint)', opacity: 0.3 }}>·</span>
