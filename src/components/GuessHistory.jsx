@@ -43,7 +43,7 @@ function ScoreExplainerPopup({ feedback, onClose }) {
       aria-modal="true"
       aria-labelledby="score-explainer-title"
       className="fixed inset-0 z-[55] flex items-center justify-center px-6"
-      style={{ background: 'rgba(0,0,0,0.5)' }}
+      style={{ background: 'rgba(0,0,0,0.78)' }}
       onClick={onClose}
     >
       <div
@@ -94,7 +94,23 @@ const PX_PER_CARD  = 52   // px of drag to advance one card
 const BOTTOM_PAD   = 8    // px from area bottom to front card bottom
 const WHEEL_THRESH = 60   // accumulated deltaY before advancing one card
 
-export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow, topInset = 0 }) {
+const FIRST_REAL_FEEDBACK_EXPLAINER_KEY = 'guesstory-first-real-feedback-explainer'
+
+function readFirstRealFeedbackExplainerSeen() {
+  try {
+    return !!localStorage.getItem(FIRST_REAL_FEEDBACK_EXPLAINER_KEY)
+  } catch {
+    return true
+  }
+}
+
+function markFirstRealFeedbackExplainerSeen() {
+  try {
+    localStorage.setItem(FIRST_REAL_FEEDBACK_EXPLAINER_KEY, '1')
+  } catch { /* ignore */ }
+}
+
+export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow, topInset = 0, isTutorial = false }) {
   const hasLiveSlot = rankSlots?.some(Boolean)
   const total = rankHistory.length
 
@@ -109,6 +125,29 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
   useEffect(() => {
     if (total > 0) setFocusIndex(total - 1)
   }, [total])
+
+  useEffect(() => {
+    if (isTutorial) return
+    if (readFirstRealFeedbackExplainerSeen()) return
+    if (rankHistory.length >= 2) {
+      markFirstRealFeedbackExplainerSeen()
+      setExplainerFeedback(null)
+    }
+  }, [isTutorial, rankHistory.length])
+
+  useEffect(() => {
+    if (isTutorial) return
+    if (readFirstRealFeedbackExplainerSeen()) return
+    if (rankHistory.length !== 1) return
+    const fb = rankHistory[0]?.feedback
+    if (!fb || fb.length !== 5) return
+    setExplainerFeedback(fb)
+  }, [isTutorial, rankHistory])
+
+  function closeScoreExplainer() {
+    setExplainerFeedback(null)
+    if (!isTutorial) markFirstRealFeedbackExplainerSeen()
+  }
 
   if (total === 0 && !hasLiveSlot) return null
 
@@ -217,7 +256,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
         </div>
       )}
       {explainerFeedback && (
-        <ScoreExplainerPopup feedback={explainerFeedback} onClose={() => setExplainerFeedback(null)} />
+        <ScoreExplainerPopup feedback={explainerFeedback} onClose={closeScoreExplainer} />
       )}
     </div>
   )

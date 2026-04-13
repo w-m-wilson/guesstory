@@ -6,7 +6,7 @@ const DIFFICULTY_LABELS = { lite: 'LITE', medium: 'MED', challenge: 'CHAL' }
 const DIFFICULTY_ORDER = ['lite', 'medium', 'challenge']
 const DIFFICULTY_NAMES = { lite: 'Lite', medium: 'Medium', challenge: 'Challenge' }
 
-export default function ScoreBar({ coins, gameOver, difficulty = 'medium', onSetDifficulty, onHintsOpen, onShowResults, onReset }) {
+export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideDifficulty = false, onSetDifficulty, onHintsOpen, onShowResults, onReset }) {
   const prevCoins = useRef(coins)
   const [deltas, setDeltas] = useState([])
   const [pickerOpen, setPickerOpen] = useState(false)
@@ -25,12 +25,12 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', onSet
 
   // Options easier than current difficulty (downgrade only mid-game)
   const easierOptions = DIFFICULTY_ORDER.slice(0, DIFFICULTY_ORDER.indexOf(difficulty))
-  const canSwitch = easierOptions.length > 0
+  const canSwitch = !hideDifficulty && easierOptions.length > 0
 
   return (
     <div style={{ position: 'relative' }}>
       {/* Mid-game difficulty picker — appears above the bar */}
-      {pickerOpen && (
+      {pickerOpen && !hideDifficulty && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setPickerOpen(false)} />
           <div
@@ -85,20 +85,21 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', onSet
             </span>
           ))}
 
-          {/* Difficulty badge */}
-          <button
-            onClick={canSwitch ? () => setPickerOpen(p => !p) : undefined}
-            className="text-[10px] font-black tracking-widest rounded-md px-2 py-0.5"
-            style={{
-              color: 'var(--color-text-strong)',
-              background: 'var(--color-bg-elevated)',
-              border: '1.5px solid var(--color-border)',
-              cursor: canSwitch ? 'pointer' : 'default',
-            }}
-            aria-label={canSwitch ? 'Change difficulty' : `Difficulty: ${DIFFICULTY_NAMES[difficulty]}`}
-          >
-            {DIFFICULTY_LABELS[difficulty] ?? 'MED'}
-          </button>
+          {!hideDifficulty && (
+            <button
+              onClick={canSwitch ? () => setPickerOpen(p => !p) : undefined}
+              className="text-[10px] font-black tracking-widest rounded-md px-2 py-0.5"
+              style={{
+                color: 'var(--color-text-strong)',
+                background: 'var(--color-bg-elevated)',
+                border: '1.5px solid var(--color-border)',
+                cursor: canSwitch ? 'pointer' : 'default',
+              }}
+              aria-label={canSwitch ? 'Change difficulty' : `Difficulty: ${DIFFICULTY_NAMES[difficulty]}`}
+            >
+              {DIFFICULTY_LABELS[difficulty] ?? 'MED'}
+            </button>
+          )}
         </div>
 
         {/* Reset button — truly centered via absolute positioning */}

@@ -291,6 +291,9 @@ function reducer(state, action) {
  *
  * Expects a non-null puzzle object (caller should gate on puzzle being loaded).
  *
+ * Optional `{ isTutorial }`: forces medium difficulty, restores seeded items when
+ * merging saved state, and disables setDifficulty (tutorial has no difficulty UI).
+ *
  * Returns { state, discoveredList, ...actions } or null if puzzle is missing.
  *
  * Action creators return an outcome descriptor so the UI can show inline
@@ -307,7 +310,7 @@ function reducer(state, action) {
  *   purchaseHint(type)    → { item? }
  *   endGame()             → void
  */
-export function useGameState(puzzle, initialDifficulty = 'medium') {
+export function useGameState(puzzle, initialDifficulty = 'medium', { isTutorial = false } = {}) {
   // Keep a always-current ref to state for use inside callbacks.
   // This avoids stale closures without adding state to every useCallback dep array.
   const stateRef = useRef(null);
@@ -318,6 +321,19 @@ export function useGameState(puzzle, initialDifficulty = 'medium') {
     undefined,
     () => {
       const saved = loadSavedState(puzzle.id);
+      if (isTutorial) {
+        const freshMedium = initState(puzzle, 'medium');
+        if (!saved) return freshMedium;
+        return {
+          ...freshMedium,
+          ...saved,
+          difficulty: 'medium',
+          discoveredItems: {
+            ...freshMedium.discoveredItems,
+            ...saved.discoveredItems,
+          },
+        };
+      }
       const difficulty = saved?.difficulty ?? initialDifficulty;
       // Merge saved state over a fresh initState so any newly added fields are always present.
       return saved ? { ...initState(puzzle, difficulty), ...saved } : initState(puzzle, difficulty);
@@ -498,6 +514,7 @@ export function useGameState(puzzle, initialDifficulty = 'medium') {
   }, [puzzle.bank, puzzle.topFive]);
 
   const setDifficulty = useCallback((difficulty) => {
+    if (isTutorial) return;
     const s = stateRef.current;
     const hasStarted = s.bankMisses > 0 || s.rankHistory.length > 0;
     localStorage.setItem('guesstory-difficulty', difficulty);
@@ -508,7 +525,7 @@ export function useGameState(puzzle, initialDifficulty = 'medium') {
       // Mid-game downgrade only
       dispatch({ type: 'SET_DIFFICULTY', difficulty });
     }
-  }, [puzzle]);
+  }, [puzzle, isTutorial]);
 
   const endGame = useCallback(() => {
     dispatch({ type: 'END_GAME' });

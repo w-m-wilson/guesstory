@@ -1,5 +1,16 @@
 import React from 'react'
 
+function effectiveDarkMode(mode) {
+  if (mode === 'dark') return true
+  if (mode === 'light') return false
+  if (typeof window === 'undefined') return false
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+}
+
+function modalScrimBackground(mode) {
+  return effectiveDarkMode(mode) ? 'rgba(0,0,0,0.94)' : 'rgba(0,0,0,0.4)'
+}
+
 const MODES = [
   { key: 'light',  label: 'Light' },
   { key: 'system', label: 'System' },
@@ -14,11 +25,11 @@ const SCHEMES = [
   { key: 'bailly',    label: 'Bailly',    description: 'Rose & sage' },
 ]
 
-function AboutModal({ onClose }) {
+function AboutModal({ mode, onClose }) {
   return (
     <div
       className="fixed inset-0 z-60 flex items-center justify-center"
-      style={{ background: 'rgba(0,0,0,0.55)' }}
+      style={{ background: modalScrimBackground(mode) }}
       onClick={onClose}
     >
       <div
@@ -60,10 +71,11 @@ function AboutModal({ onClose }) {
 
 export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose }) {
   const [showAbout, setShowAbout] = React.useState(false)
+  const scrim = modalScrimBackground(mode)
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"
-      style={{ background: 'rgba(0,0,0,0.4)' }}
+      style={{ background: scrim }}
       onClick={onClose}
     >
       <div
@@ -148,7 +160,7 @@ export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose 
           </button>
         </div>
       </div>
-      {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
+      {showAbout && <AboutModal mode={mode} onClose={() => setShowAbout(false)} />}
     </div>
   )
 }

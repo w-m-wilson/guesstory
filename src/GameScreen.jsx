@@ -11,39 +11,6 @@ const PRIMERS = {
     title: 'Ready to submit',
     body: 'All 5 slots filled. Hit Submit to see how close you are.',
   },
-  feedback: {
-    icon: null,
-    title: 'Reading your feedback',
-    body: (
-      <>
-        <div style={{ marginBottom: '12px', fontSize: '13px', lineHeight: 1.5 }}>
-          After each submission, dots show how close you were:
-        </div>
-        {/* Example guess row */}
-        <div style={{ background: 'var(--color-bg-elevated)', borderRadius: '10px', padding: '10px 12px', marginBottom: '12px', fontSize: '12px' }}>
-          <div style={{ color: 'var(--color-text-faint)', marginBottom: '6px', fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Example guess</div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ color: 'var(--color-text)' }}>three · one · five · two · four</span>
-            <span style={{ letterSpacing: '2px', marginLeft: '8px', whiteSpace: 'nowrap' }}>
-              <span style={{ color: 'var(--color-dot-correct)' }}>●</span>
-              <span style={{ color: 'var(--color-dot-present)' }}>○</span>
-              <span style={{ color: 'var(--color-text-faint)', opacity: 0.4 }}>—</span>
-              <span style={{ color: 'var(--color-text-faint)', opacity: 0.4 }}>—</span>
-              <span style={{ color: 'var(--color-text-faint)', opacity: 0.4 }}>—</span>
-            </span>
-          </div>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '13px' }}>
-          <div><span style={{ color: 'var(--color-dot-correct)', fontWeight: 700 }}>●</span> <span style={{ color: 'var(--color-text)' }}>three is in the right spot (#1)</span></div>
-          <div><span style={{ color: 'var(--color-dot-present)', fontWeight: 700 }}>○</span> <span style={{ color: 'var(--color-text)' }}>one belongs in the top 5, but not #2</span></div>
-          <div><span style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>—</span> <span style={{ color: 'var(--color-text)' }}>five, two, four aren't in the top 5</span></div>
-        </div>
-        <div style={{ marginTop: '12px', fontSize: '12px', color: 'var(--color-text-faint)' }}>
-          Adjust and resubmit. Tap <strong style={{ color: 'var(--color-text)' }}>Hints</strong> to spend coins for extra help.
-        </div>
-      </>
-    ),
-  },
 }
 
 function TutorialPrimerModal({ primerKey, onClose }) {
@@ -134,9 +101,11 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
   const [selectorDismissed, setSelectorDismissed] = useState(() => !!localStorage.getItem('guesstory-difficulty'))
   const bankPanelRef = useRef(null)
 
-  const initialDifficulty = useState(() => localStorage.getItem('guesstory-difficulty') ?? 'medium')[0]
+  const initialDifficulty = isTutorial
+    ? 'medium'
+    : (localStorage.getItem('guesstory-difficulty') ?? 'medium')
 
-  const game = useGameState(puzzle, initialDifficulty)
+  const game = useGameState(puzzle, initialDifficulty, { isTutorial: !!isTutorial })
 
   // Derive primitives needed before null guard
   const discoveredList = game?.discoveredList ?? []
@@ -177,11 +146,6 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
     if (tutorialStep === 2) showPrimer('step2')
     if (tutorialStep === 3) showPrimer('step3')
   }, [isTutorial, tutorialStarted, tutorialStep])
-
-  useEffect(() => {
-    if (!isTutorial || !tutorialStarted || tutorialMode !== 'explore') return
-    if (tutorialRankHistory.length === 1) showPrimer('feedback')
-  }, [isTutorial, tutorialStarted, tutorialMode, tutorialRankHistory.length])
 
   // Show end screen when game first ends, and again after hail mary is submitted
   const gameStatus = game?.state.gameStatus
@@ -254,7 +218,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
           rankSlots={state.rankSlots}
           onPickHistoryRow={loadRankingSlots}
           topInset={bankPanelHeight}
-          difficulty={difficulty}
+          isTutorial={!!isTutorial}
         />
         <div ref={bankPanelRef} style={{ position: 'relative', zIndex: 10 }}>
           <BankPanel
@@ -292,6 +256,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
         coins={state.coins}
         gameOver={gameOver}
         difficulty={difficulty}
+        hideDifficulty={!!isTutorial}
         onSetDifficulty={setDifficulty}
         onHintsOpen={() => setHintsOpen(true)}
         onShowResults={gameOver ? () => setEndScreenDismissed(false) : null}

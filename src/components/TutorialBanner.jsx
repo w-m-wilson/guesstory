@@ -177,12 +177,12 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
     },
     2: {
       label: 'Step 2 of 3: Build a ranking',
-      instruction: "Tap a found item to fill a slot. Try a wrong order first. It's the best way to see how feedback works.",
+      instruction: 'Tap a found item to fill a slot. You can try a rough order first — each submit adds a row with feedback dots on the right.',
       progress: null,
     },
     3: submitted ? {
-      label: 'Step 3 of 3: Read your feedback',
-      instruction: '● = right item, right spot · ○ = right item, wrong spot · no dot = not in the top 5. Adjust and submit again.',
+      label: 'Step 3 of 3: Refine your ranking',
+      instruction: "Use the dots as a compass, then adjust and submit again. After the tutorial, your first daily puzzle will open a full guide to what they mean.",
       progress: null,
     } : {
       label: 'Step 3 of 3: Submit your ranking',
