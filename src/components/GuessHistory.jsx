@@ -252,7 +252,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
       </div>
 
       {hasLiveSlot && (
-        <div className="shrink-0 z-20 border-t" style={{ background: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
+        <div className="shrink-0 z-20" style={{ background: 'var(--color-bg)', marginTop: '-4px', marginBottom: '8px' }}>
           <LiveRow slots={rankSlots} />
         </div>
       )}
