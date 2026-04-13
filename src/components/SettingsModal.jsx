@@ -1,15 +1,5 @@
 import React from 'react'
-
-function effectiveDarkMode(mode) {
-  if (mode === 'dark') return true
-  if (mode === 'light') return false
-  if (typeof window === 'undefined') return false
-  return window.matchMedia('(prefers-color-scheme: dark)').matches
-}
-
-function modalScrimBackground(mode) {
-  return effectiveDarkMode(mode) ? 'rgba(0,0,0,0.94)' : 'rgba(0,0,0,0.4)'
-}
+import { modalScrimBackground } from '../utils/modalScrim.js'
 
 const MODES = [
   { key: 'light',  label: 'Light' },
@@ -29,7 +19,7 @@ function AboutModal({ mode, onClose }) {
   return (
     <div
       className="fixed inset-0 z-60 flex items-center justify-center"
-      style={{ background: modalScrimBackground(mode) }}
+      style={{ background: modalScrimBackground({ mode, variant: 'dialog' }) }}
       onClick={onClose}
     >
       <div
@@ -71,7 +61,7 @@ function AboutModal({ mode, onClose }) {
 
 export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose }) {
   const [showAbout, setShowAbout] = React.useState(false)
-  const scrim = modalScrimBackground(mode)
+  const scrim = modalScrimBackground({ mode, variant: 'sheet' })
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"

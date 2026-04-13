@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { modalScrimBackground } from '../utils/modalScrim.js'
 
 function sortFeedbackForDots(feedback) {
   return [...feedback].sort((a, b) => {
@@ -43,7 +44,7 @@ function ScoreExplainerPopup({ feedback, onClose }) {
       aria-modal="true"
       aria-labelledby="score-explainer-title"
       className="fixed inset-0 z-[55] flex items-center justify-center px-6"
-      style={{ background: 'rgba(0,0,0,0.78)' }}
+      style={{ background: modalScrimBackground({ variant: 'dialog' }) }}
       onClick={onClose}
     >
       <div

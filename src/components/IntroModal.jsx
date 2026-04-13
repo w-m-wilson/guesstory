@@ -1,3 +1,5 @@
+import { modalScrimBackground } from '../utils/modalScrim.js'
+
 const SECTIONS = [
   {
     heading: 'What is this?',
@@ -58,7 +60,7 @@ export default function IntroModal({ onClose, onReplayTutorial }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center px-4"
-      style={{ background: 'rgba(0,0,0,0.55)' }}
+      style={{ background: modalScrimBackground({ variant: 'dialog' }) }}
       onClick={onClose}
     >
       <div

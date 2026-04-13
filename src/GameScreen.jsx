@@ -18,7 +18,7 @@ function TutorialPrimerModal({ primerKey, onClose }) {
   return (
     <div
       className="fixed inset-0 z-60 flex items-center justify-center px-6"
-      style={{ background: 'rgba(0,0,0,0.45)' }}
+      style={{ background: modalScrimBackground({ variant: 'dialog' }) }}
       onClick={onClose}
     >
       <div
@@ -40,6 +40,7 @@ function TutorialPrimerModal({ primerKey, onClose }) {
     </div>
   )
 }
+import { modalScrimBackground } from './utils/modalScrim.js'
 import { useGameState } from './hooks/useGameState.js'
 import Header from './components/Header.jsx'
 import BankPanel from './components/BankPanel.jsx'
@@ -60,10 +61,11 @@ function DifficultySelector({ current, onSelect }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"
-      style={{ background: 'var(--color-bg)' }}
+      style={{ background: modalScrimBackground({ variant: 'sheet' }) }}
     >
       <div
         className="w-full max-w-[430px] h-full flex flex-col justify-end p-5 pb-8 gap-3"
+        style={{ background: 'var(--color-bg)' }}
         onClick={e => e.stopPropagation()}
       >
         <div>

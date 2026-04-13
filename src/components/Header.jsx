@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { DIFFICULTY_CONFIG } from '../config.js'
-
+import { modalScrimBackground } from '../utils/modalScrim.js'
 
 function MissTracker({ misses, difficulty = 'medium' }) {
   const cfg = DIFFICULTY_CONFIG[difficulty] ?? DIFFICULTY_CONFIG.medium
@@ -221,7 +221,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
       {guessing && !categoryText && (
         <div
           className="fixed inset-0 z-40 flex items-start justify-center"
-          style={{ background: 'rgba(0,0,0,0.45)' }}
+          style={{ background: modalScrimBackground({ variant: 'sheet' }) }}
           onClick={() => setGuessing(false)}
         >
           <div

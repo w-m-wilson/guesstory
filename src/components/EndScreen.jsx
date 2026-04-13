@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { modalScrimBackground } from '../utils/modalScrim.js'
 
 const GRADES = [
   { min: 100, label: 'Perfect' },
@@ -174,7 +175,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center px-6"
-      style={{ background: 'rgba(0,0,0,0.5)' }}
+      style={{ background: modalScrimBackground({ variant: 'dialog' }) }}
       onClick={onClose}
     >
       <div

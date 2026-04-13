@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react'
+import { modalScrimBackground } from '../utils/modalScrim.js'
 
 const COIN_EMOJI = '🪙'
 
@@ -32,7 +33,11 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
       {/* Mid-game difficulty picker — appears above the bar */}
       {pickerOpen && !hideDifficulty && (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setPickerOpen(false)} />
+          <div
+            className="fixed inset-0 z-40"
+            style={{ background: modalScrimBackground({ variant: 'sheet' }) }}
+            onClick={() => setPickerOpen(false)}
+          />
           <div
             className="absolute bottom-full left-0 right-0 z-50 px-4 pb-2"
             style={{ background: 'var(--color-bg)' }}

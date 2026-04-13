@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { DIFFICULTY_CONFIG } from '../config.js'
+import { modalScrimBackground } from '../utils/modalScrim.js'
 
 const HINT_DEFS = [
   { key: 'revealBankItem',            label: 'Reveal a bank item',        description: 'Add one undiscovered item to your bank' },
@@ -50,7 +51,7 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, catego
     /* Backdrop */
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"
-      style={{ background: 'rgba(0,0,0,0.4)' }}
+      style={{ background: modalScrimBackground({ variant: 'sheet' }) }}
       onClick={onClose}
     >
       {/* Card */}
