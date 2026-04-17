@@ -1,0 +1,31 @@
+{
+  "id": "2026-04-17",
+  "category": "US Candy Brands by 2024 Sales",
+  "hint": "Ranked by estimated 2024 US retail sales in USD",
+  "seed": [
+    { "rank": 3, "name": "Reese's", "aliases": ["Reeses", "Reese's Peanut Butter Cups", "Reeses Peanut Butter Cups"] },
+    { "rank": 8, "name": "Kit Kat", "aliases": ["KitKat", "Kit-Kat"] }
+  ],
+  "liteSeed": [
+    { "rank": 1, "name": "M&M's", "aliases": ["M&Ms", "MMs", "M and Ms"] },
+    { "rank": 4, "name": "Skittles", "aliases": [] },
+    { "rank": 7, "name": "Twix", "aliases": [] }
+  ],
+  "challengeSeed": [
+    { "rank": 10, "name": "3 Musketeers", "aliases": ["Three Musketeers"] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "M&M's",       "aliases": ["M&Ms", "MMs", "M and Ms"] },
+    { "rank": 2,  "name": "Snickers",    "aliases": [] },
+    { "rank": 3,  "name": "Reese's",     "aliases": ["Reeses", "Reese's Peanut Butter Cups", "Reeses Peanut Butter Cups"] },
+    { "rank": 4,  "name": "Skittles",    "aliases": [] },
+    { "rank": 5,  "name": "Hershey's",   "aliases": ["Hersheys", "Hershey Bar", "Hershey's Milk Chocolate"] },
+    { "rank": 6,  "name": "Starburst",   "aliases": [] },
+    { "rank": 7,  "name": "Twix",        "aliases": [] },
+    { "rank": 8,  "name": "Kit Kat",     "aliases": ["KitKat", "Kit-Kat"] },
+    { "rank": 9,  "name": "Almond Joy",  "aliases": [] },
+    { "rank": 10, "name": "3 Musketeers","aliases": ["Three Musketeers"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://smartbuy.alibaba.com/best-selling/best-selling-candy-in-usa"
+}
