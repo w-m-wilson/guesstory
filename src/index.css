@@ -29,6 +29,7 @@
   --color-dot-present:  #9e844e;  /* warm amber — wrong spot */
   --color-dot-absent:   #cec8b4;  /* warm faint — not in top 5 */
   --color-miss:         #9b5040;  /* muted brick/clay — miss feedback */
+  --texture-opacity:    0.11;
 }
 
 /* ── Guesstory dark ── */
@@ -47,6 +48,7 @@
   --color-dot-present:  #b87838;  /* warm amber */
   --color-dot-absent:   #2a1e10;  /* border tone — absent */
   --color-miss:         #b06858;  /* muted clay — miss feedback */
+  --texture-opacity:    0.14;
 }
 
 
@@ -237,6 +239,23 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+/* Subtle grain texture over the app shell */
+#root::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 11;
+  opacity: var(--texture-opacity, 0.05);
+  /* Two-scale organic noise: visible texture without grid artifacts */
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.24' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23n2)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 220px 220px, 320px 320px;
+  background-repeat: repeat, repeat;
+  mix-blend-mode: overlay;
 }
 
 /* ── Desktop card rounding ── */
