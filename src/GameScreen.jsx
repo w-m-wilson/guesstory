@@ -111,6 +111,12 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
 
   // Derive primitives needed before null guard
   const discoveredList = game?.discoveredList ?? []
+  const ghostLetters = puzzle?.showFirstLetters && game?.state?.bankDisplayOrder
+    ? game.state.bankDisplayOrder.map(rank => {
+        const item = puzzle.bank.find(b => b.rank === rank)
+        return item?.name[0] ?? '?'
+      })
+    : null
   const tutorialRankSlots = game?.state?.rankSlots ?? [null, null, null, null, null]
   const tutorialRankHistory = game?.state?.rankHistory ?? []
   const tutorialGameStatus = game?.state?.gameStatus ?? 'playing'
@@ -225,6 +231,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
         <div ref={bankPanelRef} style={{ position: 'relative', zIndex: 10 }}>
           <BankPanel
             discoveredList={discoveredList}
+            ghostLetters={ghostLetters}
             bankTotal={puzzle.bank.length}
             rankSlots={state.rankSlots}
             bankMisses={state.bankMisses}

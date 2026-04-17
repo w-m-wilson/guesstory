@@ -1,0 +1,32 @@
+{
+  "id": "2026-04-21",
+  "category": "Top 10 Baby Names of 2024 (Female)",
+  "hint": "Most popular female baby names in the US in 2024",
+  "showFirstLetters": true,
+  "seed": [
+    { "rank": 4,  "name": "Charlotte", "aliases": ["Charlie"] },
+    { "rank": 8,  "name": "Evelyn",    "aliases": [] }
+  ],
+  "liteSeed": [
+    { "rank": 1,  "name": "Olivia",  "aliases": [] },
+    { "rank": 5,  "name": "Mia",     "aliases": [] },
+    { "rank": 10, "name": "Sofia",   "aliases": [] }
+  ],
+  "challengeSeed": [
+    { "rank": 2,  "name": "Emma",    "aliases": [] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "Olivia",    "aliases": [] },
+    { "rank": 2,  "name": "Emma",      "aliases": [] },
+    { "rank": 3,  "name": "Amelia",    "aliases": [] },
+    { "rank": 4,  "name": "Charlotte", "aliases": ["Charlie"] },
+    { "rank": 5,  "name": "Mia",       "aliases": [] },
+    { "rank": 6,  "name": "Sophia",    "aliases": [] },
+    { "rank": 7,  "name": "Isabella",  "aliases": ["Bella", "Izzy"] },
+    { "rank": 8,  "name": "Evelyn",    "aliases": [] },
+    { "rank": 9,  "name": "Ava",       "aliases": [] },
+    { "rank": 10, "name": "Sofia",     "aliases": [] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://www.ssa.gov/oact/babynames/"
+}

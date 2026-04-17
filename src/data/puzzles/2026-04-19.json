@@ -1,0 +1,31 @@
+{
+  "id": "2026-04-19",
+  "category": "Highest-Grossing Actors (Worldwide Box Office)",
+  "hint": "Ranked by total worldwide box office gross across all films",
+  "seed": [
+    { "rank": 4,  "name": "Robert Downey Jr.", "aliases": ["RDJ", "Robert Downey"] },
+    { "rank": 8,  "name": "Vin Diesel",        "aliases": [] }
+  ],
+  "liteSeed": [
+    { "rank": 1,  "name": "Zoe Saldaña",       "aliases": ["Zoe Saldana"] },
+    { "rank": 6,  "name": "Tom Cruise",         "aliases": [] },
+    { "rank": 10, "name": "Dwayne Johnson",     "aliases": ["The Rock"] }
+  ],
+  "challengeSeed": [
+    { "rank": 2,  "name": "Scarlett Johansson", "aliases": ["ScarJo"] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "Zoe Saldaña",        "aliases": ["Zoe Saldana"] },
+    { "rank": 2,  "name": "Scarlett Johansson", "aliases": ["Black Widow"] },
+    { "rank": 3,  "name": "Samuel L. Jackson",  "aliases": ["Samuel Jackson"] },
+    { "rank": 4,  "name": "Robert Downey Jr.",  "aliases": ["RDJ", "Robert Downey"] },
+    { "rank": 5,  "name": "Chris Pratt",        "aliases": [] },
+    { "rank": 6,  "name": "Tom Cruise",         "aliases": [] },
+    { "rank": 7,  "name": "Chris Hemsworth",    "aliases": ["Thor"] },
+    { "rank": 8,  "name": "Vin Diesel",         "aliases": [] },
+    { "rank": 9,  "name": "Chris Evans",        "aliases": ["Captain America"] },
+    { "rank": 10, "name": "Dwayne Johnson",     "aliases": ["The Rock"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://en.wikipedia.org/wiki/List_of_highest-grossing_actors"
+}

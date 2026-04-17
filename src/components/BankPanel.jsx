@@ -17,6 +17,7 @@ function looksLikeCategory(guess) {
 
 export default function BankPanel({
   discoveredList,
+  ghostLetters,
   bankTotal,
   rankSlots,
   bankMisses,
@@ -302,6 +303,7 @@ export default function BankPanel({
                           ? <span key={item.rank} className="pill-trace-wrap">{pill}</span>
                           : <span key={item.rank}>{pill}</span>
                       }
+                      const ghostLetter = ghostLetters?.[globalIdx]
                       return (
                         <div
                           key={`ghost-${globalIdx}`}
@@ -309,11 +311,11 @@ export default function BankPanel({
                           style={{
                             border: '1.5px dashed var(--color-text-faint)',
                             background: 'var(--color-bg-elevated)',
-                            color: 'var(--color-bg-elevated)',
+                            color: ghostLetter ? 'var(--color-text-faint)' : 'var(--color-bg-elevated)',
                             userSelect: 'none',
                           }}
                         >
-                          ———
+                          {ghostLetter ?? '———'}
                         </div>
                       )
                     })}
