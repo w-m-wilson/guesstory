@@ -2,7 +2,6 @@
   "id": "2026-04-20",
   "category": "Top 10 Baby Names of 2024 (Male)",
   "hint": "Most popular male baby names in the US in 2024",
-  "showFirstLetters": true,
   "seed": [
     { "rank": 4,  "name": "Theodore", "aliases": ["Theo"] },
     { "rank": 8,  "name": "Elijah",   "aliases": [] }

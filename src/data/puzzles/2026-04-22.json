@@ -2,7 +2,6 @@
   "id": "2026-04-22",
   "category": "Countries by Nuclear Warhead Inventory, 2026",
   "hint": "Countries ranked by total nuclear warhead inventory (SIPRI/FAS estimates, 2026)",
-  "showFirstLetters": true,
   "seed": [
     { "rank": 4, "name": "France",  "aliases": [] },
     { "rank": 7, "name": "Pakistan", "aliases": [] }
