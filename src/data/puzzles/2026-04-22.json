@@ -1,0 +1,31 @@
+{
+  "id": "2026-04-22",
+  "category": "Countries by Nuclear Warhead Inventory, 2026",
+  "hint": "Countries ranked by total nuclear warhead inventory (SIPRI/FAS estimates, 2026)",
+  "showFirstLetters": true,
+  "seed": [
+    { "rank": 4, "name": "France",  "aliases": [] },
+    { "rank": 7, "name": "Pakistan", "aliases": [] }
+  ],
+  "liteSeed": [
+    { "rank": 1, "name": "Russia",         "aliases": [] },
+    { "rank": 3, "name": "China",          "aliases": [] },
+    { "rank": 5, "name": "United Kingdom", "aliases": ["UK", "Britain"] }
+  ],
+  "challengeSeed": [
+    { "rank": 2, "name": "United States", "aliases": ["USA", "US"] }
+  ],
+  "bank": [
+    { "rank": 1, "name": "Russia",         "aliases": [] },
+    { "rank": 2, "name": "United States",  "aliases": ["USA", "US"] },
+    { "rank": 3, "name": "China",          "aliases": [] },
+    { "rank": 4, "name": "France",         "aliases": [] },
+    { "rank": 5, "name": "United Kingdom", "aliases": ["UK", "Britain"] },
+    { "rank": 6, "name": "India",          "aliases": [] },
+    { "rank": 7, "name": "Pakistan",       "aliases": [] },
+    { "rank": 8, "name": "Israel",         "aliases": [] },
+    { "rank": 9, "name": "North Korea",    "aliases": ["DPRK"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://fas.org/initiative/status-world-nuclear-forces/"
+}
