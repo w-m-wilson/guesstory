@@ -1,0 +1,32 @@
+{
+  "id": "2026-04-23",
+  "category": "Most Valuable MLB Franchises, 2026",
+  "hint": "MLB teams ranked by total franchise value (Forbes, 2026)",
+  "seed": [
+    { "rank": 4, "name": "Chicago Cubs", "aliases": ["Cubs"] },
+    { "rank": 7, "name": "Los Angeles Angels", "aliases": ["Angels", "LA Angels"] }
+  ],
+  "liteSeed": [
+    { "rank": 1, "name": "New York Yankees", "aliases": ["Yankees", "NY Yankees"] },
+    { "rank": 3, "name": "Boston Red Sox", "aliases": ["Red Sox"] },
+    { "rank": 10, "name": "St. Louis Cardinals", "aliases": ["Cardinals"] }
+  ],
+  "challengeSeed": [
+    { "rank": 5, "name": "San Francisco Giants", "aliases": ["Giants", "SF Giants"] },
+    { "rank": 9, "name": "Philadelphia Phillies", "aliases": ["Phillies"] }
+  ],
+  "bank": [
+    { "rank": 1, "name": "New York Yankees",       "aliases": ["Yankees", "NY Yankees"] },
+    { "rank": 2, "name": "Los Angeles Dodgers",    "aliases": ["Dodgers", "LA Dodgers"] },
+    { "rank": 3, "name": "Boston Red Sox",         "aliases": ["Red Sox"] },
+    { "rank": 4, "name": "Chicago Cubs",           "aliases": ["Cubs"] },
+    { "rank": 5, "name": "San Francisco Giants",   "aliases": ["Giants", "SF Giants"] },
+    { "rank": 6, "name": "New York Mets",          "aliases": ["Mets", "NY Mets"] },
+    { "rank": 7, "name": "Los Angeles Angels",     "aliases": ["Angels", "LA Angels"] },
+    { "rank": 8, "name": "Atlanta Braves",         "aliases": ["Braves"] },
+    { "rank": 9, "name": "Philadelphia Phillies",  "aliases": ["Phillies"] },
+    { "rank": 10, "name": "St. Louis Cardinals",   "aliases": ["Cardinals"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://www.forbes.com/mlb-valuations/"
+}
