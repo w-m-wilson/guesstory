@@ -1,0 +1,30 @@
+{
+  "id": "2026-04-24",
+  "category": "US Airlines by Passengers Carried (2025)",
+  "hint": "Ranked by total passengers carried in 2025",
+  "seed": [
+    { "rank": 4, "name": "Southwest Airlines", "display": "Southwest", "aliases": ["Southwest"] },
+    { "rank": 7, "name": "JetBlue Airways",    "display": "JetBlue",   "aliases": ["JetBlue"] }
+  ],
+  "liteSeed": [
+    { "rank": 1, "name": "American Airlines", "display": "American", "aliases": ["American", "AA"] },
+    { "rank": 2, "name": "Delta Air Lines",   "display": "Delta",    "aliases": ["Delta", "Delta Airlines"] },
+    { "rank": 5, "name": "Alaska Airlines",   "display": "Alaska",   "aliases": ["Alaska", "AS"] }
+  ],
+  "challengeSeed": [
+    { "rank": 9, "name": "Allegiant Air", "display": "Allegiant", "aliases": ["Allegiant"] }
+  ],
+  "bank": [
+    { "rank": 1, "name": "American Airlines",  "display": "American",  "aliases": ["American", "AA"] },
+    { "rank": 2, "name": "Delta Air Lines",    "display": "Delta",     "aliases": ["Delta", "Delta Airlines"] },
+    { "rank": 3, "name": "United Airlines",    "display": "United",    "aliases": ["United", "UA"] },
+    { "rank": 4, "name": "Southwest Airlines", "display": "Southwest", "aliases": ["Southwest", "WN"] },
+    { "rank": 5, "name": "Alaska Airlines",    "display": "Alaska",    "aliases": ["Alaska", "AS"] },
+    { "rank": 6, "name": "Spirit Airlines",    "display": "Spirit",    "aliases": ["Spirit", "NK"] },
+    { "rank": 7, "name": "JetBlue Airways",    "display": "JetBlue",   "aliases": ["JetBlue", "B6"] },
+    { "rank": 8, "name": "Frontier Airlines",  "display": "Frontier",  "aliases": ["Frontier", "F9"] },
+    { "rank": 9, "name": "Allegiant Air",      "display": "Allegiant", "aliases": ["Allegiant"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://en.wikipedia.org/wiki/List_of_largest_airlines_in_North_America"
+}

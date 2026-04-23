@@ -126,7 +126,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                         maskImage: 'linear-gradient(to right, black calc(100% - 18px), transparent 100%)',
                       }}
                     >
-                      {item.name}
+                      {item.display ?? item.name}
                       {locked && <span className="ml-1.5 text-xs opacity-50">★</span>}
                     </span>
                     {isDraggable && (

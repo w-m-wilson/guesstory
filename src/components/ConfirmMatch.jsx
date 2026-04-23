@@ -12,7 +12,7 @@ export default function ConfirmMatch({ item, onConfirm, onCancel }) {
       <span>
         Did you mean{' '}
         <span style={{ color: 'var(--color-text-strong)' }} className="font-medium">
-          {item.name}
+          {item.display ?? item.name}
         </span>
         ?
       </span>

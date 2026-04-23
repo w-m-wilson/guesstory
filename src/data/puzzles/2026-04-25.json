@@ -1,0 +1,31 @@
+{
+  "id": "2026-04-25",
+  "category": "Spotify Top Artists by Monthly Listeners",
+  "hint": "Ranked by current monthly listeners on Spotify",
+  "seed": [
+    { "rank": 4, "name": "Rihanna",     "aliases": [] },
+    { "rank": 7, "name": "Lady Gaga",   "aliases": [] }
+  ],
+  "liteSeed": [
+    { "rank": 1,  "name": "Bruno Mars",     "aliases": [] },
+    { "rank": 3,  "name": "The Weeknd",     "aliases": ["Weeknd"] },
+    { "rank": 6,  "name": "Taylor Swift",   "aliases": [] }
+  ],
+  "challengeSeed": [
+    { "rank": 10, "name": "David Guetta", "aliases": [] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "Bruno Mars",     "aliases": [] },
+    { "rank": 2,  "name": "Justin Bieber",  "aliases": ["Bieber"] },
+    { "rank": 3,  "name": "The Weeknd",     "aliases": ["Weeknd"] },
+    { "rank": 4,  "name": "Rihanna",        "aliases": [] },
+    { "rank": 5,  "name": "Bad Bunny",      "aliases": [] },
+    { "rank": 6,  "name": "Taylor Swift",   "aliases": [] },
+    { "rank": 7,  "name": "Lady Gaga",      "aliases": [] },
+    { "rank": 8,  "name": "Coldplay",       "aliases": [] },
+    { "rank": 9,  "name": "Drake",          "aliases": [] },
+    { "rank": 10, "name": "David Guetta",   "aliases": [] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://chartmasters.org/spotify-most-streamed-artists/"
+}

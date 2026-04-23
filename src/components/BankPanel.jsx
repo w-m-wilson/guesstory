@@ -102,7 +102,7 @@ export default function BankPanel({
     if (!result) return
 
     if (result.outcome === 'hit') {
-      showFeedback('hit', `✓ Found ${result.item.name}`)
+      showFeedback('hit', `✓ Found ${result.item.display ?? result.item.name}`)
     } else if (result.outcome === 'known') {
       showFeedback('known', `Already discovered`)
     } else if (result.outcome === 'miss') {
@@ -119,7 +119,7 @@ export default function BankPanel({
 
   function handleConfirm() {
     const result = onConfirm()
-    if (result?.outcome === 'hit') showFeedback('hit', `✓ Found ${result.item.name}`)
+    if (result?.outcome === 'hit') showFeedback('hit', `✓ Found ${result.item.display ?? result.item.name}`)
     else if (result?.outcome === 'known') showFeedback('known', 'Already discovered')
   }
 
@@ -295,7 +295,7 @@ export default function BankPanel({
                             }}
                           >
                             {item.seeded && <span className="text-xs" style={{ color: placed ? 'var(--color-pill-text)' : 'var(--color-text-faint)' }}>★</span>}
-                            {item.name}
+                            {item.display ?? item.name}
                             {placed && <span className="text-xs opacity-70">✕</span>}
                           </button>
                         )
