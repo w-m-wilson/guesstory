@@ -1,0 +1,31 @@
+{
+  "id": "2026-04-20",
+  "category": "Top 10 Baby Names of 2024 (Male)",
+  "hint": "Most popular male baby names in the US in 2024",
+  "seed": [
+    { "rank": 4,  "name": "Theodore", "aliases": ["Theo"] },
+    { "rank": 8,  "name": "Elijah",   "aliases": [] }
+  ],
+  "liteSeed": [
+    { "rank": 1,  "name": "Liam",    "aliases": [] },
+    { "rank": 5,  "name": "James",   "aliases": ["Jim", "Jimmy"] },
+    { "rank": 10, "name": "William", "aliases": ["Will", "Bill", "Billy"] }
+  ],
+  "challengeSeed": [
+    { "rank": 2,  "name": "Noah",   "aliases": [] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "Liam",     "aliases": [] },
+    { "rank": 2,  "name": "Noah",     "aliases": [] },
+    { "rank": 3,  "name": "Oliver",   "aliases": [] },
+    { "rank": 4,  "name": "Theodore", "aliases": ["Theo"] },
+    { "rank": 5,  "name": "James",    "aliases": ["Jim", "Jimmy"] },
+    { "rank": 6,  "name": "Henry",    "aliases": [] },
+    { "rank": 7,  "name": "Mateo",    "aliases": [] },
+    { "rank": 8,  "name": "Elijah",   "aliases": [] },
+    { "rank": 9,  "name": "Lucas",    "aliases": [] },
+    { "rank": 10, "name": "William",  "aliases": ["Will", "Bill", "Billy"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://www.ssa.gov/oact/babynames/"
+}

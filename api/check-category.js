@@ -24,7 +24,7 @@ export default async function handler(req, res) {
         `CRITICAL: Judge only against the given category string. Never add requirements not in it.\n\n` +
         `Reply with JSON only: {"verdict":"yes|warm|cold","hint":"string or null"}\n\n` +
         `"yes" — the guess captures the spirit of both subject and metric. Be very generous:\n` +
-        `  • Any synonym, shorthand, or partial for the subject is fine\n` +
+        `  • Any synonym, shorthand, partial, or reasonable subcategory/supercategory of the subject is fine — e.g. "candy brands" or "candy bars" when the subject is "candy"\n` +
         `  • Any phrasing that points at the same metric dimension counts — vague words (size, amount, number, rank, order), direction words (most to least, descending, biggest first), or even approximate domain words all count\n` +
         `  • Accept close metric paraphrases like box office ↔ gross, copies sold ↔ sales, popularity/users ↔ usage, enrollment ↔ undergrad population, and count/how many/number of ↔ each other\n` +
         `  • Do NOT require modifiers like total, worldwide, U.S., adult, native, undergrad, retail, or male unless dropping them would clearly change the intended category\n` +

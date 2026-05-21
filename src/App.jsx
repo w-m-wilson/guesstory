@@ -10,7 +10,7 @@ const INTRO_SEEN_KEY = 'guesstory-intro-seen'
 const TUTORIAL_SEEN_KEY = 'guesstory-tutorial-v2'
 
 export default function App() {
-  const { puzzle, error } = usePuzzle()
+  const { puzzle, error, isArchive } = usePuzzle()
   const { scheme, mode, setScheme, setMode } = useAppearance()
   const [tutorialDone, setTutorialDone] = useState(() => !!localStorage.getItem(TUTORIAL_SEEN_KEY))
   const [tutorialPhase, setTutorialPhase] = useState(1)
@@ -177,6 +177,16 @@ export default function App() {
       </div>
 
       <GameScreen key={puzzle.id} puzzle={puzzle} onOpenIntro={openIntro} onOpenSettings={() => setSettingsOpen(true)} />
+      {isArchive && (
+        <div className="fixed bottom-4 left-0 right-0 flex justify-center z-40 pointer-events-none">
+          <span
+            className="text-xs px-3 py-1 rounded-full tracking-wide"
+            style={{ color: 'var(--color-text-faint)', background: 'var(--color-bg-elevated)' }}
+          >
+            from the archives
+          </span>
+        </div>
+      )}
       {introOpen && <IntroModal onClose={closeIntro} onReplayTutorial={replayTutorial} />}
       {settingsOpen && (
         <SettingsModal

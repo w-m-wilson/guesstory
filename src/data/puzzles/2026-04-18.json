@@ -1,0 +1,31 @@
+{
+  "id": "2026-04-18",
+  "category": "US Tech Companies by Market Cap",
+  "hint": "Ranked by market capitalization (largest US-listed tech companies)",
+  "seed": [
+    { "rank": 5,  "name": "Amazon",  "aliases": ["AMZN"] },
+    { "rank": 8,  "name": "Tesla",   "aliases": ["TSLA"] }
+  ],
+  "liteSeed": [
+    { "rank": 1,  "name": "NVIDIA",             "aliases": ["Nvidia", "NVDA"] },
+    { "rank": 3,  "name": "Apple",              "aliases": ["AAPL"] },
+    { "rank": 6,  "name": "Broadcom",           "aliases": ["AVGO"] }
+  ],
+  "challengeSeed": [
+    { "rank": 2,  "name": "Alphabet", "aliases": ["Google", "Alphabet (Google)", "GOOG", "GOOGL"] }
+  ],
+  "bank": [
+    { "rank": 1,  "name": "NVIDIA",             "aliases": ["Nvidia", "NVDA"] },
+    { "rank": 2,  "name": "Alphabet",           "aliases": ["Google", "Alphabet (Google)", "GOOG", "GOOGL"] },
+    { "rank": 3,  "name": "Apple",              "aliases": ["AAPL"] },
+    { "rank": 4,  "name": "Microsoft",          "aliases": ["MSFT"] },
+    { "rank": 5,  "name": "Amazon",             "aliases": ["AMZN"] },
+    { "rank": 6,  "name": "Broadcom",           "aliases": ["AVGO"] },
+    { "rank": 7,  "name": "Meta",               "aliases": ["Meta Platforms", "Facebook", "META"] },
+    { "rank": 8,  "name": "Tesla",              "aliases": ["TSLA"] },
+    { "rank": 9,  "name": "Micron Technology",  "aliases": ["Micron", "MU"] },
+    { "rank": 10, "name": "Oracle",             "aliases": ["ORCL"] }
+  ],
+  "topFive": [1, 2, 3, 4, 5],
+  "source": "https://companiesmarketcap.com/tech/largest-tech-companies-by-market-cap/"
+}

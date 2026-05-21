@@ -17,6 +17,7 @@ function looksLikeCategory(guess) {
 
 export default function BankPanel({
   discoveredList,
+  ghostLetters,
   bankTotal,
   rankSlots,
   bankMisses,
@@ -101,7 +102,7 @@ export default function BankPanel({
     if (!result) return
 
     if (result.outcome === 'hit') {
-      showFeedback('hit', `✓ Found ${result.item.name}`)
+      showFeedback('hit', `✓ Found ${result.item.display ?? result.item.name}`)
     } else if (result.outcome === 'known') {
       showFeedback('known', `Already discovered`)
     } else if (result.outcome === 'miss') {
@@ -118,7 +119,7 @@ export default function BankPanel({
 
   function handleConfirm() {
     const result = onConfirm()
-    if (result?.outcome === 'hit') showFeedback('hit', `✓ Found ${result.item.name}`)
+    if (result?.outcome === 'hit') showFeedback('hit', `✓ Found ${result.item.display ?? result.item.name}`)
     else if (result?.outcome === 'known') showFeedback('known', 'Already discovered')
   }
 
@@ -294,7 +295,7 @@ export default function BankPanel({
                             }}
                           >
                             {item.seeded && <span className="text-xs" style={{ color: placed ? 'var(--color-pill-text)' : 'var(--color-text-faint)' }}>★</span>}
-                            {item.name}
+                            {item.display ?? item.name}
                             {placed && <span className="text-xs opacity-70">✕</span>}
                           </button>
                         )
@@ -302,6 +303,7 @@ export default function BankPanel({
                           ? <span key={item.rank} className="pill-trace-wrap">{pill}</span>
                           : <span key={item.rank}>{pill}</span>
                       }
+                      const ghostLetter = ghostLetters?.[globalIdx]
                       return (
                         <div
                           key={`ghost-${globalIdx}`}
@@ -309,11 +311,11 @@ export default function BankPanel({
                           style={{
                             border: '1.5px dashed var(--color-text-faint)',
                             background: 'var(--color-bg-elevated)',
-                            color: 'var(--color-bg-elevated)',
+                            color: ghostLetter ? 'var(--color-text-faint)' : 'var(--color-bg-elevated)',
                             userSelect: 'none',
                           }}
                         >
-                          ———
+                          {ghostLetter ?? '———'}
                         </div>
                       )
                     })}
