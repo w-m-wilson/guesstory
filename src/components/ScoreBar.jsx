@@ -6,11 +6,30 @@ const COIN_EMOJI = '🪙'
 const DIFFICULTY_LABELS = { lite: 'LITE', medium: 'MED', challenge: 'CHAL' }
 const DIFFICULTY_ORDER = ['lite', 'medium', 'challenge']
 const DIFFICULTY_NAMES = { lite: 'Lite', medium: 'Medium', challenge: 'Challenge' }
+const DIFFICULTY_BLURBS = { lite: 'Most answers given', medium: 'A few starting hints', challenge: 'No hints — from scratch' }
+
+const PICKER_EXIT_MS = 160
 
 export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideDifficulty = false, onSetDifficulty, onHintsOpen, onShowResults }) {
   const prevCoins = useRef(coins)
   const [deltas, setDeltas] = useState([])
   const [pickerOpen, setPickerOpen] = useState(false)
+  const [pickerClosing, setPickerClosing] = useState(false)
+  const pickerTimerRef = useRef(null)
+
+  function openPicker() { setPickerClosing(false); setPickerOpen(true) }
+  function closePicker(cb) {
+    if (pickerClosing) return
+    setPickerClosing(true)
+    clearTimeout(pickerTimerRef.current)
+    pickerTimerRef.current = setTimeout(() => {
+      setPickerOpen(false)
+      setPickerClosing(false)
+      cb?.()
+    }, PICKER_EXIT_MS)
+  }
+
+  useEffect(() => () => clearTimeout(pickerTimerRef.current), [])
 
   useEffect(() => {
     const delta = prevCoins.current - coins
@@ -34,32 +53,39 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
       {pickerOpen && !hideDifficulty && (
         <>
           <div
-            className="fixed inset-0 z-40"
-            onClick={() => setPickerOpen(false)}
+            className="fixed inset-0 z-[45]"
+            onClick={() => closePicker()}
+            style={pickerClosing ? { opacity: 0, transition: `opacity ${PICKER_EXIT_MS}ms ease` } : { animation: 'scrimIn 0.18s ease' }}
           >
-            <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none' }} />
+            <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none' }} />
           </div>
-          <div className="absolute bottom-full left-4 z-50 pb-2">
+          <div
+            className={`absolute bottom-full left-4 z-[46] pb-2${pickerClosing ? '' : ' sheet-enter'}`}
+            style={pickerClosing ? { opacity: 0, transform: 'translateY(12px)', transition: `opacity ${PICKER_EXIT_MS}ms ease, transform ${PICKER_EXIT_MS}ms ease` } : {}}
+          >
             <div
-              className="rounded-xl overflow-hidden"
+              className="rounded-2xl overflow-hidden"
               style={{
                 background: 'var(--color-bg)',
                 border: '1px solid var(--color-border)',
-                boxShadow: '0 -4px 16px rgba(0,0,0,0.12)',
-                minWidth: '140px',
+                boxShadow: '0 -6px 24px rgba(0,0,0,0.14)',
+                minWidth: '180px',
               }}
             >
-              <p className="text-[10px] font-black tracking-widest uppercase px-3 pt-2.5 pb-1" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
+              <p className="text-[10px] font-black tracking-widest uppercase px-4 pt-3 pb-1.5" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
                 Make it easier
               </p>
               {easierOptions.map(d => (
                 <button
                   key={d}
-                  onClick={() => { onSetDifficulty?.(d); setPickerOpen(false) }}
-                  className="w-full flex items-center justify-between px-3 py-2 text-left"
+                  onClick={() => closePicker(() => onSetDifficulty?.(d))}
+                  className="w-full flex items-center justify-between px-4 py-3 text-left"
                   style={{ borderTop: '1px solid var(--color-border)' }}
                 >
-                  <span className="text-sm font-medium" style={{ color: 'var(--color-text-strong)' }}>{DIFFICULTY_NAMES[d]}</span>
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color: 'var(--color-text-strong)' }}>{DIFFICULTY_NAMES[d]}</p>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-faint)' }}>{DIFFICULTY_BLURBS[d]}</p>
+                  </div>
                 </button>
               ))}
             </div>
@@ -95,7 +121,7 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
 
           {!hideDifficulty && (
             <button
-              onClick={canSwitch ? () => setPickerOpen(p => !p) : undefined}
+              onClick={canSwitch ? () => (pickerOpen ? closePicker() : openPicker()) : undefined}
               className="text-[10px] font-black tracking-widest rounded-md px-2 py-0.5"
               style={{
                 color: 'var(--color-text-strong)',
