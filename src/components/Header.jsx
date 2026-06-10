@@ -231,11 +231,14 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                 background: 'var(--color-bg-elevated)',
                 border: '1px solid var(--color-border)',
                 minWidth: '160px',
-                boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.22)',
                 transformOrigin: 'top right',
-                transition: 'opacity 140ms ease, transform 140ms ease',
+                transition: menuOpen
+                  ? 'opacity 220ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0ms'
+                  : 'opacity 140ms cubic-bezier(0.4, 0, 1, 1), transform 140ms cubic-bezier(0.4, 0, 1, 1), visibility 140ms',
                 opacity: menuOpen ? 1 : 0,
-                transform: menuOpen ? 'scale(1) translateY(0)' : 'scale(0.93) translateY(-6px)',
+                transform: menuOpen ? 'scale(1) translateY(0)' : 'scale(0.92) translateY(-8px)',
+                visibility: menuOpen ? 'visible' : 'hidden',
                 pointerEvents: menuOpen ? 'auto' : 'none',
               }}
             >
@@ -321,9 +324,9 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
           style={{ touchAction: 'none' }}
           onClick={closeSheet}
         >
-          <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none', ...(sheetClosing ? { opacity: 0, transition: 'opacity 0.18s ease' } : { animation: 'scrimIn 0.2s ease' }) }} />
+          <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none', ...(sheetClosing ? { opacity: 0, transition: 'opacity 0.16s cubic-bezier(0.4, 0, 1, 1)' } : { animation: 'scrimIn 0.22s ease' }) }} />
           <div
-            className={sheetClosing ? '' : 'slide-down'}
+            className={sheetClosing ? 'slide-down-exit' : 'slide-down'}
             style={{
               width: '100%',
               maxWidth: '430px',
@@ -336,7 +339,6 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
               borderRadius: '0 0 1.5rem 1.5rem',
               position: 'relative',
               zIndex: 1,
-              ...(sheetClosing ? { opacity: 0, transform: 'translateY(-12px)', transition: 'opacity 0.18s ease, transform 0.18s ease' } : {}),
             }}
             onClick={e => e.stopPropagation()}
           >

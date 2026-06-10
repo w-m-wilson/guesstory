@@ -71,11 +71,14 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
               background: 'var(--color-bg-elevated)',
               border: '1px solid var(--color-border)',
               minWidth: '200px',
-              boxShadow: '0 -4px 16px rgba(0,0,0,0.18)',
+              boxShadow: '0 -4px 20px rgba(0,0,0,0.22)',
               transformOrigin: 'bottom left',
-              transition: 'opacity 140ms ease, transform 140ms ease',
+              transition: pickerOpen
+                ? 'opacity 220ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0ms'
+                : 'opacity 140ms cubic-bezier(0.4, 0, 1, 1), transform 140ms cubic-bezier(0.4, 0, 1, 1), visibility 140ms',
               opacity: pickerOpen ? 1 : 0,
-              transform: pickerOpen ? 'scale(1) translateY(0)' : 'scale(0.93) translateY(6px)',
+              transform: pickerOpen ? 'scale(1) translateY(0)' : 'scale(0.92) translateY(8px)',
+              visibility: pickerOpen ? 'visible' : 'hidden',
               pointerEvents: pickerOpen ? 'auto' : 'none',
             }}
           >
