@@ -294,31 +294,6 @@ body {
 .fade-in { animation: fadeIn 0.22s ease-out; }
 
 @keyframes slideDown {
-<<<<<<< HEAD
-  from { opacity: 0; transform: translateY(-10px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-.slide-down { animation: slideDown 0.24s cubic-bezier(0.22, 1, 0.36, 1); }
-
-@keyframes slideDownExit {
-  from { opacity: 1; transform: translateY(0) scale(1); }
-  to   { opacity: 0; transform: translateY(-10px) scale(0.97); }
-}
-.slide-down-exit { animation: slideDownExit 0.16s cubic-bezier(0.4, 0, 1, 1) forwards; }
-
-/* ── Modal enter animations ── */
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(32px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.sheet-enter { animation: slideUp 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
-
-@keyframes slideUpExit {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(32px); }
-}
-.sheet-exit { animation: slideUpExit 0.2s cubic-bezier(0.4, 0, 1, 1) forwards; }
-=======
   from { transform: translateY(-100%); }
   to   { transform: translateY(0); }
 }
@@ -342,7 +317,6 @@ body {
   to   { transform: translateY(100%); }
 }
 .sheet-exit { animation: slideUpExit 0.22s cubic-bezier(0.4, 0, 1, 1) forwards; }
->>>>>>> dev
 
 @keyframes dialogIn {
   from { opacity: 0; transform: scale(0.95) translateY(6px); }
