@@ -106,7 +106,15 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onOpen
   const [bankPanelHeight, setBankPanelHeight] = useState(0)
   const [selectorDismissed, setSelectorDismissed] = useState(() => {
     if (isTutorial) return true
-    return !!localStorage.getItem(`guesstory-difficulty-${puzzle.id}`)
+    if (localStorage.getItem(`guesstory-difficulty-${puzzle.id}`)) return true
+    try {
+      const saved = localStorage.getItem(`guesstory-state-${puzzle.id}`)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (parsed.difficulty) return true
+      }
+    } catch {}
+    return false
   })
   const bankPanelRef = useRef(null)
 
