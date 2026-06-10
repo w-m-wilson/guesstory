@@ -19,14 +19,11 @@ function applyTheme(scheme, mode) {
 
   // Defer so the browser flushes style recalculation before we read the new value
   requestAnimationFrame(() => {
-    const color = getComputedStyle(document.documentElement).getPropertyValue('--color-bg').trim()
-    let meta = document.querySelector('meta[name="theme-color"]')
-    if (!meta) {
-      meta = document.createElement('meta')
-      meta.name = 'theme-color'
-      document.head.appendChild(meta)
-    }
-    meta.content = color
+    const styles = getComputedStyle(document.documentElement)
+    const color = styles.getPropertyValue('--color-bg').trim()
+
+    document.querySelector('meta[name="theme-color"]').content = color
+    document.querySelector('meta[name="color-scheme"]').content = dark ? 'dark' : 'light'
   })
 }
 
