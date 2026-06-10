@@ -17,12 +17,20 @@ function applyTheme(scheme, mode) {
   const dark = mode === 'dark' || (mode === 'system' && getSystemDark())
   document.documentElement.dataset.theme = `${scheme}-${dark ? 'dark' : 'light'}`
 
-  // Defer so the browser flushes style recalculation before we read the new value.
-  // (pre-Safari-26 and Chrome Android read theme-color meta; Safari 26+ reads CSS background-color)
+  // Update meta theme-color (Chrome / pre-Safari-26)
   requestAnimationFrame(() => {
     const color = getComputedStyle(document.documentElement).getPropertyValue('--color-bg').trim()
     document.querySelectorAll('meta[name="theme-color"]').forEach(m => { m.content = color })
   })
+
+  // Safari 26 samples background-color from fixed elements at first paint and rarely
+  // re-samples.  Briefly flip the root into a stacking-context hint to nudge it to
+  // re-evaluate the toolbar colour on live scheme changes.
+  const root = document.getElementById('root')
+  if (root) {
+    root.style.willChange = 'background-color'
+    requestAnimationFrame(() => { root.style.willChange = '' })
+  }
 }
 
 export function useAppearance() {

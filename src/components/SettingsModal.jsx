@@ -21,7 +21,7 @@ function AboutModal({ mode, onClose }) {
       className="fixed inset-0 z-60 flex items-center justify-center"
       onClick={onClose}
     >
-      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: modalScrimBackground({ mode, variant: 'dialog' }), pointerEvents: 'none' }} />
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: -1, background: modalScrimBackground({ mode, variant: 'dialog' }), pointerEvents: 'none' }} />
       <div
         className="w-full max-w-sm rounded-2xl p-6 mx-4"
         style={{ background: 'var(--color-bg)' }}
@@ -61,7 +61,11 @@ function AboutModal({ mode, onClose }) {
 
 export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose }) {
   const [showAbout, setShowAbout] = React.useState(false)
+  const [changed, setChanged] = React.useState(false)
   const scrim = modalScrimBackground({ mode, variant: 'sheet' })
+
+  function handleScheme(s) { onScheme(s); setChanged(true) }
+  function handleMode(m) { onMode(m); setChanged(true) }
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"
@@ -96,7 +100,7 @@ export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose 
           {MODES.map(({ key, label }) => (
             <button
               key={key}
-              onClick={() => onMode(key)}
+              onClick={() => handleMode(key)}
               className="flex-1 py-1.5 rounded-lg text-xs font-medium transition-colors"
               style={{
                 background: mode === key ? 'var(--color-bg)' : 'transparent',
@@ -114,7 +118,7 @@ export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose 
           {SCHEMES.map(({ key, label }) => (
             <button
               key={key}
-              onClick={() => onScheme(key)}
+              onClick={() => handleScheme(key)}
               className="flex flex-col items-center gap-1.5 rounded-xl py-2.5 px-1"
               style={{
                 background: 'var(--color-bg-elevated)',
@@ -138,6 +142,12 @@ export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose 
             </button>
           ))}
         </div>
+
+        {changed && (
+          <p className="mt-3 text-center text-[10px] leading-snug" style={{ color: 'var(--color-text-faint)' }}>
+            Close and reopen the app to fully apply the new look.
+          </p>
+        )}
 
         {/* About & Privacy link */}
         <div className="mt-4 pt-3 flex justify-center" style={{ borderTop: '1px solid var(--color-border)' }}>

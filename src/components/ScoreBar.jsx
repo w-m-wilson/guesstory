@@ -37,7 +37,7 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
             className="fixed inset-0 z-40"
             onClick={() => setPickerOpen(false)}
           >
-            <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none' }} />
+            <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: -1, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none' }} />
           </div>
           <div
             className="absolute bottom-full left-0 right-0 z-50 px-4 pb-2"

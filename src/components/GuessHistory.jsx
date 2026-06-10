@@ -46,7 +46,7 @@ function ScoreExplainerPopup({ feedback, onClose }) {
       className="fixed inset-0 z-[55] flex items-center justify-center px-6"
       onClick={onClose}
     >
-      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: modalScrimBackground({ variant: 'dialog' }), pointerEvents: 'none' }} />
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: -1, background: modalScrimBackground({ variant: 'dialog' }), pointerEvents: 'none' }} />
       <div
         className="w-full max-w-xs rounded-2xl p-5 fade-in"
         style={{ background: 'var(--color-bg)' }}

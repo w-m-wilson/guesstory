@@ -12,6 +12,9 @@
     <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="#0d0905" />
     <meta name="google-site-verification" content="hkXEv4qmm5-VswLTTtfVV4QaDiUlz8EK7de7Dn1EXzQ" />
     <title>Guesstory</title>
+    <script>
+      (function(){try{var t=localStorage.getItem('guesstory-appearance');if(!t)return;var s=JSON.parse(t),c=s.scheme||'guesstory',m=s.mode||'system',d=m==='dark'||(m==='system'&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.dataset.theme=c+'-'+(d?'dark':'light')}catch(e){}})()
+    </script>
   </head>
   <body>
     <div id="root"></div>
