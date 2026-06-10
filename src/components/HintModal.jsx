@@ -53,11 +53,11 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, catego
       className="fixed inset-0 z-50 flex items-end justify-center"
       onClick={onClose}
     >
-      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: -1, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none' }} />
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none' }} />
       {/* Card */}
       <div
         className="w-full max-w-[430px] rounded-t-2xl p-5 pb-8"
-        style={{ background: 'var(--color-bg)' }}
+        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1 }}
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">

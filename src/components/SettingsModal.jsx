@@ -21,10 +21,10 @@ function AboutModal({ mode, onClose }) {
       className="fixed inset-0 z-60 flex items-center justify-center"
       onClick={onClose}
     >
-      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: -1, background: modalScrimBackground({ mode, variant: 'dialog' }), pointerEvents: 'none' }} />
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ mode, variant: 'dialog' }), pointerEvents: 'none' }} />
       <div
         className="w-full max-w-sm rounded-2xl p-6 mx-4"
-        style={{ background: 'var(--color-bg)' }}
+        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1 }}
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
@@ -74,7 +74,7 @@ export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose 
       <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: scrim, pointerEvents: 'none' }} />
       <div
         className="w-full max-w-[430px] rounded-t-2xl px-5 pt-4 pb-7"
-        style={{ background: 'var(--color-bg)' }}
+        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1 }}
         onClick={e => e.stopPropagation()}
       >
         {/* Header row */}
@@ -145,7 +145,7 @@ export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose 
 
         {changed && (
           <p className="mt-3 text-center text-[10px] leading-snug" style={{ color: 'var(--color-text-faint)' }}>
-            Close and reopen the app to fully apply the new look.
+            Refresh page to fully apply.
           </p>
         )}
 
