@@ -13,8 +13,8 @@ const SECTIONS = [
     items: [
       'Type a name into the search box and submit it',
       "If it's on the list, it gets added to your bank",
-      'Your first 3 wrong guesses are free — after that, each miss costs 1 coin',
-      'The counter at the top right of the bank shows how many you\'ve found so far',
+      'Your first 3 wrong guesses are free — after that, misses cost coins (varies by difficulty)',
+      'Stars (★) mark items you were given as starting hints',
     ],
   },
   {
@@ -22,27 +22,27 @@ const SECTIONS = [
     items: [
       'Tap a bank item to slot it into your ranking — tap it again to remove it',
       'Fill all 5 slots, then hit Submit',
-      'After each attempt, circles appear for items that belong in the top 5:',
+      'After each attempt, dots appear for items that belong in the top 5:',
     ],
     feedback: [
       { symbol: '●', color: 'var(--color-dot-correct)', label: 'Right item, right spot' },
       { symbol: '○', color: 'var(--color-dot-present)', label: 'Right item, wrong spot' },
-      { symbol: '—', color: 'var(--color-text-faint)',  label: "Not in the top 5 — no dot shown" },
+      { symbol: '—', color: 'var(--color-text-faint)',  label: 'Not in the top 5 — no dot' },
     ],
   },
   {
     heading: 'Guess the category',
     items: [
-      'See the "Guess category" button at the top right? That\'s the theme of the list',
+      'Tap the button in the header bar to guess the theme of the ranked list',
       'Nail it and earn +15 bonus coins',
-      'You get 3 free tries — after that, wrong guesses cost 5 coins each',
-      "Close guesses get a hint nudging you in the right direction",
+      'You get 3 free tries — after that, wrong guesses cost coins',
+      'Close guesses get a nudge in the right direction',
     ],
   },
   {
     heading: 'Hints',
     items: [
-      'Tap the coin bar at the bottom to open the hint shop',
+      'Tap Hints in the score bar at the bottom to open the hint shop',
       'Reveal the category — 40 coins',
       'Add a hidden item to your bank — 5 coins',
       'Pin a discovered item to its correct slot — 10 coins',
@@ -54,8 +54,8 @@ const SECTIONS = [
     body: 'You start with 100 coins. Wrong guesses and hints spend them. Hit zero and the game ends — so spend wisely.',
   },
   {
-    heading: 'Appearance',
-    body: 'Tap the ⚙ icon next to the ? to switch between light, dark, and system mode — and choose from three color themes.',
+    heading: 'Difficulty & settings',
+    body: 'Choose your difficulty at the start of each puzzle. Open the menu (≡) at the top right to change appearance, adjust difficulty mid-game, or reset the puzzle.',
   },
 ]
 

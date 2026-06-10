@@ -261,7 +261,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                     className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-left"
                     style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)' }}
                   >
-                    <span style={{ opacity: 0.6 }}>ℹ</span> About & Privacy
+                    <span style={{ opacity: 0.6, fontStyle: 'normal', fontWeight: 700 }}>i</span> About & Privacy
                   </button>
                 )}
                 {onOpenDifficultyPicker && (
@@ -296,9 +296,9 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
         >
           <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none', ...(sheetClosing ? { opacity: 0, transition: 'opacity 0.18s ease' } : { animation: 'scrimIn 0.2s ease' }) }} />
           <div
-            className={`w-full max-w-[430px] flex flex-col gap-5 px-5 pb-7${sheetClosing ? '' : ' slide-down'}`}
+            className={`w-full max-w-[430px] flex flex-col gap-6 px-6 pb-10${sheetClosing ? '' : ' slide-down'}`}
             style={{
-              paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1.5rem)',
+              paddingTop: 'calc(env(safe-area-inset-top, 0px) + 2rem)',
               background: 'var(--color-bg)',
               borderBottom: '1px solid var(--color-border)',
               borderRadius: '0 0 1.5rem 1.5rem',
