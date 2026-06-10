@@ -60,13 +60,21 @@ const DIFFICULTY_META = {
 }
 
 function DifficultySelector({ current, onSelect }) {
+  const [closing, setClosing] = useState(false)
+  function handleSelect(d) {
+    setClosing(true)
+    setTimeout(() => onSelect(d), 220)
+  }
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"
-      style={{ background: modalScrimBackground({ variant: 'sheet' }) }}
+      style={{
+        background: modalScrimBackground({ variant: 'sheet' }),
+        ...(closing ? { opacity: 0, transition: 'opacity 0.22s cubic-bezier(0.4, 0, 1, 1)' } : { animation: 'scrimIn 0.22s ease' }),
+      }}
     >
       <div
-        className="w-full max-w-[430px] h-full flex flex-col justify-end p-5 pb-8 gap-3 sheet-enter"
+        className={`w-full max-w-[430px] h-full flex flex-col justify-end p-5 pb-8 gap-3 ${closing ? 'sheet-exit' : 'sheet-enter'}`}
         style={{ background: 'var(--color-bg)' }}
         onClick={e => e.stopPropagation()}
       >
@@ -77,7 +85,7 @@ function DifficultySelector({ current, onSelect }) {
         {Object.entries(DIFFICULTY_META).map(([key, { label, blurb }]) => (
           <button
             key={key}
-            onClick={() => onSelect(key)}
+            onClick={() => handleSelect(key)}
             className="flex items-center justify-between w-full rounded-xl px-4 py-3 text-left"
             style={{
               background: current === key ? 'var(--color-action)' : 'var(--color-bg-elevated)',
