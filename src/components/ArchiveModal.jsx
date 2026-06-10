@@ -1,5 +1,6 @@
 
 import React, { useMemo } from 'react'
+import { createPortal } from 'react-dom'
 import { modalScrimBackground } from '../utils/modalScrim.js'
 import { AVAILABLE_DATES } from '../data/puzzles/available.js'
 
@@ -55,7 +56,7 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
     }
   }, [])
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"
       onClick={close}
@@ -193,6 +194,7 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
           100% { transform: scale(0.95); opacity: 0.5; }
         }
       `}} />
-    </div>
+    </div>,
+    document.body
   )
 }
