@@ -191,7 +191,8 @@ export default function App() {
           } else {
             setMessageModal({
               title: "Coming soon",
-              message: "Today's daily puzzle hasn't dropped yet. Check back later or explore the archives!"
+              message: "Today's daily puzzle hasn't dropped yet. Check back later or explore the archives!",
+              archiveAction: true,
             })
           }
         }}
@@ -218,6 +219,8 @@ export default function App() {
           confirmLabel="Got it"
           onConfirm={() => setMessageModal(null)}
           onClose={() => setMessageModal(null)}
+          secondaryLabel={messageModal.archiveAction ? 'Archives' : undefined}
+          onSecondary={messageModal.archiveAction ? () => { setMessageModal(null); setArchiveOpen(true) } : undefined}
         />
       )}
     </>

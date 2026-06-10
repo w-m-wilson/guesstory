@@ -4,7 +4,7 @@ import { modalScrimBackground } from '../utils/modalScrim.js'
 
 const EXIT_MS = 180
 
-export default function ConfirmModal({ title, message, confirmLabel, onConfirm, onClose }) {
+export default function ConfirmModal({ title, message, confirmLabel, onConfirm, onClose, secondaryLabel, onSecondary }) {
   const [closing, setClosing] = React.useState(false)
 
   function close() {
@@ -59,19 +59,29 @@ export default function ConfirmModal({ title, message, confirmLabel, onConfirm, 
 
         <div className="flex gap-3">
           <button
-            onClick={close}
+            onClick={secondaryLabel ? handleConfirm : close}
             className="flex-1 py-3 rounded-xl text-sm font-semibold"
             style={{ background: 'var(--color-bg-elevated)', color: 'var(--color-text)' }}
           >
-            Cancel
+            {confirmLabel || (secondaryLabel ? 'Got it' : 'Cancel')}
           </button>
-          <button
-            onClick={handleConfirm}
-            className="flex-1 py-3 rounded-xl text-sm font-semibold"
-            style={{ background: 'var(--color-miss)', color: 'white' }}
-          >
-            {confirmLabel || 'Confirm'}
-          </button>
+          {secondaryLabel ? (
+            <button
+              onClick={() => { onSecondary?.(); close() }}
+              className="flex-1 py-3 rounded-xl text-sm font-semibold"
+              style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
+            >
+              {secondaryLabel}
+            </button>
+          ) : (
+            <button
+              onClick={handleConfirm}
+              className="flex-1 py-3 rounded-xl text-sm font-semibold"
+              style={{ background: 'var(--color-miss)', color: 'white' }}
+            >
+              {confirmLabel || 'Confirm'}
+            </button>
+          )}
         </div>
       </div>
     </div>

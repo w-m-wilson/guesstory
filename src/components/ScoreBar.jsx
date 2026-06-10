@@ -12,6 +12,22 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
   const [deltas, setDeltas] = useState([])
   const [pickerOpen, setPickerOpen] = useState(false)
   const pickerRef = useRef(null)
+  const [hintsGlinting, setHintsGlinting] = useState(false)
+
+  useEffect(() => {
+    if (gameOver) return
+    function schedule() {
+      const delay = 8000 + Math.random() * 12000
+      return setTimeout(() => {
+        setHintsGlinting(true)
+        setTimeout(() => setHintsGlinting(false), 1400)
+        timerRef.current = schedule()
+      }, delay)
+    }
+    const timerRef = { current: null }
+    timerRef.current = schedule()
+    return () => clearTimeout(timerRef.current)
+  }, [gameOver])
 
   const closePicker = useCallback(() => setPickerOpen(false), [])
   const openPicker  = useCallback(() => setPickerOpen(true),  [])
@@ -142,7 +158,7 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
         ) : (
           <button
             onClick={onHintsOpen}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium"
+            className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium overflow-hidden${hintsGlinting ? ' hints-glint' : ''}`}
             style={{
               background: 'var(--color-bg-elevated)',
               color: 'var(--color-text)',
