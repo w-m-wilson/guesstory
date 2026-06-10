@@ -7,7 +7,7 @@ const DIFFICULTY_LABELS = { lite: 'LITE', medium: 'MED', challenge: 'CHAL' }
 const DIFFICULTY_ORDER = ['lite', 'medium', 'challenge']
 const DIFFICULTY_NAMES = { lite: 'Lite', medium: 'Medium', challenge: 'Challenge' }
 
-export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideDifficulty = false, onSetDifficulty, onHintsOpen, onShowResults, onReset }) {
+export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideDifficulty = false, onSetDifficulty, onHintsOpen, onShowResults }) {
   const prevCoins = useRef(coins)
   const [deltas, setDeltas] = useState([])
   const [pickerOpen, setPickerOpen] = useState(false)
@@ -107,16 +107,6 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
             </button>
           )}
         </div>
-
-        {/* Reset button — truly centered via absolute positioning */}
-        <button
-          onClick={onReset}
-          className="absolute left-1/2 -translate-x-1/2 flex items-center text-base px-2 py-1 rounded-lg"
-          style={{ color: 'var(--color-text-faint)' }}
-          aria-label="Reset session"
-        >
-          ↺
-        </button>
 
         {/* Results or Hints */}
         {gameOver ? (

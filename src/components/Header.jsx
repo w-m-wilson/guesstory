@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { DIFFICULTY_CONFIG } from '../config.js'
 import { modalScrimBackground } from '../utils/modalScrim.js'
 
@@ -47,8 +47,21 @@ function pickNextPhrase(current) {
   return pool[Math.floor(Math.random() * pool.length)]
 }
 
-export default function Header({ categoryText, categoryAutoReveal, categoryHint, categoryMisses, difficulty = 'medium', onGuessCategory, onOpenIntro, onOpenSettings }) {
+export default function Header({ categoryText, categoryAutoReveal, categoryHint, categoryMisses, difficulty = 'medium', onGuessCategory, onOpenIntro, onOpenSettings, onReset }) {
   const [guessing, setGuessing] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef(null)
+
+  const closeMenu = useCallback(() => setMenuOpen(false), [])
+
+  useEffect(() => {
+    if (!menuOpen) return
+    function handleClick(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) closeMenu()
+    }
+    document.addEventListener('pointerdown', handleClick)
+    return () => document.removeEventListener('pointerdown', handleClick)
+  }, [menuOpen, closeMenu])
   const [query, setQuery] = useState('')
   const [lastHint, setLastHint] = useState(null)  // { text, warm } | null
   const [loading, setLoading] = useState(false)
@@ -192,20 +205,10 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
             )}
           </div>
 
-          {/* Right: help + menu */}
-          <div className="flex items-center gap-1.5">
-            {onOpenIntro && (
-              <button
-                onClick={onOpenIntro}
-                className="shrink-0 text-xs w-6 h-6 rounded-full flex items-center justify-center opacity-75 hover:opacity-100"
-                style={{ border: '1.5px solid var(--color-text)', color: 'var(--color-text)', fontWeight: 700 }}
-                aria-label="How to play"
-              >
-                ?
-              </button>
-            )}
+          {/* Right: menu */}
+          <div className="relative shrink-0" ref={menuRef}>
             <button
-              onClick={onOpenSettings}
+              onClick={() => setMenuOpen(p => !p)}
               className="shrink-0 flex flex-col items-center justify-center gap-[4px] w-6 h-6 opacity-75 hover:opacity-100"
               aria-label="Menu"
             >
@@ -213,6 +216,45 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                 <span key={i} style={{ display: 'block', width: '14px', height: '2px', borderRadius: '1px', background: 'var(--color-text)' }} />
               ))}
             </button>
+            {menuOpen && (
+              <div
+                className="absolute right-0 top-full mt-2 z-50 rounded-xl overflow-hidden"
+                style={{
+                  background: 'var(--color-bg-elevated)',
+                  border: '1px solid var(--color-border)',
+                  minWidth: '160px',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
+                }}
+              >
+                {onOpenIntro && (
+                  <button
+                    onClick={() => { closeMenu(); onOpenIntro() }}
+                    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-left"
+                    style={{ color: 'var(--color-text)' }}
+                  >
+                    <span style={{ opacity: 0.6 }}>?</span> How to play
+                  </button>
+                )}
+                {onOpenSettings && (
+                  <button
+                    onClick={() => { closeMenu(); onOpenSettings() }}
+                    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-left"
+                    style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)' }}
+                  >
+                    <span style={{ opacity: 0.6 }}>◑</span> Appearance
+                  </button>
+                )}
+                {onReset && (
+                  <button
+                    onClick={() => { closeMenu(); onReset() }}
+                    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-left"
+                    style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)' }}
+                  >
+                    <span style={{ opacity: 0.6 }}>↺</span> Reset game
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </header>

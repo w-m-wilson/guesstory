@@ -16,9 +16,19 @@ function pickRandomDate() {
   return AVAILABLE_DATES[Math.floor(Math.random() * AVAILABLE_DATES.length)];
 }
 
+const SESSION_ARCHIVE_KEY = 'guesstory-session-archive';
+
+function getOrPickFallbackDate() {
+  const stored = sessionStorage.getItem(SESSION_ARCHIVE_KEY);
+  if (stored && AVAILABLE_DATES.includes(stored)) return stored;
+  const picked = pickRandomDate();
+  sessionStorage.setItem(SESSION_ARCHIVE_KEY, picked);
+  return picked;
+}
+
 /**
  * Loads today's puzzle from /src/data/puzzles/YYYY-MM-DD.json.
- * Falls back to a random existing puzzle while a backend is in development.
+ * Falls back to a stable session-scoped archive puzzle when no current-date puzzle exists.
  * Returns { puzzle, dateKey, error }.
  */
 export function usePuzzle() {
@@ -32,7 +42,7 @@ export function usePuzzle() {
     import(`../data/puzzles/${today}.json`)
       .then(mod => setPuzzle(mod.default))
       .catch(() => {
-        const fallback = pickRandomDate();
+        const fallback = getOrPickFallbackDate();
         setDateKey(fallback);
         setIsArchive(true);
         import(`../data/puzzles/${fallback}.json`)

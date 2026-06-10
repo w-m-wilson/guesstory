@@ -100,7 +100,10 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
   const [endScreenDismissed, setEndScreenDismissed] = useState(false)
   const [bonusGuessDone, setBonusGuessDone] = useState(false)
   const [bankPanelHeight, setBankPanelHeight] = useState(0)
-  const [selectorDismissed, setSelectorDismissed] = useState(() => !!localStorage.getItem('guesstory-difficulty'))
+  const [selectorDismissed, setSelectorDismissed] = useState(() => {
+    if (isTutorial) return true
+    return !!localStorage.getItem(`guesstory-difficulty-${puzzle.id}`)
+  })
   const bankPanelRef = useRef(null)
 
   const initialDifficulty = isTutorial
@@ -208,6 +211,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
         onGuessCategory={guessCategory}
         onOpenIntro={onOpenIntro}
         onOpenSettings={onOpenSettings}
+        onReset={isTutorial ? undefined : () => { resetGame(); setSelectorDismissed(false) }}
       />
 
       {isTutorial && tutorialStep !== null && (
@@ -269,7 +273,6 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
         onSetDifficulty={setDifficulty}
         onHintsOpen={() => setHintsOpen(true)}
         onShowResults={gameOver ? () => setEndScreenDismissed(false) : null}
-        onReset={() => { resetGame(); setSelectorDismissed(false) }}
       />
 
       {hintsOpen && (
@@ -287,7 +290,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
       {showDifficultySelector && (
         <DifficultySelector
           current={difficulty}
-          onSelect={(d) => { setDifficulty(d); setSelectorDismissed(true) }}
+          onSelect={(d) => { setDifficulty(d); setSelectorDismissed(true); localStorage.setItem(`guesstory-difficulty-${puzzle.id}`, '1') }}
         />
       )}
 
