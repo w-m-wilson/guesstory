@@ -278,11 +278,12 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
         >
           <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none', ...(sheetClosing ? { opacity: 0, transition: 'opacity 0.18s ease' } : { animation: 'scrimIn 0.2s ease' }) }} />
           <div
-            className={`w-full max-w-[430px] flex flex-col gap-4 px-5 pt-5 pb-6${sheetClosing ? '' : ' slide-down'}`}
+            className={`w-full max-w-[430px] flex flex-col gap-5 px-5 pb-7${sheetClosing ? '' : ' slide-down'}`}
             style={{
+              paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1.5rem)',
               background: 'var(--color-bg)',
               borderBottom: '1px solid var(--color-border)',
-              borderRadius: '0 0 1.25rem 1.25rem',
+              borderRadius: '0 0 1.5rem 1.5rem',
               position: 'relative',
               zIndex: 1,
               ...(sheetClosing ? { opacity: 0, transform: 'translateY(-12px)', transition: 'opacity 0.18s ease, transform 0.18s ease' } : {}),
