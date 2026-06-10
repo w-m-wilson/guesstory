@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect, useRef } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef, useMemo } from 'react'
 
 const PRIMERS = {
   step2: {
@@ -41,6 +41,7 @@ function TutorialPrimerModal({ primerKey, onClose }) {
   )
 }
 import { modalScrimBackground } from './utils/modalScrim.js'
+import { DIFFICULTY_CONFIG } from './config.js'
 import { useGameState } from './hooks/useGameState.js'
 import Header from './components/Header.jsx'
 import BankPanel from './components/BankPanel.jsx'
@@ -114,12 +115,13 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
 
   // Derive primitives needed before null guard
   const discoveredList = game?.discoveredList ?? []
-  const ghostLetters = puzzle?.showFirstLetters && game?.state?.bankDisplayOrder
-    ? game.state.bankDisplayOrder.map(rank => {
-        const item = puzzle.bank.find(b => b.rank === rank)
-        return item?.name[0] ?? '?'
-      })
-    : null
+  const ghostLetters = useMemo(() => {
+    if (!puzzle?.showFirstLetters || !game?.state?.bankDisplayOrder) return null
+    return game.state.bankDisplayOrder.map(rank => {
+      const item = puzzle.bank.find(b => b.rank === rank)
+      return item?.name[0] ?? '?'
+    })
+  }, [puzzle, game?.state?.bankDisplayOrder])
   const tutorialRankSlots = game?.state?.rankSlots ?? [null, null, null, null, null]
   const tutorialRankHistory = game?.state?.rankHistory ?? []
   const tutorialGameStatus = game?.state?.gameStatus ?? 'playing'
@@ -190,6 +192,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
           placeItem, removeSlot, moveSlot, loadRankingSlots, submitRanking, purchaseHint, setDifficulty, resetGame, guessCategory } = game
 
   const difficulty = state.difficulty ?? 'medium'
+  const freeMisses = DIFFICULTY_CONFIG[difficulty]?.bank?.freeMisses ?? 3
   const showDifficultySelector = !isTutorial && !selectorDismissed && state.bankMisses === 0 && state.rankHistory.length === 0
 
   function handleSubmitRanking() {
@@ -239,6 +242,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
             bankTotal={puzzle.bank.length}
             rankSlots={state.rankSlots}
             bankMisses={state.bankMisses}
+            freeMisses={freeMisses}
             pendingMatch={state.pendingMatch}
             gameOver={gameOver}
             category={puzzle.category}

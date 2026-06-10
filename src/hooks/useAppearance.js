@@ -49,17 +49,12 @@ export function useAppearance() {
     }
   }, [scheme, mode])
 
-  function setScheme(s) {
-    setSchemeState(s)
-    const prev = loadSaved()
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...prev, scheme: s }))
+  function persist(patch) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...loadSaved(), ...patch }))
   }
 
-  function setMode(m) {
-    setModeState(m)
-    const prev = loadSaved()
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...prev, mode: m }))
-  }
+  function setScheme(s) { setSchemeState(s); persist({ scheme: s }) }
+  function setMode(m)    { setModeState(m);  persist({ mode: m }) }
 
   return { scheme, mode, setScheme, setMode }
 }

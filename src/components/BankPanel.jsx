@@ -1,7 +1,5 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import ConfirmMatch from './ConfirmMatch.jsx'
-
-const FREE_MISSES = 3
 
 // Heuristic: does this guess look like a category answer typed in the wrong field?
 // Category format is "[things] ranked by [metric]" — key signals are ranking/metric words.
@@ -21,6 +19,7 @@ export default function BankPanel({
   bankTotal,
   rankSlots,
   bankMisses,
+  freeMisses,
   pendingMatch,
   gameOver,
   tutorialStep,
@@ -45,8 +44,9 @@ export default function BankPanel({
   const inputRef = useRef(null)
   const bankScrollRef = useRef(null)
 
-  const burningCoins = bankMisses >= FREE_MISSES
-  const bankFull = discoveredList.filter(Boolean).length >= bankTotal
+  const burningCoins = bankMisses >= freeMisses
+  const discoveredCount = discoveredList.filter(Boolean).length
+  const bankFull = discoveredCount >= bankTotal
 
   function showFeedback(type, message) {
     clearTimeout(feedbackTimer.current)
@@ -77,7 +77,7 @@ export default function BankPanel({
     updateLeftFade()
     window.addEventListener('resize', updateLeftFade)
     return () => window.removeEventListener('resize', updateLeftFade)
-  }, [discoveredList.filter(Boolean).length])
+  }, [discoveredCount])
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -124,9 +124,11 @@ export default function BankPanel({
   }
 
   // Map rank → slot index for placed items (used for toggle-removal)
-  const rankToSlotIndex = {}
-  rankSlots.forEach((item, i) => { if (item) rankToSlotIndex[item.rank] = i })
-  const placedRanks = new Set(Object.keys(rankToSlotIndex).map(Number))
+  const { rankToSlotIndex, placedRanks } = useMemo(() => {
+    const rankToSlotIndex = {}
+    rankSlots.forEach((item, i) => { if (item) rankToSlotIndex[item.rank] = i })
+    return { rankToSlotIndex, placedRanks: new Set(Object.keys(rankToSlotIndex).map(Number)) }
+  }, [rankSlots])
 
   return (
     <div className="flex flex-col" style={{ position: 'relative', zIndex: 10, background: 'var(--color-bg)' }}>
@@ -139,7 +141,7 @@ export default function BankPanel({
               key={rowFlashKey}
               className={`flex flex-col items-center gap-[3px] shrink-0${rowFlashKey > 0 ? ' row-flash' : ''}`}
             >
-              {Array.from({ length: FREE_MISSES }).map((_, i) => {
+              {Array.from({ length: freeMisses }).map((_, i) => {
                 const consumed = i < bankMisses
                 const isAnimating = i === animatingCircleIdx
                 return (
@@ -193,7 +195,7 @@ export default function BankPanel({
                   : burningCoins ? '−1 coin per miss'
                   : bankMisses === 0 ? 'Start guessing…'
                   : (() => {
-                    const remaining = FREE_MISSES - bankMisses
+                    const remaining = freeMisses - bankMisses
                     const words = ['one', 'two', 'three']
                     return `${words[remaining - 1] ?? remaining} free miss${remaining === 1 ? '' : 'es'} remaining`
                   })()
