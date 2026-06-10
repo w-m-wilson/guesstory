@@ -11,7 +11,7 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
       return (
         <div
           className="fixed inset-0 z-60 flex flex-col items-center justify-center px-8 text-center"
-          style={{ background: 'var(--color-bg)' }}
+          style={{ backgroundColor: 'var(--color-bg)' }}
         >
           <div
             className="mb-6 px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase"
@@ -90,7 +90,7 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
     return (
       <div
         className="fixed inset-0 z-60 flex flex-col items-center justify-center px-8 text-center"
-        style={{ background: 'var(--color-bg)' }}
+        style={{ backgroundColor: 'var(--color-bg)' }}
       >
         <div
           className="mb-5 px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase"
@@ -122,7 +122,7 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
             }}
           >
             {/* Status bar with punch-hole camera */}
-            <div className="flex items-center justify-between px-4 pt-2 pb-1" style={{ background: 'var(--color-bg)' }}>
+            <div className="flex items-center justify-between px-4 pt-2 pb-1" style={{ backgroundColor: 'var(--color-bg)' }}>
               <span style={{ fontSize: '8px', fontWeight: 700, color: 'var(--color-text-faint)', opacity: 0.5 }}>9:41</span>
               <div className="rounded-full" style={{ width: '8px', height: '8px', background: 'var(--color-action)', opacity: 0.6 }} />
               <div className="flex items-center gap-0.5" style={{ opacity: 0.5 }}>
@@ -150,7 +150,7 @@ export default function TutorialBanner({ step, discoveredCount, rankHistoryLengt
             </div>
 
             {/* Gesture bar */}
-            <div className="flex justify-center py-2" style={{ background: 'var(--color-bg)' }}>
+            <div className="flex justify-center py-2" style={{ backgroundColor: 'var(--color-bg)' }}>
               <div className="rounded-full" style={{ width: '36px', height: '3px', background: 'var(--color-text-faint)', opacity: 0.3 }} />
             </div>
           </div>

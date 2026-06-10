@@ -51,9 +51,9 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, catego
     /* Backdrop */
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"
-      style={{ background: modalScrimBackground({ variant: 'sheet' }) }}
       onClick={onClose}
     >
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none' }} />
       {/* Card */}
       <div
         className="w-full max-w-[430px] rounded-t-2xl p-5 pb-8"

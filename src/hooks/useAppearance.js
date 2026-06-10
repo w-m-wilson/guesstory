@@ -17,11 +17,11 @@ function applyTheme(scheme, mode) {
   const dark = mode === 'dark' || (mode === 'system' && getSystemDark())
   document.documentElement.dataset.theme = `${scheme}-${dark ? 'dark' : 'light'}`
 
-  // Defer so the browser flushes style recalculation before we read the new value
-  // (helps pre-Safari-26 which still reads theme-color meta)
+  // Defer so the browser flushes style recalculation before we read the new value.
+  // (pre-Safari-26 and Chrome Android read theme-color meta; Safari 26+ reads CSS background-color)
   requestAnimationFrame(() => {
     const color = getComputedStyle(document.documentElement).getPropertyValue('--color-bg').trim()
-    document.querySelector('meta[name="theme-color"]').content = color
+    document.querySelectorAll('meta[name="theme-color"]').forEach(m => { m.content = color })
   })
 }
 

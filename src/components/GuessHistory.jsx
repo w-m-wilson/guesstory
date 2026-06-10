@@ -44,9 +44,9 @@ function ScoreExplainerPopup({ feedback, onClose }) {
       aria-modal="true"
       aria-labelledby="score-explainer-title"
       className="fixed inset-0 z-[55] flex items-center justify-center px-6"
-      style={{ background: modalScrimBackground({ variant: 'dialog' }) }}
       onClick={onClose}
     >
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: modalScrimBackground({ variant: 'dialog' }), pointerEvents: 'none' }} />
       <div
         className="w-full max-w-xs rounded-2xl p-5 fade-in"
         style={{ background: 'var(--color-bg)' }}

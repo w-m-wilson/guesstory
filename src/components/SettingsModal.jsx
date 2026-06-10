@@ -19,9 +19,9 @@ function AboutModal({ mode, onClose }) {
   return (
     <div
       className="fixed inset-0 z-60 flex items-center justify-center"
-      style={{ background: modalScrimBackground({ mode, variant: 'dialog' }) }}
       onClick={onClose}
     >
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: modalScrimBackground({ mode, variant: 'dialog' }), pointerEvents: 'none' }} />
       <div
         className="w-full max-w-sm rounded-2xl p-6 mx-4"
         style={{ background: 'var(--color-bg)' }}
@@ -65,9 +65,9 @@ export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose 
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"
-      style={{ background: scrim }}
       onClick={onClose}
     >
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: scrim, pointerEvents: 'none' }} />
       <div
         className="w-full max-w-[430px] rounded-t-2xl px-5 pt-4 pb-7"
         style={{ background: 'var(--color-bg)' }}

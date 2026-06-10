@@ -221,9 +221,9 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
       {guessing && !categoryText && (
         <div
           className="fixed inset-0 z-40 flex items-start justify-center"
-          style={{ background: modalScrimBackground({ variant: 'sheet' }) }}
           onClick={() => setGuessing(false)}
         >
+          <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none' }} />
           <div
             className="w-full max-w-[430px] flex flex-col gap-4 px-5 pt-5 pb-6 slide-down"
             style={{

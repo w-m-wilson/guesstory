@@ -67,7 +67,7 @@ export default function App() {
       return (
         <div
           className="fixed inset-0 flex flex-col items-center justify-center px-8 text-center fade-in"
-          style={{ background: 'var(--color-bg)' }}
+          style={{ backgroundColor: 'var(--color-bg)' }}
         >
           <div
             className="mb-5 w-12 h-12 rounded-full flex items-center justify-center text-xl"
