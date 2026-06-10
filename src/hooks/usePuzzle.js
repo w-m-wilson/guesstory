@@ -9,14 +9,12 @@ function getLatestAvailableDate() {
   return AVAILABLE_DATES[AVAILABLE_DATES.length - 1];
 }
 
-const SESSION_ARCHIVE_KEY = 'guesstory-session-archive';
+const LAST_DATE_KEY = 'guesstory-last-date';
 
 function getOrPickFallbackDate() {
-  const stored = sessionStorage.getItem(SESSION_ARCHIVE_KEY);
+  const stored = localStorage.getItem(LAST_DATE_KEY);
   if (stored && AVAILABLE_DATES.includes(stored)) return stored;
-  const picked = getLatestAvailableDate();
-  sessionStorage.setItem(SESSION_ARCHIVE_KEY, picked);
-  return picked;
+  return getLatestAvailableDate();
 }
 
 /**
@@ -29,9 +27,18 @@ export function usePuzzle() {
   const [error, setError] = useState(null);
   const [dateKey, setDateKey] = useState(() => {
     const today = getTodayKey();
-    if (AVAILABLE_DATES.includes(today)) return today;
+    if (AVAILABLE_DATES.includes(today)) {
+      const stored = localStorage.getItem(LAST_DATE_KEY);
+      if (stored && AVAILABLE_DATES.includes(stored)) return stored;
+      return today;
+    }
     return getOrPickFallbackDate();
   });
+
+  function setDateKeyPersisted(date) {
+    localStorage.setItem(LAST_DATE_KEY, date);
+    setDateKey(date);
+  }
 
   const today = getTodayKey();
   const isArchive = dateKey !== today;
@@ -46,5 +53,5 @@ export function usePuzzle() {
       });
   }, [dateKey]);
 
-  return { puzzle, dateKey, setDateKey, error, isArchive };
+  return { puzzle, dateKey, setDateKey: setDateKeyPersisted, error, isArchive };
 }
