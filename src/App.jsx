@@ -6,6 +6,8 @@ import GameScreen from './GameScreen.jsx'
 import IntroModal from './components/IntroModal.jsx'
 import SettingsModal, { AboutModal } from './components/SettingsModal.jsx'
 import ArchiveModal from './components/ArchiveModal.jsx'
+import ConfirmModal from './components/ConfirmModal.jsx'
+import { AVAILABLE_DATES } from './data/puzzles/available.js'
 
 const INTRO_SEEN_KEY = 'guesstory-intro-seen'
 const TUTORIAL_SEEN_KEY = 'guesstory-tutorial-v2'
@@ -20,6 +22,7 @@ export default function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [aboutOpen, setAboutOpen] = useState(false)
   const [archiveOpen, setArchiveOpen] = useState(false)
+  const [messageModal, setMessageModal] = useState(null) // { title, message }
 
   function completeTutorialPhase() {
     if (tutorialPhase === 1) {
@@ -183,7 +186,14 @@ export default function App() {
         onOpenArchive={() => setArchiveOpen(true)}
         onJumpToToday={() => {
           const today = new Date().toISOString().split('T')[0]
-          if (AVAILABLE_DATES.includes(today)) setDateKey(today)
+          if (AVAILABLE_DATES.includes(today)) {
+            setDateKey(today)
+          } else {
+            setMessageModal({
+              title: "Coming soon",
+              message: "Today's daily puzzle hasn't dropped yet. Check back later or explore the archives!"
+            })
+          }
         }}
       />
       {isArchive && (
@@ -201,6 +211,15 @@ export default function App() {
       {settingsOpen && <SettingsModal scheme={scheme} mode={mode} onScheme={setScheme} onMode={setMode} onClose={() => setSettingsOpen(false)} />}
       {aboutOpen && <AboutModal mode={mode} onClose={() => setAboutOpen(false)} />}
       {archiveOpen && <ArchiveModal activeDate={dateKey} onSelect={setDateKey} onClose={() => setArchiveOpen(false)} />}
+      {messageModal && (
+        <ConfirmModal
+          title={messageModal.title}
+          message={messageModal.message}
+          confirmLabel="Got it"
+          onConfirm={() => setMessageModal(null)}
+          onClose={() => setMessageModal(null)}
+        />
+      )}
     </>
   )
 }

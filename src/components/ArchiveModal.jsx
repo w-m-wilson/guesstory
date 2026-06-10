@@ -25,6 +25,7 @@ function formatDate(dateStr) {
 
 export default function ArchiveModal({ activeDate, onSelect, onClose }) {
   const [closing, setClosing] = React.useState(false)
+  const scrollRef = React.useRef(null)
   
   function close() { 
     if (closing) return
@@ -36,12 +37,20 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
   const todayAvailable = AVAILABLE_DATES.includes(today)
 
   const puzzles = useMemo(() => {
-    return [...AVAILABLE_DATES].reverse().map(date => ({
+    // Chronological order: Oldest at top, Newest at bottom
+    return [...AVAILABLE_DATES].map(date => ({
       date,
       status: getPuzzleStatus(date),
       isToday: date === today
     }))
   }, [today])
+
+  // Scroll to bottom (most recent) on mount
+  React.useLayoutEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    }
+  }, [])
 
   return (
     <div
@@ -59,7 +68,7 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
         }} 
       />
       <div
-        className={`w-full max-w-[430px] rounded-t-3xl px-6 pt-5 pb-10 flex flex-col max-h-[85dvh]${closing ? '' : ' sheet-enter'}`}
+        className={`w-full max-w-[430px] rounded-t-3xl flex flex-col max-h-[85dvh]${closing ? '' : ' sheet-enter'}`}
         style={{ 
           background: 'var(--color-bg)', 
           position: 'relative', 
@@ -68,26 +77,36 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
         }}
         onClick={e => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <span 
-            className="text-2xl" 
-            style={{ fontFamily: "'Grenze Gotisch', serif", color: 'var(--color-action)' }}
-          >
-            The Archives
-          </span>
-          <button
-            onClick={close}
-            className="w-8 h-8 flex items-center justify-center rounded-full opacity-40 hover:opacity-80 transition-opacity"
-            style={{ color: 'var(--color-text-faint)', background: 'var(--color-bg-elevated)' }}
-            aria-label="Close"
-          >
-            ✕
-          </button>
+        {/* Sticky Header with Fade */}
+        <div 
+          className="sticky top-0 z-20 px-6 pt-5 pb-10 pointer-events-none"
+          style={{
+            background: 'linear-gradient(to bottom, var(--color-bg) 75%, transparent)',
+          }}
+        >
+          <div className="flex items-center justify-between pointer-events-auto">
+            <span 
+              className="text-2xl" 
+              style={{ fontFamily: "'Grenze Gotisch', serif", color: 'var(--color-action)' }}
+            >
+              The Archives
+            </span>
+            <button
+              onClick={close}
+              className="w-8 h-8 flex items-center justify-center rounded-full opacity-40 hover:opacity-80 transition-opacity"
+              style={{ color: 'var(--color-text-faint)', background: 'var(--color-bg-elevated)' }}
+              aria-label="Close"
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         {/* Scrollable Grid */}
-        <div className="overflow-y-auto flex-1 pr-1 -mr-1">
+        <div 
+          ref={scrollRef}
+          className="overflow-y-auto flex-1 px-6 pb-12 -mt-4"
+        >
           <div className="grid grid-cols-2 gap-3">
             {puzzles.map((p) => {
               const isActive = p.date === activeDate
