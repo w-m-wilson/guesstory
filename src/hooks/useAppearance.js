@@ -17,15 +17,17 @@ function applyTheme(scheme, mode) {
   const dark = mode === 'dark' || (mode === 'system' && getSystemDark())
   document.documentElement.dataset.theme = `${scheme}-${dark ? 'dark' : 'light'}`
 
-  // Sync theme-color meta for Safari iOS chrome/status bar
-  const color = getComputedStyle(document.documentElement).getPropertyValue('--color-bg').trim()
-  let meta = document.querySelector('meta[name="theme-color"]')
-  if (!meta) {
-    meta = document.createElement('meta')
-    meta.name = 'theme-color'
-    document.head.appendChild(meta)
-  }
-  meta.content = color
+  // Defer so the browser flushes style recalculation before we read the new value
+  requestAnimationFrame(() => {
+    const color = getComputedStyle(document.documentElement).getPropertyValue('--color-bg').trim()
+    let meta = document.querySelector('meta[name="theme-color"]')
+    if (!meta) {
+      meta = document.createElement('meta')
+      meta.name = 'theme-color'
+      document.head.appendChild(meta)
+    }
+    meta.content = color
+  })
 }
 
 export function useAppearance() {
