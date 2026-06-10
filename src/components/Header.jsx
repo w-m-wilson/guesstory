@@ -216,16 +216,20 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                 <span key={i} style={{ display: 'block', width: '14px', height: '2px', borderRadius: '1px', background: 'var(--color-text)' }} />
               ))}
             </button>
-            {menuOpen && (
-              <div
-                className="absolute right-0 top-full mt-2 z-50 rounded-xl overflow-hidden"
-                style={{
-                  background: 'var(--color-bg-elevated)',
-                  border: '1px solid var(--color-border)',
-                  minWidth: '160px',
-                  boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
-                }}
-              >
+            <div
+              className="absolute right-0 top-full mt-2 z-50 rounded-xl overflow-hidden"
+              style={{
+                background: 'var(--color-bg-elevated)',
+                border: '1px solid var(--color-border)',
+                minWidth: '160px',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
+                transformOrigin: 'top right',
+                transition: 'opacity 140ms ease, transform 140ms ease',
+                opacity: menuOpen ? 1 : 0,
+                transform: menuOpen ? 'scale(1) translateY(0)' : 'scale(0.93) translateY(-6px)',
+                pointerEvents: menuOpen ? 'auto' : 'none',
+              }}
+            >
                 {onOpenIntro && (
                   <button
                     onClick={() => { closeMenu(); onOpenIntro() }}
@@ -253,8 +257,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                     <span style={{ opacity: 0.6 }}>↺</span> Reset game
                   </button>
                 )}
-              </div>
-            )}
+            </div>
           </div>
         </div>
       </header>
