@@ -22,7 +22,7 @@ function TutorialPrimerModal({ primerKey, onClose }) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-xs rounded-2xl p-6 fade-in"
+        className="w-full max-w-xs rounded-2xl p-6 dialog-enter"
         style={{ background: 'var(--color-bg)' }}
         onClick={e => e.stopPropagation()}
       >
@@ -65,7 +65,7 @@ function DifficultySelector({ current, onSelect }) {
       style={{ background: modalScrimBackground({ variant: 'sheet' }) }}
     >
       <div
-        className="w-full max-w-[430px] h-full flex flex-col justify-end p-5 pb-8 gap-3"
+        className="w-full max-w-[430px] h-full flex flex-col justify-end p-5 pb-8 gap-3 sheet-enter"
         style={{ background: 'var(--color-bg)' }}
         onClick={e => e.stopPropagation()}
       >

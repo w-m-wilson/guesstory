@@ -292,6 +292,25 @@ body {
 }
 .slide-down { animation: slideDown 0.18s ease-out; }
 
+/* ── Modal enter animations ── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.sheet-enter { animation: slideUp 0.26s cubic-bezier(0.32, 0.72, 0, 1); }
+
+@keyframes dialogIn {
+  from { opacity: 0; transform: scale(0.95) translateY(6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.dialog-enter { animation: dialogIn 0.2s cubic-bezier(0.32, 0.72, 0, 1); }
+
+@keyframes scrimIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.scrim-enter { animation: scrimIn 0.2s ease; }
+
 /* ── Narration toast ── */
 @keyframes narrationIn {
   from { opacity: 0; transform: translateY(6px); }

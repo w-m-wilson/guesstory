@@ -49,7 +49,14 @@ function pickNextPhrase(current) {
 
 export default function Header({ categoryText, categoryAutoReveal, categoryHint, categoryMisses, difficulty = 'medium', onGuessCategory, onOpenIntro, onOpenSettings, onReset }) {
   const [guessing, setGuessing] = useState(false)
+  const [sheetClosing, setSheetClosing] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+
+  function closeSheet() {
+    if (sheetClosing) return
+    setSheetClosing(true)
+    setTimeout(() => { setGuessing(false); setSheetClosing(false) }, 180)
+  }
   const menuRef = useRef(null)
 
   const closeMenu = useCallback(() => setMenuOpen(false), [])
@@ -266,17 +273,18 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
       {guessing && !categoryText && (
         <div
           className="fixed inset-0 z-40 flex items-start justify-center"
-          onClick={() => setGuessing(false)}
+          onClick={closeSheet}
         >
-          <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none' }} />
+          <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none', ...(sheetClosing ? { opacity: 0, transition: 'opacity 0.18s ease' } : { animation: 'scrimIn 0.2s ease' }) }} />
           <div
-            className="w-full max-w-[430px] flex flex-col gap-4 px-5 pt-5 pb-6 slide-down"
+            className={`w-full max-w-[430px] flex flex-col gap-4 px-5 pt-5 pb-6${sheetClosing ? '' : ' slide-down'}`}
             style={{
               background: 'var(--color-bg)',
               borderBottom: '1px solid var(--color-border)',
               borderRadius: '0 0 1.25rem 1.25rem',
               position: 'relative',
               zIndex: 1,
+              ...(sheetClosing ? { opacity: 0, transform: 'translateY(-12px)', transition: 'opacity 0.18s ease, transform 0.18s ease' } : {}),
             }}
             onClick={e => e.stopPropagation()}
           >
@@ -291,7 +299,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                 </p>
               </div>
               <button
-                onClick={() => setGuessing(false)}
+                onClick={closeSheet}
                 className="text-lg leading-none ml-4 mt-0.5 opacity-40 hover:opacity-70"
                 style={{ color: 'var(--color-text-faint)' }}
                 aria-label="Close"

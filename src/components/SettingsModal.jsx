@@ -15,16 +15,21 @@ const SCHEMES = [
   { key: 'bailly',    label: 'Bailly',    description: 'Rose & sage' },
 ]
 
+const EXIT_MS = 200
+
 function AboutModal({ mode, onClose }) {
+  const [closing, setClosing] = React.useState(false)
+  function close() { if (closing) return; setClosing(true); setTimeout(onClose, EXIT_MS) }
   return (
     <div
       className="fixed inset-0 z-60 flex items-center justify-center"
-      onClick={onClose}
+      onClick={close}
+      style={closing ? { opacity: 0, transition: `opacity ${EXIT_MS}ms ease` } : { animation: 'scrimIn 0.2s ease' }}
     >
       <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ mode, variant: 'dialog' }), pointerEvents: 'none' }} />
       <div
-        className="w-full max-w-sm rounded-2xl p-6 mx-4"
-        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1 }}
+        className={`w-full max-w-sm rounded-2xl p-6 mx-4${closing ? '' : ' dialog-enter'}`}
+        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1, ...(closing ? { opacity: 0, transform: 'scale(0.95) translateY(6px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
@@ -32,7 +37,7 @@ function AboutModal({ mode, onClose }) {
             About & Privacy
           </span>
           <button
-            onClick={onClose}
+            onClick={close}
             className="text-lg leading-none"
             style={{ color: 'var(--color-text-faint)' }}
             aria-label="Close"
@@ -62,19 +67,22 @@ function AboutModal({ mode, onClose }) {
 export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose }) {
   const [showAbout, setShowAbout] = React.useState(false)
   const [changed, setChanged] = React.useState(false)
+  const [closing, setClosing] = React.useState(false)
   const scrim = modalScrimBackground({ mode, variant: 'sheet' })
 
+  function close() { if (closing) return; setClosing(true); setTimeout(onClose, EXIT_MS) }
   function handleScheme(s) { onScheme(s); setChanged(true) }
   function handleMode(m) { onMode(m); setChanged(true) }
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"
-      onClick={onClose}
+      onClick={close}
     >
-      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: scrim, pointerEvents: 'none' }} />
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: scrim, pointerEvents: 'none', ...(closing ? { opacity: 0, transition: `opacity ${EXIT_MS}ms ease` } : { animation: 'scrimIn 0.2s ease' }) }} />
       <div
-        className="w-full max-w-[430px] rounded-t-2xl px-5 pt-4 pb-7"
-        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1 }}
+        className={`w-full max-w-[430px] rounded-t-2xl px-5 pt-4 pb-7${closing ? '' : ' sheet-enter'}`}
+        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1, ...(closing ? { opacity: 0, transform: 'translateY(24px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
         onClick={e => e.stopPropagation()}
       >
         {/* Header row */}
@@ -83,7 +91,7 @@ export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose 
             Appearance
           </span>
           <button
-            onClick={onClose}
+            onClick={close}
             className="text-base leading-none"
             style={{ color: 'var(--color-text-faint)' }}
             aria-label="Close"

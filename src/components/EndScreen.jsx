@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+
+const EXIT_MS = 200
 import { modalScrimBackground } from '../utils/modalScrim.js'
 
 const GRADES = [
@@ -85,6 +87,13 @@ function AttemptsPreview({ rankHistory }) {
 }
 
 export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, difficulty = 'medium', category, categoryGuessed, categoryText, categorySource, hailMaryTaken, isTutorial, bonusGuessDone, onBonusGuessDone, onGuessCategory, onClose, onComplete, completeCTA }) {
+  const [closing, setClosing] = useState(false)
+  const close = useCallback((cb) => {
+    if (closing) return
+    setClosing(true)
+    setTimeout(() => { onClose(); cb?.() }, EXIT_MS)
+  }, [closing, onClose])
+
   const won = gameStatus === 'won'
   const showHailMary = gameStatus === 'abandoned' && !hailMaryTaken
   const grade = getGrade(coins)
@@ -175,16 +184,17 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center px-6"
-      onClick={onClose}
+      onClick={() => close()}
+      style={closing ? { opacity: 0, transition: `opacity ${EXIT_MS}ms ease` } : { animation: 'scrimIn 0.2s ease' }}
     >
       <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'dialog' }), pointerEvents: 'none' }} />
       <div
-        className="w-full max-w-sm rounded-2xl p-6 flex flex-col gap-5"
-        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1 }}
+        className={`w-full max-w-sm rounded-2xl p-6 flex flex-col gap-5${closing ? '' : ' dialog-enter'}`}
+        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1, ...(closing ? { opacity: 0, transform: 'scale(0.95) translateY(6px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
         onClick={e => e.stopPropagation()}
       >
         <button
-          onClick={onClose}
+          onClick={() => close()}
           className="absolute top-4 right-4 text-lg leading-none"
           style={{ color: 'var(--color-text-faint)', opacity: 0.4 }}
           aria-label="Close"
@@ -295,7 +305,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
             )}
             {onComplete ? (
               <button
-                onClick={() => { onClose(); onComplete(); }}
+                onClick={() => close(onComplete)}
                 className="w-full py-2.5 rounded-xl text-sm font-semibold"
                 style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
               >
@@ -303,7 +313,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
               </button>
             ) : showHailMary ? (
               <button
-                onClick={onClose}
+                onClick={() => close()}
                 className="w-full py-2.5 rounded-xl text-sm font-semibold"
                 style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
               >

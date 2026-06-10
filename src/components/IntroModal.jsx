@@ -1,4 +1,7 @@
+import { useState } from 'react'
 import { modalScrimBackground } from '../utils/modalScrim.js'
+
+const EXIT_MS = 200
 
 const SECTIONS = [
   {
@@ -57,18 +60,22 @@ const SECTIONS = [
 ]
 
 export default function IntroModal({ onClose, onReplayTutorial }) {
+  const [closing, setClosing] = useState(false)
+  function close(cb) {
+    if (closing) return
+    setClosing(true)
+    setTimeout(() => { onClose(); cb?.() }, EXIT_MS)
+  }
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center px-4"
-      style={{ background: modalScrimBackground({ variant: 'dialog' }) }}
-      onClick={onClose}
+      style={{ background: modalScrimBackground({ variant: 'dialog' }), ...(closing ? { opacity: 0, transition: `opacity ${EXIT_MS}ms ease` } : { animation: 'scrimIn 0.2s ease' }) }}
+      onClick={() => close()}
     >
       <div
-        className="w-full max-w-sm rounded-2xl flex flex-col fade-in"
-        style={{
-          background: 'var(--color-bg)',
-          maxHeight: '85dvh',
-        }}
+        className={`w-full max-w-sm rounded-2xl flex flex-col${closing ? '' : ' dialog-enter'}`}
+        style={{ background: 'var(--color-bg)', maxHeight: '85dvh', ...(closing ? { opacity: 0, transform: 'scale(0.95) translateY(6px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
@@ -80,7 +87,7 @@ export default function IntroModal({ onClose, onReplayTutorial }) {
             How to play
           </h2>
           <button
-            onClick={onClose}
+            onClick={() => close()}
             className="text-lg leading-none opacity-50 hover:opacity-100"
             style={{ color: 'var(--color-text-faint)' }}
             aria-label="Close"
@@ -140,7 +147,7 @@ export default function IntroModal({ onClose, onReplayTutorial }) {
           style={{ borderTop: '1px solid var(--color-border)' }}
         >
           <button
-            onClick={onClose}
+            onClick={() => close()}
             className="w-full py-2.5 rounded-xl text-sm font-semibold"
             style={{
               background: 'var(--color-action)',
@@ -151,7 +158,7 @@ export default function IntroModal({ onClose, onReplayTutorial }) {
           </button>
           {onReplayTutorial && (
             <button
-              onClick={() => { onClose(); onReplayTutorial() }}
+              onClick={() => close(onReplayTutorial)}
               className="w-full py-2 rounded-xl text-sm"
               style={{
                 color: 'var(--color-text-faint)',

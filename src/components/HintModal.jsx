@@ -10,11 +10,16 @@ const HINT_DEFS = [
   { key: 'revealCategory',            label: 'Reveal category',            description: 'Show the full hidden category label' },
 ]
 
+const EXIT_MS = 200
+
 export default function HintModal({ coins, allBankFound, categoryGuessed, category, difficulty = 'medium', onPurchase, onClose }) {
   const hintCosts = (DIFFICULTY_CONFIG[difficulty] ?? DIFFICULTY_CONFIG.medium).hints
   const HINTS = HINT_DEFS.map(h => ({ ...h, cost: hintCosts[h.key] }))
   const [feedback, setFeedback] = useState(null)
   const [nudgeLoading, setNudgeLoading] = useState(false)
+  const [closing, setClosing] = useState(false)
+
+  function close() { if (closing) return; setClosing(true); setTimeout(onClose, EXIT_MS) }
 
   async function handlePurchase(key) {
     if (key === 'revealCategoryNudge') {
@@ -51,13 +56,13 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, catego
     /* Backdrop */
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"
-      onClick={onClose}
+      onClick={close}
     >
-      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none' }} />
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none', ...(closing ? { opacity: 0, transition: `opacity ${EXIT_MS}ms ease` } : { animation: 'scrimIn 0.2s ease' }) }} />
       {/* Card */}
       <div
-        className="w-full max-w-[430px] rounded-t-2xl p-5 pb-8"
-        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1 }}
+        className={`w-full max-w-[430px] rounded-t-2xl p-5 pb-8${closing ? '' : ' sheet-enter'}`}
+        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1, ...(closing ? { opacity: 0, transform: 'translateY(24px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
@@ -69,7 +74,7 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, catego
               🪙 {coins}
             </span>
             <button
-              onClick={onClose}
+              onClick={close}
               className="text-lg leading-none"
               style={{ color: 'var(--color-text-faint)' }}
               aria-label="Close"
