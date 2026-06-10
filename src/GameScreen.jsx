@@ -63,14 +63,22 @@ function DifficultySelector({ current, onSelect }) {
   const [closing, setClosing] = useState(false)
   function handleSelect(d) {
     setClosing(true)
+<<<<<<< HEAD
     setTimeout(() => onSelect(d), 200)
+=======
+    setTimeout(() => onSelect(d), 220)
+>>>>>>> dev
   }
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center"
       style={{
         background: modalScrimBackground({ variant: 'sheet' }),
+<<<<<<< HEAD
         ...(closing ? { opacity: 0, transition: 'opacity 0.2s cubic-bezier(0.4, 0, 1, 1)' } : { animation: 'scrimIn 0.22s ease' }),
+=======
+        ...(closing ? { opacity: 0, transition: 'opacity 0.22s cubic-bezier(0.4, 0, 1, 1)' } : { animation: 'scrimIn 0.22s ease' }),
+>>>>>>> dev
       }}
     >
       <div
