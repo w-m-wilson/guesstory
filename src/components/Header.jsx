@@ -272,7 +272,8 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
       {/* Category guess modal — top sheet */}
       {guessing && !categoryText && (
         <div
-          className="fixed inset-0 z-40 flex items-start justify-center"
+          className="fixed inset-0 z-40 flex items-start justify-center overflow-hidden"
+          style={{ touchAction: 'none' }}
           onClick={closeSheet}
         >
           <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none', ...(sheetClosing ? { opacity: 0, transition: 'opacity 0.18s ease' } : { animation: 'scrimIn 0.2s ease' }) }} />
@@ -284,6 +285,9 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
               borderRadius: '0 0 1.25rem 1.25rem',
               position: 'relative',
               zIndex: 1,
+              maxHeight: '80dvh',
+              overflowY: 'auto',
+              touchAction: 'pan-y',
               ...(sheetClosing ? { opacity: 0, transform: 'translateY(-12px)', transition: 'opacity 0.18s ease, transform 0.18s ease' } : {}),
             }}
             onClick={e => e.stopPropagation()}

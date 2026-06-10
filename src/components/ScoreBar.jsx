@@ -39,13 +39,15 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
           >
             <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none' }} />
           </div>
-          <div
-            className="absolute bottom-full left-0 right-0 z-50 px-4 pb-2"
-            style={{ background: 'var(--color-bg)' }}
-          >
+          <div className="absolute bottom-full left-4 z-50 pb-2">
             <div
               className="rounded-xl overflow-hidden"
-              style={{ border: '1px solid var(--color-border)' }}
+              style={{
+                background: 'var(--color-bg)',
+                border: '1px solid var(--color-border)',
+                boxShadow: '0 -4px 16px rgba(0,0,0,0.12)',
+                minWidth: '140px',
+              }}
             >
               <p className="text-[10px] font-black tracking-widest uppercase px-3 pt-2.5 pb-1" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
                 Make it easier
