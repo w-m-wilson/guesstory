@@ -240,46 +240,51 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                 {onOpenIntro && (
                   <button
                     onClick={() => { closeMenu(); onOpenIntro() }}
-                    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-left"
-                    style={{ color: 'var(--color-text)' }}
+                    className="w-full flex items-center px-4 py-3 text-sm text-left"
+                    style={{ color: 'var(--color-text)', gap: '10px' }}
                   >
-                    <span style={{ opacity: 0.6 }}>?</span> How to play
+                    <span style={{ width: '16px', textAlign: 'center', opacity: 0.55, flexShrink: 0 }}>?</span>
+                    <span>How to play</span>
                   </button>
                 )}
                 {onOpenSettings && (
                   <button
                     onClick={() => { closeMenu(); onOpenSettings() }}
-                    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-left"
-                    style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)' }}
+                    className="w-full flex items-center px-4 py-3 text-sm text-left"
+                    style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)', gap: '10px' }}
                   >
-                    <span style={{ opacity: 0.6 }}>◑</span> Appearance
+                    <span style={{ width: '16px', textAlign: 'center', opacity: 0.55, flexShrink: 0 }}>◑</span>
+                    <span>Appearance</span>
                   </button>
                 )}
                 {onOpenAbout && (
                   <button
                     onClick={() => { closeMenu(); onOpenAbout() }}
-                    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-left"
-                    style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)' }}
+                    className="w-full flex items-center px-4 py-3 text-sm text-left"
+                    style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)', gap: '10px' }}
                   >
-                    <span style={{ opacity: 0.6, fontStyle: 'normal', fontWeight: 700 }}>i</span> About & Privacy
+                    <span style={{ width: '16px', textAlign: 'center', opacity: 0.55, flexShrink: 0, fontWeight: 700 }}>i</span>
+                    <span>About & Privacy</span>
                   </button>
                 )}
                 {onOpenDifficultyPicker && (
                   <button
                     onClick={() => { closeMenu(); onOpenDifficultyPicker() }}
-                    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-left"
-                    style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)' }}
+                    className="w-full flex items-center px-4 py-3 text-sm text-left"
+                    style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)', gap: '10px' }}
                   >
-                    <span style={{ opacity: 0.6 }}>⬓</span> Difficulty
+                    <span style={{ width: '16px', textAlign: 'center', opacity: 0.55, flexShrink: 0 }}>⬓</span>
+                    <span>Difficulty</span>
                   </button>
                 )}
                 {onReset && (
                   <button
                     onClick={() => { closeMenu(); onReset() }}
-                    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-left"
-                    style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)' }}
+                    className="w-full flex items-center px-4 py-3 text-sm text-left"
+                    style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)', gap: '10px' }}
                   >
-                    <span style={{ opacity: 0.6 }}>↺</span> Reset game
+                    <span style={{ width: '16px', textAlign: 'center', opacity: 0.55, flexShrink: 0 }}>↺</span>
+                    <span>Reset game</span>
                   </button>
                 )}
             </div>
@@ -296,9 +301,14 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
         >
           <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none', ...(sheetClosing ? { opacity: 0, transition: 'opacity 0.18s ease' } : { animation: 'scrimIn 0.2s ease' }) }} />
           <div
-            className={`w-full max-w-[430px] flex flex-col gap-6 px-6 pb-10${sheetClosing ? '' : ' slide-down'}`}
+            className={sheetClosing ? '' : 'slide-down'}
             style={{
+              width: '100%',
+              maxWidth: '430px',
               paddingTop: 'calc(env(safe-area-inset-top, 0px) + 2rem)',
+              paddingBottom: '2.5rem',
+              paddingLeft: '1.5rem',
+              paddingRight: '1.5rem',
               background: 'var(--color-bg)',
               borderBottom: '1px solid var(--color-border)',
               borderRadius: '0 0 1.5rem 1.5rem',
@@ -309,7 +319,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
             onClick={e => e.stopPropagation()}
           >
             {/* Sheet header */}
-            <div className="flex items-start justify-between">
+            <div className="flex items-start justify-between" style={{ marginBottom: '1.25rem' }}>
               <div>
                 <p className="text-base font-bold" style={{ color: 'var(--color-text-strong)' }}>
                   Guess the category
@@ -329,7 +339,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
             </div>
 
             {/* Miss tracker */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2" style={{ marginBottom: '1.25rem' }}>
               <span className="text-xs" style={{ color: 'var(--color-text-faint)' }}>
                 {categoryMisses === 0 ? 'Free guesses:' : 'Misses:'}
               </span>
@@ -337,7 +347,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
             </div>
 
             {/* Input */}
-            <form onSubmit={handleSubmit} className="flex gap-2">
+            <form onSubmit={handleSubmit} className="flex gap-2" style={{ marginBottom: lastHint ? '1.25rem' : 0 }}>
               <input
                 ref={inputRef}
                 type="text"
