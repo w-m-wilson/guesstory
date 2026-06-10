@@ -5,8 +5,8 @@ function getTodayKey() {
   return new Date().toISOString().split('T')[0]; // YYYY-MM-DD
 }
 
-function pickRandomDate() {
-  return AVAILABLE_DATES[Math.floor(Math.random() * AVAILABLE_DATES.length)];
+function getLatestAvailableDate() {
+  return AVAILABLE_DATES[AVAILABLE_DATES.length - 1];
 }
 
 const SESSION_ARCHIVE_KEY = 'guesstory-session-archive';
@@ -14,7 +14,7 @@ const SESSION_ARCHIVE_KEY = 'guesstory-session-archive';
 function getOrPickFallbackDate() {
   const stored = sessionStorage.getItem(SESSION_ARCHIVE_KEY);
   if (stored && AVAILABLE_DATES.includes(stored)) return stored;
-  const picked = pickRandomDate();
+  const picked = getLatestAvailableDate();
   sessionStorage.setItem(SESSION_ARCHIVE_KEY, picked);
   return picked;
 }
