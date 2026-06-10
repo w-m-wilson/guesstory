@@ -40,10 +40,13 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
     // Chronological order: Oldest at top, Newest at bottom
     return [...AVAILABLE_DATES].map(date => ({
       date,
+      year: date.split('-')[0],
       status: getPuzzleStatus(date),
       isToday: date === today
     }))
   }, [today])
+
+  const currentYear = puzzles.length > 0 ? puzzles[puzzles.length - 1].year : ''
 
   // Scroll to bottom (most recent) on mount
   React.useLayoutEffect(() => {
@@ -73,6 +76,7 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
           background: 'var(--color-bg)', 
           position: 'relative', 
           zIndex: 1, 
+          touchAction: 'none',
           ...(closing ? { opacity: 0, transform: 'translateY(24px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) 
         }}
         onClick={e => e.stopPropagation()}
@@ -85,16 +89,21 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
           }}
         >
           <div className="flex items-center justify-between pointer-events-auto">
-            <span 
-              className="text-2xl" 
-              style={{ fontFamily: "'Grenze Gotisch', serif", color: 'var(--color-action)' }}
-            >
-              The Archives
-            </span>
+            <div className="flex items-baseline gap-2">
+              <span 
+                className="text-2xl" 
+                style={{ fontFamily: "'Grenze Gotisch', serif", color: 'var(--color-action)' }}
+              >
+                The Archives
+              </span>
+              <span className="text-xs opacity-40 font-bold tracking-widest uppercase">
+                {currentYear}
+              </span>
+            </div>
             <button
               onClick={close}
-              className="w-8 h-8 flex items-center justify-center rounded-full opacity-40 hover:opacity-80 transition-opacity"
-              style={{ color: 'var(--color-text-faint)', background: 'var(--color-bg-elevated)' }}
+              className="w-8 h-8 flex items-center justify-center rounded-full opacity-60 hover:opacity-100 transition-opacity"
+              style={{ color: 'var(--color-text)', background: 'var(--color-bg-elevated)' }}
               aria-label="Close"
             >
               ✕
@@ -105,7 +114,8 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
         {/* Scrollable Grid */}
         <div 
           ref={scrollRef}
-          className="overflow-y-auto flex-1 px-6 pb-12 -mt-4"
+          className="overflow-y-auto flex-1 px-6 pb-12 -mt-4 fade-in"
+          style={{ touchAction: 'pan-y' }}
         >
           <div className="grid grid-cols-2 gap-3">
             {puzzles.map((p) => {

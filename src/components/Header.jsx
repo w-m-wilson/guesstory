@@ -255,7 +255,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                     className="w-full flex items-center px-4 py-3 text-sm text-left"
                     style={{ color: 'var(--color-text)', gap: '10px' }}
                   >
-                    <span style={{ width: '16px', textAlign: 'center', opacity: 0.55, flexShrink: 0 }}>🏛</span>
+                    <span style={{ width: '16px', textAlign: 'center', opacity: 0.55, flexShrink: 0 }}>▦</span>
                     <span>The Archives</span>
                   </button>
                 )}

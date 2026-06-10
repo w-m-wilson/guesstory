@@ -218,6 +218,7 @@ html {
   overflow: hidden;
   height: 100%;
   background-color: var(--color-bg);
+  /* Ensure modal scrolling isn't blocked by global touch-action if any */
 }
 
 body {
@@ -233,6 +234,8 @@ body {
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
+  /* Allow vertical scrolling for overflow elements (like modals) */
+  touch-action: pan-y;
 }
 
 #root {
