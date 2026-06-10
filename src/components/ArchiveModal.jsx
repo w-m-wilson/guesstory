@@ -76,7 +76,7 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
           background: 'var(--color-bg)', 
           position: 'relative', 
           zIndex: 1, 
-          touchAction: 'none',
+          touchAction: 'pan-y',
           ...(closing ? { opacity: 0, transform: 'translateY(24px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) 
         }}
         onClick={e => e.stopPropagation()}
