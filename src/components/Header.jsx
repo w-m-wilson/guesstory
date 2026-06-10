@@ -47,7 +47,7 @@ function pickNextPhrase(current) {
   return pool[Math.floor(Math.random() * pool.length)]
 }
 
-export default function Header({ categoryText, categoryAutoReveal, categoryHint, categoryMisses, difficulty = 'medium', onGuessCategory, onOpenIntro, onOpenSettings, onReset }) {
+export default function Header({ categoryText, categoryAutoReveal, categoryHint, categoryMisses, difficulty = 'medium', onGuessCategory, onOpenIntro, onOpenSettings, onOpenAbout, onOpenDifficultyPicker, onReset }) {
   const [guessing, setGuessing] = useState(false)
   const [sheetClosing, setSheetClosing] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -253,6 +253,24 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                     style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)' }}
                   >
                     <span style={{ opacity: 0.6 }}>◑</span> Appearance
+                  </button>
+                )}
+                {onOpenAbout && (
+                  <button
+                    onClick={() => { closeMenu(); onOpenAbout() }}
+                    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-left"
+                    style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)' }}
+                  >
+                    <span style={{ opacity: 0.6 }}>ℹ</span> About & Privacy
+                  </button>
+                )}
+                {onOpenDifficultyPicker && (
+                  <button
+                    onClick={() => { closeMenu(); onOpenDifficultyPicker() }}
+                    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-left"
+                    style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)' }}
+                  >
+                    <span style={{ opacity: 0.6 }}>⬓</span> Difficulty
                   </button>
                 )}
                 {onReset && (

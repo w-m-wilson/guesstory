@@ -1,5 +1,4 @@
-import { useRef, useState, useEffect } from 'react'
-import { modalScrimBackground } from '../utils/modalScrim.js'
+import { useRef, useState, useEffect, useCallback } from 'react'
 
 const COIN_EMOJI = '🪙'
 
@@ -8,89 +7,80 @@ const DIFFICULTY_ORDER = ['lite', 'medium', 'challenge']
 const DIFFICULTY_NAMES = { lite: 'Lite', medium: 'Medium', challenge: 'Challenge' }
 const DIFFICULTY_BLURBS = { lite: 'Most answers given', medium: 'A few starting hints', challenge: 'No hints — from scratch' }
 
-const PICKER_EXIT_MS = 160
-
-export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideDifficulty = false, onSetDifficulty, onHintsOpen, onShowResults }) {
+export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideDifficulty = false, onSetDifficulty, onHintsOpen, onShowResults, onRegisterPickerTrigger }) {
   const prevCoins = useRef(coins)
   const [deltas, setDeltas] = useState([])
   const [pickerOpen, setPickerOpen] = useState(false)
-  const [pickerClosing, setPickerClosing] = useState(false)
-  const pickerTimerRef = useRef(null)
+  const pickerRef = useRef(null)
 
-  function openPicker() { setPickerClosing(false); setPickerOpen(true) }
-  function closePicker(cb) {
-    if (pickerClosing) return
-    setPickerClosing(true)
-    clearTimeout(pickerTimerRef.current)
-    pickerTimerRef.current = setTimeout(() => {
-      setPickerOpen(false)
-      setPickerClosing(false)
-      cb?.()
-    }, PICKER_EXIT_MS)
-  }
+  const closePicker = useCallback(() => setPickerOpen(false), [])
+  const openPicker  = useCallback(() => setPickerOpen(true),  [])
 
-  useEffect(() => () => clearTimeout(pickerTimerRef.current), [])
+  // Register external trigger (called by hamburger menu via GameScreen)
+  useEffect(() => {
+    onRegisterPickerTrigger?.(openPicker)
+  }, [onRegisterPickerTrigger, openPicker])
+
+  // Close on pointerdown outside (same pattern as header menu)
+  useEffect(() => {
+    if (!pickerOpen) return
+    function handleOutside(e) {
+      if (pickerRef.current && !pickerRef.current.contains(e.target)) closePicker()
+    }
+    document.addEventListener('pointerdown', handleOutside)
+    return () => document.removeEventListener('pointerdown', handleOutside)
+  }, [pickerOpen, closePicker])
 
   useEffect(() => {
     const delta = prevCoins.current - coins
     if (delta !== 0) {
       const id = Date.now()
       setDeltas(prev => [...prev, { id, amount: Math.abs(delta), positive: delta < 0 }])
-      setTimeout(() => {
-        setDeltas(prev => prev.filter(d => d.id !== id))
-      }, 1500)
+      setTimeout(() => setDeltas(prev => prev.filter(d => d.id !== id)), 1500)
     }
     prevCoins.current = coins
   }, [coins])
 
-  // Options easier than current difficulty (downgrade only mid-game)
   const easierOptions = DIFFICULTY_ORDER.slice(0, DIFFICULTY_ORDER.indexOf(difficulty))
   const canSwitch = !hideDifficulty && easierOptions.length > 0
 
   return (
     <div style={{ position: 'relative' }}>
-      {/* Mid-game difficulty picker — appears above the bar */}
-      {pickerOpen && !hideDifficulty && (
-        <>
+      {/* Mid-game difficulty picker — always in DOM, CSS transition like header menu */}
+      {!hideDifficulty && (
+        <div ref={pickerRef} className="absolute bottom-full left-4 z-[46] pb-2">
           <div
-            className="fixed inset-0 z-[45]"
-            onClick={() => closePicker()}
-            style={pickerClosing ? { opacity: 0, transition: `opacity ${PICKER_EXIT_MS}ms ease` } : { animation: 'scrimIn 0.18s ease' }}
+            className="rounded-xl overflow-hidden"
+            style={{
+              background: 'var(--color-bg-elevated)',
+              border: '1px solid var(--color-border)',
+              minWidth: '200px',
+              boxShadow: '0 -4px 16px rgba(0,0,0,0.18)',
+              transformOrigin: 'bottom left',
+              transition: 'opacity 140ms ease, transform 140ms ease',
+              opacity: pickerOpen ? 1 : 0,
+              transform: pickerOpen ? 'scale(1) translateY(0)' : 'scale(0.93) translateY(6px)',
+              pointerEvents: pickerOpen ? 'auto' : 'none',
+            }}
           >
-            <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none' }} />
+            <p className="text-[10px] font-black tracking-widest uppercase px-4 pt-3 pb-1" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
+              Make it easier
+            </p>
+            {easierOptions.map((d, i) => (
+              <button
+                key={d}
+                onClick={() => { closePicker(); onSetDifficulty?.(d) }}
+                className="w-full flex items-center gap-2.5 px-4 py-3 text-left"
+                style={{ borderTop: '1px solid var(--color-border)', color: 'var(--color-text)' }}
+              >
+                <div>
+                  <p className="text-sm font-medium" style={{ color: 'var(--color-text-strong)' }}>{DIFFICULTY_NAMES[d]}</p>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-faint)' }}>{DIFFICULTY_BLURBS[d]}</p>
+                </div>
+              </button>
+            ))}
           </div>
-          <div
-            className={`absolute bottom-full left-4 z-[46] pb-2${pickerClosing ? '' : ' sheet-enter'}`}
-            style={pickerClosing ? { opacity: 0, transform: 'translateY(12px)', transition: `opacity ${PICKER_EXIT_MS}ms ease, transform ${PICKER_EXIT_MS}ms ease` } : {}}
-          >
-            <div
-              className="rounded-2xl overflow-hidden"
-              style={{
-                background: 'var(--color-bg)',
-                border: '1px solid var(--color-border)',
-                boxShadow: '0 -6px 24px rgba(0,0,0,0.14)',
-                minWidth: '180px',
-              }}
-            >
-              <p className="text-[10px] font-black tracking-widest uppercase px-4 pt-3 pb-1.5" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
-                Make it easier
-              </p>
-              {easierOptions.map(d => (
-                <button
-                  key={d}
-                  onClick={() => closePicker(() => onSetDifficulty?.(d))}
-                  className="w-full flex items-center justify-between px-4 py-3 text-left"
-                  style={{ borderTop: '1px solid var(--color-border)' }}
-                >
-                  <div>
-                    <p className="text-sm font-semibold" style={{ color: 'var(--color-text-strong)' }}>{DIFFICULTY_NAMES[d]}</p>
-                    <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-faint)' }}>{DIFFICULTY_BLURBS[d]}</p>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        </>
+        </div>
       )}
 
       <div
@@ -121,7 +111,7 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
 
           {!hideDifficulty && (
             <button
-              onClick={canSwitch ? () => (pickerOpen ? closePicker() : openPicker()) : undefined}
+              onClick={canSwitch ? () => setPickerOpen(p => !p) : undefined}
               className="text-[10px] font-black tracking-widest rounded-md px-2 py-0.5"
               style={{
                 color: 'var(--color-text-strong)',

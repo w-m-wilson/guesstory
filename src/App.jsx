@@ -4,7 +4,7 @@ import { useAppearance } from './hooks/useAppearance.js'
 import { TUTORIAL_PUZZLE_1, TUTORIAL_PUZZLE_2 } from './data/tutorialPuzzle.js'
 import GameScreen from './GameScreen.jsx'
 import IntroModal from './components/IntroModal.jsx'
-import SettingsModal from './components/SettingsModal.jsx'
+import SettingsModal, { AboutModal } from './components/SettingsModal.jsx'
 
 const INTRO_SEEN_KEY = 'guesstory-intro-seen'
 const TUTORIAL_SEEN_KEY = 'guesstory-tutorial-v2'
@@ -17,6 +17,7 @@ export default function App() {
   const [showHandoff, setShowHandoff] = useState(false)
   const [introOpen, setIntroOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [aboutOpen, setAboutOpen] = useState(false)
 
   function completeTutorialPhase() {
     if (tutorialPhase === 1) {
@@ -115,6 +116,7 @@ export default function App() {
           puzzle={tutorialPhase === 1 ? TUTORIAL_PUZZLE_1 : TUTORIAL_PUZZLE_2}
           tutorialMode={tutorialPhase === 1 ? 'learn' : 'explore'}
           onOpenSettings={() => setSettingsOpen(true)}
+          onOpenAbout={() => setAboutOpen(true)}
           onComplete={completeTutorialPhase}
           isTutorial
         />
@@ -136,15 +138,8 @@ export default function App() {
           </button>
         </div>
         {introOpen && <IntroModal onClose={closeIntro} onReplayTutorial={replayTutorial} />}
-        {settingsOpen && (
-          <SettingsModal
-            scheme={scheme}
-            mode={mode}
-            onScheme={setScheme}
-            onMode={setMode}
-            onClose={() => setSettingsOpen(false)}
-          />
-        )}
+        {settingsOpen && <SettingsModal scheme={scheme} mode={mode} onScheme={setScheme} onMode={setMode} onClose={() => setSettingsOpen(false)} />}
+        {aboutOpen && <AboutModal mode={mode} onClose={() => setAboutOpen(false)} />}
       </>
     )
   }
@@ -176,7 +171,7 @@ export default function App() {
         </p>
       </div>
 
-      <GameScreen key={puzzle.id} puzzle={puzzle} onOpenIntro={openIntro} onOpenSettings={() => setSettingsOpen(true)} />
+      <GameScreen key={puzzle.id} puzzle={puzzle} onOpenIntro={openIntro} onOpenSettings={() => setSettingsOpen(true)} onOpenAbout={() => setAboutOpen(true)} />
       {isArchive && (
         <div className="fixed bottom-4 left-0 right-0 flex justify-center z-40 pointer-events-none">
           <span
@@ -188,15 +183,8 @@ export default function App() {
         </div>
       )}
       {introOpen && <IntroModal onClose={closeIntro} onReplayTutorial={replayTutorial} />}
-      {settingsOpen && (
-        <SettingsModal
-          scheme={scheme}
-          mode={mode}
-          onScheme={setScheme}
-          onMode={setMode}
-          onClose={() => setSettingsOpen(false)}
-        />
-      )}
+      {settingsOpen && <SettingsModal scheme={scheme} mode={mode} onScheme={setScheme} onMode={setMode} onClose={() => setSettingsOpen(false)} />}
+      {aboutOpen && <AboutModal mode={mode} onClose={() => setAboutOpen(false)} />}
     </>
   )
 }

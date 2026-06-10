@@ -17,7 +17,7 @@ const SCHEMES = [
 
 const EXIT_MS = 200
 
-function AboutModal({ mode, onClose }) {
+export function AboutModal({ mode, onClose }) {
   const [closing, setClosing] = React.useState(false)
   function close() { if (closing) return; setClosing(true); setTimeout(onClose, EXIT_MS) }
   return (
@@ -65,7 +65,6 @@ function AboutModal({ mode, onClose }) {
 }
 
 export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose }) {
-  const [showAbout, setShowAbout] = React.useState(false)
   const [changed, setChanged] = React.useState(false)
   const [closing, setClosing] = React.useState(false)
   const scrim = modalScrimBackground({ mode, variant: 'sheet' })
@@ -157,18 +156,7 @@ export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose 
           </p>
         )}
 
-        {/* About & Privacy link */}
-        <div className="mt-4 pt-3 flex justify-center" style={{ borderTop: '1px solid var(--color-border)' }}>
-          <button
-            onClick={() => setShowAbout(true)}
-            className="text-xs underline underline-offset-2"
-            style={{ color: 'var(--color-text-faint)' }}
-          >
-            About & Privacy
-          </button>
-        </div>
       </div>
-      {showAbout && <AboutModal mode={mode} onClose={() => setShowAbout(false)} />}
     </div>
   )
 }

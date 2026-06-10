@@ -96,8 +96,9 @@ function DifficultySelector({ current, onSelect }) {
   )
 }
 
-export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComplete, isTutorial, tutorialMode = 'learn' }) {
+export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onOpenAbout, onComplete, isTutorial, tutorialMode = 'learn' }) {
   const [hintsOpen, setHintsOpen] = useState(false)
+  const pickerTriggerRef = useRef(null)
   const [endScreenDismissed, setEndScreenDismissed] = useState(false)
   const [bonusGuessDone, setBonusGuessDone] = useState(false)
   const [bankPanelHeight, setBankPanelHeight] = useState(0)
@@ -193,6 +194,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
 
   const difficulty = state.difficulty ?? 'medium'
   const freeMisses = DIFFICULTY_CONFIG[difficulty]?.bank?.freeMisses ?? 3
+  const canSwitch = !isTutorial && difficulty !== 'lite'
   const showDifficultySelector = !isTutorial && !selectorDismissed && state.bankMisses === 0 && state.rankHistory.length === 0
 
   function handleSubmitRanking() {
@@ -214,6 +216,8 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
         onGuessCategory={guessCategory}
         onOpenIntro={onOpenIntro}
         onOpenSettings={onOpenSettings}
+        onOpenAbout={onOpenAbout}
+        onOpenDifficultyPicker={canSwitch ? () => pickerTriggerRef.current?.() : undefined}
         onReset={isTutorial ? undefined : () => { resetGame(); setSelectorDismissed(false) }}
       />
 
@@ -275,6 +279,7 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onComp
         difficulty={difficulty}
         hideDifficulty={!!isTutorial}
         onSetDifficulty={setDifficulty}
+        onRegisterPickerTrigger={fn => { pickerTriggerRef.current = fn }}
         onHintsOpen={() => setHintsOpen(true)}
         onShowResults={gameOver ? () => setEndScreenDismissed(false) : null}
       />
