@@ -72,7 +72,7 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
         }} 
       />
       <div
-        className={`w-full max-w-[430px] rounded-t-3xl flex flex-col max-h-[85dvh]${closing ? '' : ' sheet-enter'}`}
+        className={`w-full max-w-[430px] rounded-t-3xl flex flex-col max-h-[85dvh] overflow-hidden${closing ? '' : ' sheet-enter'}`}
         style={{ 
           background: 'var(--color-bg)', 
           position: 'relative', 
