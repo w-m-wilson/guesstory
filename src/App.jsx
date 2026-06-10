@@ -5,12 +5,13 @@ import { TUTORIAL_PUZZLE_1, TUTORIAL_PUZZLE_2 } from './data/tutorialPuzzle.js'
 import GameScreen from './GameScreen.jsx'
 import IntroModal from './components/IntroModal.jsx'
 import SettingsModal, { AboutModal } from './components/SettingsModal.jsx'
+import ArchiveModal from './components/ArchiveModal.jsx'
 
 const INTRO_SEEN_KEY = 'guesstory-intro-seen'
 const TUTORIAL_SEEN_KEY = 'guesstory-tutorial-v2'
 
 export default function App() {
-  const { puzzle, error, isArchive } = usePuzzle()
+  const { puzzle, dateKey, setDateKey, error, isArchive } = usePuzzle()
   const { scheme, mode, setScheme, setMode } = useAppearance()
   const [tutorialDone, setTutorialDone] = useState(() => !!localStorage.getItem(TUTORIAL_SEEN_KEY))
   const [tutorialPhase, setTutorialPhase] = useState(1)
@@ -18,6 +19,7 @@ export default function App() {
   const [introOpen, setIntroOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [aboutOpen, setAboutOpen] = useState(false)
+  const [archiveOpen, setArchiveOpen] = useState(false)
 
   function completeTutorialPhase() {
     if (tutorialPhase === 1) {
@@ -171,20 +173,34 @@ export default function App() {
         </p>
       </div>
 
-      <GameScreen key={puzzle.id} puzzle={puzzle} onOpenIntro={openIntro} onOpenSettings={() => setSettingsOpen(true)} onOpenAbout={() => setAboutOpen(true)} />
+      <GameScreen 
+        key={puzzle.id} 
+        puzzle={puzzle} 
+        isArchive={isArchive}
+        onOpenIntro={openIntro} 
+        onOpenSettings={() => setSettingsOpen(true)} 
+        onOpenAbout={() => setAboutOpen(true)} 
+        onOpenArchive={() => setArchiveOpen(true)}
+        onJumpToToday={() => {
+          const today = new Date().toISOString().split('T')[0]
+          if (AVAILABLE_DATES.includes(today)) setDateKey(today)
+        }}
+      />
       {isArchive && (
         <div className="fixed bottom-4 left-0 right-0 flex justify-center z-40 pointer-events-none">
-          <span
-            className="text-xs px-3 py-1 rounded-full tracking-wide"
-            style={{ color: 'var(--color-text-faint)', background: 'var(--color-bg-elevated)' }}
+          <button
+            onClick={() => setArchiveOpen(true)}
+            className="pointer-events-auto text-xs px-3 py-1 rounded-full tracking-wide active:scale-95 transition-transform"
+            style={{ color: 'var(--color-text-faint)', background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }}
           >
             from the archives
-          </span>
+          </button>
         </div>
       )}
       {introOpen && <IntroModal onClose={closeIntro} onReplayTutorial={replayTutorial} />}
       {settingsOpen && <SettingsModal scheme={scheme} mode={mode} onScheme={setScheme} onMode={setMode} onClose={() => setSettingsOpen(false)} />}
       {aboutOpen && <AboutModal mode={mode} onClose={() => setAboutOpen(false)} />}
+      {archiveOpen && <ArchiveModal activeDate={dateKey} onSelect={setDateKey} onClose={() => setArchiveOpen(false)} />}
     </>
   )
 }

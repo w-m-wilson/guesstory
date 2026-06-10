@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { DIFFICULTY_CONFIG } from '../config.js'
 import { modalScrimBackground } from '../utils/modalScrim.js'
+import ConfirmModal from './ConfirmModal.jsx'
+import { AVAILABLE_DATES } from '../data/puzzles/available.js'
 
 function MissTracker({ misses, difficulty = 'medium' }) {
   const cfg = DIFFICULTY_CONFIG[difficulty] ?? DIFFICULTY_CONFIG.medium
@@ -47,7 +49,7 @@ function pickNextPhrase(current) {
   return pool[Math.floor(Math.random() * pool.length)]
 }
 
-export default function Header({ categoryText, categoryAutoReveal, categoryHint, categoryMisses, difficulty = 'medium', onGuessCategory, onOpenIntro, onOpenSettings, onOpenAbout, onOpenDifficultyPicker, onReset }) {
+export default function Header({ categoryText, categoryAutoReveal, categoryHint, categoryMisses, difficulty = 'medium', isArchive, onGuessCategory, onOpenIntro, onOpenSettings, onOpenAbout, onOpenArchive, onJumpToToday, onOpenDifficultyPicker, onReset }) {
   const [guessing, setGuessing] = useState(false)
   const [sheetClosing, setSheetClosing] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -237,11 +239,31 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                 pointerEvents: menuOpen ? 'auto' : 'none',
               }}
             >
+                {isArchive && onJumpToToday && (
+                  <button
+                    onClick={() => { closeMenu(); onJumpToToday() }}
+                    className="w-full flex items-center px-4 py-3 text-sm text-left"
+                    style={{ color: 'var(--color-dot-correct)', borderBottom: '1px solid var(--color-border)', gap: '10px' }}
+                  >
+                    <span style={{ width: '16px', textAlign: 'center', opacity: 0.8, flexShrink: 0 }}>★</span>
+                    <span className="font-bold">Today's Puzzle</span>
+                  </button>
+                )}
+                {onOpenArchive && (
+                  <button
+                    onClick={() => { closeMenu(); onOpenArchive() }}
+                    className="w-full flex items-center px-4 py-3 text-sm text-left"
+                    style={{ color: 'var(--color-text)', gap: '10px' }}
+                  >
+                    <span style={{ width: '16px', textAlign: 'center', opacity: 0.55, flexShrink: 0 }}>🏛</span>
+                    <span>The Archives</span>
+                  </button>
+                )}
                 {onOpenIntro && (
                   <button
                     onClick={() => { closeMenu(); onOpenIntro() }}
                     className="w-full flex items-center px-4 py-3 text-sm text-left"
-                    style={{ color: 'var(--color-text)', gap: '10px' }}
+                    style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)', gap: '10px' }}
                   >
                     <span style={{ width: '16px', textAlign: 'center', opacity: 0.55, flexShrink: 0 }}>?</span>
                     <span>How to play</span>

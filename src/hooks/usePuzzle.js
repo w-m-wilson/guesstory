@@ -1,16 +1,9 @@
 import { useState, useEffect } from 'react';
+import { AVAILABLE_DATES } from '../data/puzzles/available.js';
 
 function getTodayKey() {
   return new Date().toISOString().split('T')[0]; // YYYY-MM-DD
 }
-
-const AVAILABLE_DATES = [
-  '2026-04-01','2026-04-02','2026-04-03','2026-04-04','2026-04-05',
-  '2026-04-06','2026-04-07','2026-04-08','2026-04-09','2026-04-10',
-  '2026-04-11','2026-04-12','2026-04-13','2026-04-14','2026-04-15',
-  '2026-04-16','2026-04-17','2026-04-18','2026-04-19','2026-04-20',
-  '2026-04-21','2026-04-22','2026-04-23',
-];
 
 function pickRandomDate() {
   return AVAILABLE_DATES[Math.floor(Math.random() * AVAILABLE_DATES.length)];
@@ -27,29 +20,31 @@ function getOrPickFallbackDate() {
 }
 
 /**
- * Loads today's puzzle from /src/data/puzzles/YYYY-MM-DD.json.
- * Falls back to a stable session-scoped archive puzzle when no current-date puzzle exists.
- * Returns { puzzle, dateKey, error }.
+ * Loads a puzzle by dateKey from /src/data/puzzles/YYYY-MM-DD.json.
+ * Defaults to today's puzzle, falls back to a stable session-scoped archive puzzle.
+ * Returns { puzzle, dateKey, setDateKey, error, isArchive }.
  */
 export function usePuzzle() {
   const [puzzle, setPuzzle] = useState(null);
   const [error, setError] = useState(null);
-  const [dateKey, setDateKey] = useState(getTodayKey());
-  const [isArchive, setIsArchive] = useState(false);
+  const [dateKey, setDateKey] = useState(() => {
+    const today = getTodayKey();
+    if (AVAILABLE_DATES.includes(today)) return today;
+    return getOrPickFallbackDate();
+  });
+
+  const today = getTodayKey();
+  const isArchive = dateKey !== today;
 
   useEffect(() => {
-    const today = getTodayKey();
-    import(`../data/puzzles/${today}.json`)
+    setPuzzle(null);
+    setError(null);
+    import(`../data/puzzles/${dateKey}.json`)
       .then(mod => setPuzzle(mod.default))
       .catch(() => {
-        const fallback = getOrPickFallbackDate();
-        setDateKey(fallback);
-        setIsArchive(true);
-        import(`../data/puzzles/${fallback}.json`)
-          .then(mod => setPuzzle(mod.default))
-          .catch(() => setError(`No puzzle found for ${today}`));
+        setError(`No puzzle found for ${dateKey}`);
       });
-  }, []);
+  }, [dateKey]);
 
-  return { puzzle, dateKey, error, isArchive };
+  return { puzzle, dateKey, setDateKey, error, isArchive };
 }

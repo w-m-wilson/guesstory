@@ -51,6 +51,7 @@ import ScoreBar from './components/ScoreBar.jsx'
 import HintModal from './components/HintModal.jsx'
 import EndScreen from './components/EndScreen.jsx'
 import TutorialBanner from './components/TutorialBanner.jsx'
+import ConfirmModal from './components/ConfirmModal.jsx'
 
 const DIFFICULTY_META = {
   lite:      { label: 'Lite',      blurb: 'Most answers given — focus on the ranking order' },
@@ -96,8 +97,9 @@ function DifficultySelector({ current, onSelect }) {
   )
 }
 
-export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onOpenAbout, onComplete, isTutorial, tutorialMode = 'learn' }) {
+export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onOpenAbout, onOpenArchive, onJumpToToday, isArchive, onComplete, isTutorial, tutorialMode = 'learn' }) {
   const [hintsOpen, setHintsOpen] = useState(false)
+  const [confirmResetOpen, setConfirmResetOpen] = useState(false)
   const pickerTriggerRef = useRef(null)
   const [endScreenDismissed, setEndScreenDismissed] = useState(false)
   const [bonusGuessDone, setBonusGuessDone] = useState(false)
@@ -213,13 +215,17 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onOpen
         categoryHint={puzzle.hint ?? null}
         categoryMisses={state.categoryMisses}
         difficulty={difficulty}
+        isArchive={isArchive}
         onGuessCategory={guessCategory}
         onOpenIntro={onOpenIntro}
         onOpenSettings={onOpenSettings}
         onOpenAbout={onOpenAbout}
+        onOpenArchive={onOpenArchive}
+        onJumpToToday={onJumpToToday}
         onOpenDifficultyPicker={canSwitch ? () => pickerTriggerRef.current?.() : undefined}
-        onReset={isTutorial ? undefined : () => { resetGame(); setSelectorDismissed(false) }}
+        onReset={isTutorial ? undefined : () => setConfirmResetOpen(true)}
       />
+
 
       {isTutorial && tutorialStep !== null && (
         <TutorialBanner
@@ -326,6 +332,19 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onOpen
           }
           onComplete={onComplete}
           completeCTA={isTutorial && tutorialMode === 'learn' ? 'Play tutorial game 2 →' : undefined}
+        />
+      )}
+
+      {confirmResetOpen && (
+        <ConfirmModal
+          title="Reset puzzle?"
+          message="This will clear all your progress for this puzzle. You'll start back at 100 coins."
+          confirmLabel="Reset"
+          onConfirm={() => {
+            resetGame()
+            setSelectorDismissed(false)
+          }}
+          onClose={() => setConfirmResetOpen(false)}
         />
       )}
     </div>
