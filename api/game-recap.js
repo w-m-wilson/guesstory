@@ -1,12 +1,18 @@
 import Anthropic from '@anthropic-ai/sdk'
+import { sanitizeStr } from './_sanitize.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
+  if (req.headers['x-api-key'] !== process.env.API_SECRET) return res.status(401).end()
 
   const { attempts, coins, won, category, difficulty, categoryGuessed } = req.body
   if (!category) return res.status(400).json({ error: 'Missing fields' })
   if (typeof category !== 'string' || category.length > 300) return res.status(400).json({ error: 'Invalid input' })
   if (difficulty !== undefined && !['lite', 'medium', 'challenge'].includes(difficulty)) return res.status(400).json({ error: 'Invalid input' })
+  if (attempts !== undefined && (!Number.isInteger(attempts) || attempts < 0)) return res.status(400).json({ error: 'Invalid input' })
+  if (coins !== undefined && (!Number.isInteger(coins) || coins < 0)) return res.status(400).json({ error: 'Invalid input' })
+
+  const safeCategory = sanitizeStr(category)
 
   try {
     const client = new Anthropic()
@@ -15,7 +21,7 @@ export default async function handler(req, res) {
       max_tokens: 100,
       system:
         `You are writing a 1–2 sentence recap of a player's game in Guesstory, a daily ranking puzzle. ` +
-        `The puzzle's category: "${category}". ` +
+        `The puzzle's category: "${safeCategory}". ` +
         `Difficulty context — use this to calibrate your tone:\n` +
         `  Lite: forgiving scoring, answers seeded. 90+ coins = fine. 70+ = decent.\n` +
         `  Medium: standard. 90+ coins = good. 80+ = solid. Below 60 = rough.\n` +

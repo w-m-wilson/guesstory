@@ -1,16 +1,21 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { matchCategory } from '../src/utils/matcher.js'
+import { sanitizeStr } from './_sanitize.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end()
+  if (req.headers['x-api-key'] !== process.env.API_SECRET) return res.status(401).end()
 
   const { query, category } = req.body
   if (!query || !category) return res.status(400).json({ error: 'Missing fields' })
   if (typeof query !== 'string' || query.length > 200) return res.status(400).json({ error: 'Invalid input' })
   if (typeof category !== 'string' || category.length > 300) return res.status(400).json({ error: 'Invalid input' })
 
+  const safeQuery = sanitizeStr(query)
+  const safeCategory = sanitizeStr(category)
+
   try {
-    const local = matchCategory(query, category)
+    const local = matchCategory(safeQuery, safeCategory)
     if (local.matched) {
       return res.json({ matched: true, warm: false, cold: false, hint: null })
     }
@@ -39,7 +44,7 @@ export default async function handler(req, res) {
         `Hints: 1–2 sentences, warm and encouraging, never robotic, never reveal the answer.`,
       messages: [{
         role: 'user',
-        content: `Category: "${category}"\nPlayer's guess: "${query}"`,
+        content: `Category: "${safeCategory}"\nPlayer's guess: "${safeQuery}"`,
       }],
     })
 

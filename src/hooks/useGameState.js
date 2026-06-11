@@ -437,7 +437,7 @@ export function useGameState(puzzle, initialDifficulty = 'medium', { isTutorial 
     try {
       const res = await fetch('/api/check-category', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-api-key': import.meta.env.VITE_API_SECRET },
         body: JSON.stringify({ query, category: puzzle.category }),
       });
       if (res.ok) {
