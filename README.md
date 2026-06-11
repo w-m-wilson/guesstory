@@ -56,3 +56,7 @@ Three env vars are required (see `.env.example`):
 - `VITE_API_SECRET` — same value as `API_SECRET`
 
 All game parameters (costs, thresholds, hint prices) are in `src/config.js`.
+
+## License
+
+[CC BY-NC 4.0](LICENSE) — free to use and adapt for non-commercial purposes. Commercial use is not permitted.
