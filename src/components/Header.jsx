@@ -176,6 +176,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
     <>
       <header
         className="shrink-0"
+        style={{ overflow: 'visible' }}
       >
         <div className="flex items-center px-4 py-4">
           {/* Left: wordmark */}
