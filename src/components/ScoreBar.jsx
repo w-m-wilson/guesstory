@@ -65,12 +65,9 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
       {!hideDifficulty && (
         <div ref={pickerRef} className="absolute bottom-full left-4 z-[46] pb-2">
           <div
-            className="rounded-xl overflow-hidden"
             style={{
-              background: 'var(--color-bg-elevated)',
-              border: '1px solid var(--color-border)',
               minWidth: '200px',
-              boxShadow: '0 -4px 20px rgba(0,0,0,0.22)',
+              filter: pickerOpen ? 'drop-shadow(0 -4px 12px rgba(0,0,0,0.22))' : 'none',
               transformOrigin: 'bottom left',
               transition: pickerOpen
                 ? 'opacity 220ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0ms'
@@ -79,6 +76,12 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
               transform: pickerOpen ? 'scale(1) translateY(0)' : 'scale(0.92) translateY(8px)',
               visibility: pickerOpen ? 'visible' : 'hidden',
               pointerEvents: pickerOpen ? 'auto' : 'none',
+            }}
+          >
+          <div
+            style={{
+              background: 'var(--color-bg-elevated)',
+              clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%, 8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px))',
             }}
           >
             <p className="text-[10px] font-black tracking-widest uppercase px-4 pt-3 pb-1" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
@@ -97,6 +100,7 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
                 </div>
               </button>
             ))}
+          </div>
           </div>
         </div>
       )}

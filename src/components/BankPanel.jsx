@@ -228,9 +228,10 @@ export default function BankPanel({
               })() : {
                 background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)',
                 color: 'var(--color-text)',
-                border: '1px solid color-mix(in srgb, var(--color-text) 28%, var(--color-bg))',
+                border: 'none',
+                boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.15)',
                 fontSize: '16px',
-                transition: 'box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease',
+                transition: 'box-shadow 0.2s ease, background 0.2s ease',
               }}
               autoComplete="off"
               autoCorrect="on"
@@ -292,9 +293,9 @@ export default function BankPanel({
                             style={{
                               background: placed
                                 ? 'linear-gradient(to bottom, color-mix(in srgb, white 14%, var(--color-pill)) 0%, var(--color-pill) 55%, color-mix(in srgb, black 12%, var(--color-pill)) 100%)'
-                                : 'linear-gradient(to bottom, color-mix(in srgb, white 8%, var(--color-bg-elevated)) 0%, var(--color-bg-elevated) 55%, color-mix(in srgb, black 6%, var(--color-bg-elevated)) 100%)',
+                                : 'linear-gradient(to bottom, color-mix(in srgb, white 18%, var(--color-bg-elevated)) 0%, var(--color-bg-elevated) 55%, color-mix(in srgb, black 12%, var(--color-bg-elevated)) 100%)',
                               color: placed ? 'var(--color-pill-text)' : 'var(--color-text)',
-                              border: nudge ? '1px solid transparent' : placed ? '1px solid color-mix(in srgb, white 20%, var(--color-pill))' : '1px solid var(--color-border)',
+                              border: 'none',
                             }}
                           >
                             {item.seeded && <span className="text-xs" style={{ color: placed ? 'var(--color-pill-text)' : 'var(--color-text-faint)' }}>★</span>}

@@ -232,12 +232,10 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
               ))}
             </button>
             <div
-              className="absolute right-0 top-full mt-2 z-50 rounded-xl overflow-hidden"
+              className="absolute right-0 top-full mt-2 z-50"
               style={{
-                background: 'var(--color-bg-elevated)',
-                border: '1px solid var(--color-border)',
                 minWidth: '160px',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.22)',
+                filter: menuOpen ? 'drop-shadow(0 4px 12px rgba(0,0,0,0.22))' : 'none',
                 transformOrigin: 'top right',
                 transition: menuOpen
                   ? 'opacity 220ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0ms'
@@ -246,6 +244,12 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                 transform: menuOpen ? 'scale(1) translateY(0)' : 'scale(0.92) translateY(-8px)',
                 visibility: menuOpen ? 'visible' : 'hidden',
                 pointerEvents: menuOpen ? 'auto' : 'none',
+              }}
+            >
+            <div
+              style={{
+                background: 'var(--color-bg-elevated)',
+                clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%, 8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px))',
               }}
             >
                 {isArchive && onJumpToToday && (
@@ -318,6 +322,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                     <span>Reset game</span>
                   </button>
                 )}
+            </div>
             </div>
           </div>
         </div>

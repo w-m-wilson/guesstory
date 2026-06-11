@@ -129,7 +129,7 @@ export default function App() {
           className="fixed bottom-4 left-0 right-0 flex justify-center z-40 pointer-events-none"
         >
           <button
-            className="pointer-events-auto text-xs px-3 py-1 rounded-full"
+            className="pointer-events-auto text-xs px-3 py-1 bit-btn"
             style={{ color: 'var(--color-text-faint)', background: 'var(--color-bg-elevated)' }}
             onClick={() => {
               localStorage.removeItem('guesstory-state-tutorial-1')
