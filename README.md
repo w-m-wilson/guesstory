@@ -39,14 +39,20 @@ Run out of coins and it's game over. Final score = coins remaining.
 
 ## Puzzle format
 
-Puzzles are static JSON files in `src/data/puzzles/YYYY-MM-DD.json`. See `agent.md` for the full schema and game design reference.
+Puzzles are static JSON files in `src/data/puzzles/YYYY-MM-DD.json`. Each file has a `bank` of 8–10 ranked items (with `aliases`), `seed`/`liteSeed`/`challengeSeed` arrays for pre-revealed items per difficulty, a `topFive` array of rank values defining the target, a `category` string, a `hint` fallback clue, and a `source` URL.
 
 ## Dev
 
 ```bash
 npm install
+cp .env.example .env.local   # fill in your keys
 npm run dev      # localhost:5173
 npm run build    # production build → dist/
 ```
+
+Three env vars are required (see `.env.example`):
+- `ANTHROPIC_API_KEY` — from console.anthropic.com
+- `API_SECRET` — any random string (e.g. `openssl rand -hex 32`)
+- `VITE_API_SECRET` — same value as `API_SECRET`
 
 All game parameters (costs, thresholds, hint prices) are in `src/config.js`.
