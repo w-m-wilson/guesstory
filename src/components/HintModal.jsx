@@ -29,7 +29,7 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, catego
       try {
         const res = await fetch('/api/category-nudge', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'x-api-key': import.meta.env.VITE_API_SECRET },
           body: JSON.stringify({ category, difficulty }),
         })
         const data = res.ok ? await res.json() : null
