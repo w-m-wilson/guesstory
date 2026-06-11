@@ -348,20 +348,18 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
           <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none', ...(sheetClosing ? { opacity: 0, transition: 'opacity 0.2s cubic-bezier(0.4, 0, 1, 1)' } : { animation: 'scrimIn 0.22s ease' }) }} />
           <div
             className={sheetClosing ? 'slide-down-exit' : 'slide-down'}
+            style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '430px', filter: 'drop-shadow(0 6px 16px rgba(0,0,0,0.3)) drop-shadow(0 2px 4px rgba(0,0,0,0.15))' }}
+            onClick={e => e.stopPropagation()}
+          >
+          <div
             style={{
-              width: '100%',
-              maxWidth: '430px',
               paddingTop: 'calc(env(safe-area-inset-top, 0px) + 2rem)',
               paddingBottom: '2.5rem',
               paddingLeft: '1.5rem',
               paddingRight: '1.5rem',
               background: 'var(--color-bg)',
-              borderBottom: '1px solid var(--color-border)',
-              borderRadius: '0 0 1.5rem 1.5rem',
-              position: 'relative',
-              zIndex: 1,
+              clipPath: 'polygon(0% 0%, 100% 0%, 100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%, 8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px))',
             }}
-            onClick={e => e.stopPropagation()}
           >
             {/* Sheet header */}
             <div className="flex items-start justify-between" style={{ marginBottom: '1.25rem' }}>
@@ -425,6 +423,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                 {lastHint.text}
               </p>
             )}
+          </div>
           </div>
         </div>
       )}

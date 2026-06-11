@@ -22,8 +22,8 @@ function TutorialPrimerModal({ primerKey, onClose }) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-xs rounded-2xl p-6 dialog-enter"
-        style={{ background: 'var(--color-bg)' }}
+        className="w-full max-w-xs p-6 dialog-enter"
+        style={{ background: 'var(--color-bg)', clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%, 8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px))' }}
         onClick={e => e.stopPropagation()}
       >
         {icon && <div className="text-2xl mb-3 text-center" aria-hidden="true">{icon}</div>}

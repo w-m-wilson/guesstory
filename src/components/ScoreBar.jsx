@@ -115,7 +115,7 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
           <span
             key={coins}
             className="coin-pulse text-xl font-bold tabular-nums"
-            style={{ color: 'var(--color-dot-present)', fontFamily: "'VT323', monospace", fontSize: '1.5rem', lineHeight: 1 }}
+            style={{ color: 'var(--color-dot-present)', fontSize: '1.1rem', lineHeight: 1 }}
           >
             {coins}
           </span>
@@ -133,11 +133,10 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
           {!hideDifficulty && (
             <button
               onClick={canSwitch ? () => setPickerOpen(p => !p) : undefined}
-              className="text-[10px] font-black tracking-widest rounded-md px-2 py-0.5"
+              className="text-[10px] font-black tracking-widest bit-btn px-2 py-0.5"
               style={{
                 color: 'var(--color-text-strong)',
-                background: 'var(--color-bg-elevated)',
-                border: '1.5px solid var(--color-border)',
+                background: 'linear-gradient(to bottom, color-mix(in srgb, white 18%, var(--color-bg-elevated)) 0%, var(--color-bg-elevated) 55%, color-mix(in srgb, black 12%, var(--color-bg-elevated)) 100%)',
                 cursor: canSwitch ? 'pointer' : 'default',
               }}
               aria-label={canSwitch ? 'Change difficulty' : `Difficulty: ${DIFFICULTY_NAMES[difficulty]}`}
@@ -154,9 +153,8 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
               onClick={onOpenArchive}
               className="flex items-center gap-1 px-3 py-1.5 bit-btn text-sm font-medium"
               style={{
-                background: 'var(--color-bg-elevated)',
+                background: 'linear-gradient(to bottom, color-mix(in srgb, white 18%, var(--color-bg-elevated)) 0%, var(--color-bg-elevated) 55%, color-mix(in srgb, black 12%, var(--color-bg-elevated)) 100%)',
                 color: 'var(--color-text-faint)',
-                border: '1px solid var(--color-border)',
               }}
             >
               {isArchive ? 'Archive' : "Today's"}
@@ -167,9 +165,8 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
               onClick={onShowResults}
               className="flex items-center gap-1 px-3 py-1.5 bit-btn text-sm font-medium"
               style={{
-                background: 'var(--color-bg-elevated)',
+                background: 'linear-gradient(to bottom, color-mix(in srgb, white 18%, var(--color-bg-elevated)) 0%, var(--color-bg-elevated) 55%, color-mix(in srgb, black 12%, var(--color-bg-elevated)) 100%)',
                 color: 'var(--color-text)',
-                border: '1px solid var(--color-border)',
               }}
             >
               Results
@@ -179,9 +176,8 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
               onClick={onHintsOpen}
               className={`flex items-center gap-1 px-3 py-1.5 bit-btn text-sm font-medium overflow-hidden${hintsGlinting ? ' hints-glint' : ''}`}
               style={{
-                background: 'var(--color-bg-elevated)',
+                background: 'linear-gradient(to bottom, color-mix(in srgb, white 18%, var(--color-bg-elevated)) 0%, var(--color-bg-elevated) 55%, color-mix(in srgb, black 12%, var(--color-bg-elevated)) 100%)',
                 color: 'var(--color-text)',
-                border: '1px solid var(--color-border)',
               }}
             >
               Hints

@@ -34,11 +34,13 @@ export default function ConfirmModal({ title, message, confirmLabel, onConfirm, 
         }} 
       />
       <div
-        className={`w-full max-w-xs rounded-2xl p-6 text-center${closing ? '' : ' dialog-enter'}`}
-        style={{ 
-          background: 'var(--color-bg)', 
-          position: 'relative', 
-          zIndex: 1,
+        style={{ position: 'relative', zIndex: 1, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.35)) drop-shadow(0 2px 6px rgba(0,0,0,0.2))' }}
+      >
+      <div
+        className={`w-full max-w-xs p-6 text-center${closing ? '' : ' dialog-enter'}`}
+        style={{
+          background: 'var(--color-bg)',
+          clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%, 8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px))',
           ...(closing ? { opacity: 0, transform: 'scale(0.95) translateY(6px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {})
         }}
         onClick={e => e.stopPropagation()}
@@ -83,6 +85,7 @@ export default function ConfirmModal({ title, message, confirmLabel, onConfirm, 
             </button>
           )}
         </div>
+      </div>
       </div>
     </div>
   )

@@ -73,9 +73,10 @@ export default function IntroModal({ onClose, onReplayTutorial }) {
       style={{ background: modalScrimBackground({ variant: 'dialog' }), ...(closing ? { opacity: 0, transition: `opacity ${EXIT_MS}ms ease` } : { animation: 'scrimIn 0.2s ease' }) }}
       onClick={() => close()}
     >
+      <div style={{ filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.35)) drop-shadow(0 2px 6px rgba(0,0,0,0.2))' }}>
       <div
-        className={`w-full max-w-sm rounded-2xl flex flex-col${closing ? '' : ' dialog-enter'}`}
-        style={{ background: 'var(--color-bg)', maxHeight: '85dvh', ...(closing ? { opacity: 0, transform: 'scale(0.95) translateY(6px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
+        className={`w-full max-w-sm flex flex-col${closing ? '' : ' dialog-enter'}`}
+        style={{ background: 'var(--color-bg)', maxHeight: '85dvh', clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%, 8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px))', ...(closing ? { opacity: 0, transform: 'scale(0.95) translateY(6px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
@@ -169,6 +170,7 @@ export default function IntroModal({ onClose, onReplayTutorial }) {
             </button>
           )}
         </div>
+      </div>
       </div>
     </div>
   )

@@ -72,13 +72,14 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
         }} 
       />
       <div
-        className={`w-full max-w-[430px] rounded-t-3xl flex flex-col max-h-[85dvh] overflow-hidden${closing ? '' : ' sheet-enter'}`}
-        style={{ 
-          background: 'var(--color-bg)', 
-          position: 'relative', 
-          zIndex: 1, 
+        className={`w-full max-w-[430px] flex flex-col max-h-[85dvh] overflow-hidden${closing ? '' : ' sheet-enter'}`}
+        style={{
+          background: 'var(--color-bg)',
+          position: 'relative',
+          zIndex: 1,
           touchAction: 'pan-y',
-          ...(closing ? { opacity: 0, transform: 'translateY(24px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) 
+          clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% 100%, 0% 100%)',
+          ...(closing ? { opacity: 0, transform: 'translateY(24px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {})
         }}
         onClick={e => e.stopPropagation()}
       >
@@ -123,65 +124,73 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
               const isActive = p.date === activeDate
               const isToday = p.isToday
               
-              let bgColor = 'transparent'
-              let borderColor = 'var(--color-border)'
-              let textColor = 'var(--color-text)'
-              let borderStyle = 'solid'
-              let statusLabel = null
+              const CHAMFER = 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%, 8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px))'
+
+              let cardBg, cardBorder, cardShadow, textColor, subColor
 
               if (p.status === 'unattempted') {
+                cardBg = 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)'
+                cardBorder = '1px solid color-mix(in srgb, var(--color-text) 22%, var(--color-bg))'
+                cardShadow = 'inset 0 1px 3px rgba(0,0,0,0.12)'
                 textColor = 'var(--color-text-faint)'
-                borderStyle = 'dashed'
+                subColor = 'var(--color-text-faint)'
               } else if (p.status === 'in-progress') {
-                borderColor = 'var(--color-dot-present)'
-                textColor = 'var(--color-dot-present)'
-              } else if (p.status === 'completed') {
-                bgColor = 'var(--color-dot-correct)'
-                borderColor = 'var(--color-dot-correct)'
-                textColor = 'var(--color-bg)'
+                cardBg = 'linear-gradient(to bottom, color-mix(in srgb, white 18%, var(--color-bg-elevated)) 0%, var(--color-bg-elevated) 55%, color-mix(in srgb, black 12%, var(--color-bg-elevated)) 100%)'
+                cardBorder = 'none'
+                cardShadow = 'none'
+                textColor = 'var(--color-text-strong)'
+                subColor = 'var(--color-text-faint)'
+              } else {
+                cardBg = 'linear-gradient(to bottom, color-mix(in srgb, white 14%, var(--color-action)) 0%, var(--color-action) 55%, color-mix(in srgb, black 12%, var(--color-action)) 100%)'
+                cardBorder = 'none'
+                cardShadow = 'none'
+                textColor = 'var(--color-action-text)'
+                subColor = 'var(--color-action-text)'
               }
 
-              return (
+              const card = (
                 <button
                   key={p.date}
                   onClick={() => { onSelect(p.date); close() }}
-                  className={`relative flex flex-col items-center justify-center py-5 rounded-2xl transition-all active:scale-95 ${isActive ? 'ring-2 ring-offset-2' : ''}`}
+                  className="relative w-full flex flex-col items-center justify-center py-5 transition-all active:scale-95"
                   style={{
-                    background: bgColor,
-                    border: `1.5px ${borderStyle} ${borderColor}`,
+                    background: cardBg,
+                    border: cardBorder,
+                    boxShadow: cardShadow,
                     color: textColor,
-                    boxShadow: isActive ? '0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-action)' : 'none'
+                    clipPath: CHAMFER,
                   }}
                 >
                   {isToday && (
-                    <span 
-                      className="absolute top-2 left-2 text-[9px] uppercase font-black tracking-widest px-1.5 py-0.5 rounded-md"
-                      style={{ 
-                        background: p.status === 'completed' ? 'rgba(255,255,255,0.2)' : 'var(--color-bg-elevated)',
-                        color: p.status === 'completed' ? 'var(--color-bg)' : 'var(--color-action)' 
+                    <span
+                      className="absolute top-2 left-2 text-[9px] uppercase font-black tracking-widest px-1.5 py-0.5"
+                      style={{
+                        background: p.status === 'completed' ? 'rgba(255,255,255,0.2)' : 'var(--color-bg)',
+                        color: p.status === 'completed' ? 'var(--color-action-text)' : 'var(--color-action)',
+                        clipPath: CHAMFER,
                       }}
                     >
                       Today
                     </span>
                   )}
-                  
-                  <span className="text-lg font-bold">
-                    {formatDate(p.date)}
-                  </span>
-                  <span 
-                    className="text-[10px] uppercase tracking-tighter mt-1 opacity-70 font-medium"
-                  >
+
+                  <span className="text-lg font-bold">{formatDate(p.date)}</span>
+                  <span className="text-[10px] uppercase tracking-tighter mt-1 opacity-70 font-medium" style={{ color: subColor }}>
                     {p.status === 'completed' ? 'Completed' : p.status === 'in-progress' ? 'In Progress' : 'Unattempted'}
                   </span>
 
-                  {p.status === 'in-progress' && (
-                    <span 
+                  {isActive && (
+                    <span
                       className="absolute top-2 right-2 w-2 h-2 rounded-full"
-                      style={{ background: 'var(--color-dot-present)', animation: 'pulse 2s infinite' }}
+                      style={{ background: p.status === 'completed' ? 'var(--color-action-text)' : 'var(--color-action)', opacity: 0.7, animation: 'pulse 2s infinite' }}
                     />
                   )}
                 </button>
               )
+
+              return isActive
+                ? <div key={p.date} style={{ filter: 'drop-shadow(0 0 4px color-mix(in srgb, var(--color-action) 50%, transparent))', width: '100%' }}>{card}</div>
+                : <React.Fragment key={p.date}>{card}</React.Fragment>
             })}
           </div>
         </div>

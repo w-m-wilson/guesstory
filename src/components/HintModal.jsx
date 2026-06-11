@@ -62,8 +62,8 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, catego
       <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'sheet' }), pointerEvents: 'none', ...(closing ? { opacity: 0, transition: `opacity ${EXIT_MS}ms ease` } : { animation: 'scrimIn 0.2s ease' }) }} />
       {/* Card */}
       <div
-        className={`w-full max-w-[430px] rounded-t-2xl p-5 pb-8${closing ? '' : ' sheet-enter'}`}
-        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1, ...(closing ? { opacity: 0, transform: 'translateY(24px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
+        className={`w-full max-w-[430px] p-5 pb-8${closing ? '' : ' sheet-enter'}`}
+        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1, clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% 100%, 0% 100%)', ...(closing ? { opacity: 0, transform: 'translateY(24px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">

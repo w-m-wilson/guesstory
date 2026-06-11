@@ -47,9 +47,10 @@ function ScoreExplainerPopup({ feedback, onClose }) {
       onClick={onClose}
     >
       <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'dialog' }), pointerEvents: 'none' }} />
+      <div style={{ position: 'relative', zIndex: 1, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.35)) drop-shadow(0 2px 6px rgba(0,0,0,0.2))' }}>
       <div
-        className="w-full max-w-xs rounded-2xl p-5 fade-in"
-        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1 }}
+        className="w-full max-w-xs p-5 fade-in"
+        style={{ background: 'var(--color-bg)', clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%, 8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px))' }}
         onClick={e => e.stopPropagation()}
       >
         <div
@@ -84,6 +85,7 @@ function ScoreExplainerPopup({ feedback, onClose }) {
         >
           Got it
         </button>
+      </div>
       </div>
     </div>,
     document.body,
@@ -336,7 +338,7 @@ function AttemptRow({ slots, feedback, attemptNumber, isFocused, onShowExplainer
         display: 'flex', alignItems: 'center', gap: '6px',
         transition: 'background 0.38s cubic-bezier(0.22,1,0.36,1)',
       }}>
-        <span className="shrink-0" style={{ fontFamily: "'VT323', monospace", fontSize: '0.85rem', color: 'var(--color-text-faint)', width: '0.9rem', textAlign: 'right' }}>
+        <span className="shrink-0" style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--color-text-faint)', width: '0.9rem', textAlign: 'right' }}>
           {attemptNumber}
         </span>
         <HistoryRankNamesTrack slots={slots} variant="history" />

@@ -82,9 +82,9 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
               <span
                 className="bit-circle shrink-0 flex items-center justify-center"
                 style={{
-                  fontFamily: "'VT323', monospace",
-                  fontSize: '1rem',
+                  fontSize: '0.7rem',
                   lineHeight: 1,
+                  fontWeight: 700,
                   color: 'var(--color-action-text)',
                   background: 'var(--color-dot-present)',
                   width: '1.4rem',
@@ -167,11 +167,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                       </span>
                     )}
                   </>
-                ) : (
-                  <span className="text-sm" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
-                    —
-                  </span>
-                )}
+                ) : null}
               </div>
             </div>
           )
