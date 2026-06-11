@@ -64,6 +64,9 @@ export function AboutModal({ mode, onClose }) {
   )
 }
 
+const CHAMFER_6 = 'polygon(0% 6px, 2px 4px, 4px 2px, 6px 0%, calc(100% - 6px) 0%, calc(100% - 4px) 2px, calc(100% - 2px) 4px, 100% 6px, 100% calc(100% - 6px), calc(100% - 2px) calc(100% - 4px), calc(100% - 4px) calc(100% - 2px), calc(100% - 6px) 100%, 6px 100%, 4px calc(100% - 2px), 2px calc(100% - 4px), 0% calc(100% - 6px))'
+const CHAMFER_4 = 'polygon(0% 4px, 2px 2px, 4px 0%, calc(100% - 4px) 0%, calc(100% - 2px) 2px, 100% 4px, 100% calc(100% - 4px), calc(100% - 2px) calc(100% - 2px), calc(100% - 4px) 100%, 4px 100%, 2px calc(100% - 2px), 0% calc(100% - 4px))'
+
 export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose }) {
   const [changed, setChanged] = React.useState(false)
   const [closing, setClosing] = React.useState(false)
@@ -101,15 +104,16 @@ export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose 
 
         {/* Mode picker */}
         <div
-          className="flex rounded-xl p-1 mb-4"
-          style={{ background: 'var(--color-bg-elevated)' }}
+          className="flex p-1 mb-4"
+          style={{ background: 'var(--color-bg-elevated)', clipPath: CHAMFER_6 }}
         >
           {MODES.map(({ key, label }) => (
             <button
               key={key}
               onClick={() => handleMode(key)}
-              className="flex-1 py-1.5 rounded-lg text-xs font-medium transition-colors"
+              className="flex-1 py-1.5 text-xs font-medium transition-colors"
               style={{
+                clipPath: mode === key ? CHAMFER_4 : 'none',
                 background: mode === key ? 'var(--color-bg)' : 'transparent',
                 color: mode === key ? 'var(--color-text-strong)' : 'var(--color-text-faint)',
                 boxShadow: mode === key ? '0 1px 3px rgba(0,0,0,0.12)' : 'none',
@@ -123,30 +127,37 @@ export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose 
         {/* Theme picker — horizontal grid of swatch cards */}
         <div className="grid grid-cols-5 gap-2">
           {SCHEMES.map(({ key, label }) => (
-            <button
+            // Outer wrapper acts as chamfered border when selected
+            <div
               key={key}
-              onClick={() => handleScheme(key)}
-              className="flex flex-col items-center gap-1.5 rounded-xl py-2.5 px-1"
               style={{
-                background: 'var(--color-bg-elevated)',
-                border: scheme === key
-                  ? '1.5px solid var(--color-text-strong)'
-                  : '1.5px solid transparent',
+                clipPath: CHAMFER_6,
+                background: scheme === key ? 'var(--color-text-strong)' : 'transparent',
+                padding: '1.5px',
               }}
             >
-              <div className="flex gap-1">
-                {SWATCHES[key].map((color, i) => (
-                  <div
-                    key={i}
-                    className="w-3.5 h-3.5 rounded-full"
-                    style={{ background: color, boxShadow: '0 0 0 1px rgba(0,0,0,0.08)' }}
-                  />
-                ))}
-              </div>
-              <span className="text-[10px] leading-none font-medium" style={{ color: 'var(--color-text-faint)' }}>
-                {label}
-              </span>
-            </button>
+              <button
+                onClick={() => handleScheme(key)}
+                className="flex flex-col items-center gap-1.5 py-2.5 px-1 w-full"
+                style={{
+                  clipPath: CHAMFER_6,
+                  background: 'var(--color-bg-elevated)',
+                }}
+              >
+                <div className="flex gap-1">
+                  {SWATCHES[key].map((color, i) => (
+                    <div
+                      key={i}
+                      className="w-3.5 h-3.5 rounded-full"
+                      style={{ background: color, boxShadow: '0 0 0 1px rgba(0,0,0,0.08)' }}
+                    />
+                  ))}
+                </div>
+                <span className="text-[10px] leading-none font-medium" style={{ color: 'var(--color-text-faint)' }}>
+                  {label}
+                </span>
+              </button>
+            </div>
           ))}
         </div>
 
