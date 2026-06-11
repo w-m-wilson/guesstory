@@ -3,6 +3,7 @@ import { DIFFICULTY_CONFIG } from '../config.js'
 import { modalScrimBackground } from '../utils/modalScrim.js'
 import ConfirmModal from './ConfirmModal.jsx'
 import { AVAILABLE_DATES } from '../data/puzzles/available.js'
+import { PixelCalendar, PixelArchive, PixelHelp, PixelAppearance, PixelAbout, PixelDifficulty, PixelReset } from './PixelMenuIcons.jsx'
 
 function MissTracker({ misses, difficulty = 'medium' }) {
   const cfg = DIFFICULTY_CONFIG[difficulty] ?? DIFFICULTY_CONFIG.medium
@@ -254,7 +255,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                     className="w-full flex items-center px-4 py-3 text-sm text-left"
                     style={{ color: 'var(--color-dot-correct)', borderBottom: '1px solid var(--color-border)', gap: '10px' }}
                   >
-                    <span style={{ width: '16px', textAlign: 'center', opacity: 0.8, flexShrink: 0 }}>★</span>
+                    <span style={{ width: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><PixelCalendar size={16} /></span>
                     <span className="font-bold">Today's Puzzle</span>
                   </button>
                 )}
@@ -264,7 +265,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                     className="w-full flex items-center px-4 py-3 text-sm text-left"
                     style={{ color: 'var(--color-text)', gap: '10px' }}
                   >
-                    <span style={{ width: '16px', textAlign: 'center', opacity: 0.55, flexShrink: 0 }}>▦</span>
+                    <span style={{ width: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><PixelArchive size={16} /></span>
                     <span>The Archives</span>
                   </button>
                 )}
@@ -274,7 +275,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                     className="w-full flex items-center px-4 py-3 text-sm text-left"
                     style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)', gap: '10px' }}
                   >
-                    <span style={{ width: '16px', textAlign: 'center', opacity: 0.55, flexShrink: 0 }}>?</span>
+                    <span style={{ width: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><PixelHelp size={16} /></span>
                     <span>How to play</span>
                   </button>
                 )}
@@ -284,7 +285,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                     className="w-full flex items-center px-4 py-3 text-sm text-left"
                     style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)', gap: '10px' }}
                   >
-                    <span style={{ width: '16px', textAlign: 'center', opacity: 0.55, flexShrink: 0 }}>◑</span>
+                    <span style={{ width: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><PixelAppearance size={16} /></span>
                     <span>Appearance</span>
                   </button>
                 )}
@@ -294,7 +295,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                     className="w-full flex items-center px-4 py-3 text-sm text-left"
                     style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)', gap: '10px' }}
                   >
-                    <span style={{ width: '16px', textAlign: 'center', opacity: 0.55, flexShrink: 0, fontWeight: 700 }}>i</span>
+                    <span style={{ width: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><PixelAbout size={16} /></span>
                     <span>About & Privacy</span>
                   </button>
                 )}
@@ -304,7 +305,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                     className="w-full flex items-center px-4 py-3 text-sm text-left"
                     style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)', gap: '10px' }}
                   >
-                    <span style={{ width: '16px', textAlign: 'center', opacity: 0.55, flexShrink: 0 }}>⬓</span>
+                    <span style={{ width: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><PixelDifficulty size={16} /></span>
                     <span>Difficulty</span>
                   </button>
                 )}
@@ -314,7 +315,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                     className="w-full flex items-center px-4 py-3 text-sm text-left"
                     style={{ color: 'var(--color-text)', borderTop: '1px solid var(--color-border)', gap: '10px' }}
                   >
-                    <span style={{ width: '16px', textAlign: 'center', opacity: 0.55, flexShrink: 0 }}>↺</span>
+                    <span style={{ width: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><PixelReset size={16} /></span>
                     <span>Reset game</span>
                   </button>
                 )}

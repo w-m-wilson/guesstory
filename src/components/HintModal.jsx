@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { DIFFICULTY_CONFIG } from '../config.js'
 import { modalScrimBackground } from '../utils/modalScrim.js'
+import PixelCoin from './PixelCoin.jsx'
 
 const HINT_DEFS = [
   { key: 'revealBankItem',            label: 'Reveal a bank item',        description: 'Add one undiscovered item to your bank' },
@@ -70,8 +71,8 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, catego
             Hints
           </span>
           <div className="flex items-center gap-3">
-            <span className="text-sm" style={{ color: 'var(--color-text-faint)' }}>
-              🪙 {coins}
+            <span className="text-sm flex items-center gap-1" style={{ color: 'var(--color-text-faint)' }}>
+              <PixelCoin size={14} /> {coins}
             </span>
             <button
               onClick={close}
@@ -117,10 +118,10 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, catego
                   </p>
                 </div>
                 <span
-                  className="text-sm font-semibold ml-3 shrink-0"
+                  className="text-sm font-semibold ml-3 shrink-0 flex items-center gap-1"
                   style={{ color: canAfford ? 'var(--color-text-strong)' : 'var(--color-text-faint)' }}
                 >
-                  🪙 {String(cost)}
+                  <PixelCoin size={14} /> {String(cost)}
                 </span>
               </button>
             )
