@@ -34,6 +34,7 @@ export default function BankPanel({
   const [animatingCircleIdx, setAnimatingCircleIdx] = useState(null)
   const [penaltyKey, setPenaltyKey] = useState(0)
   const [showLeftFade, setShowLeftFade] = useState(false)
+  const [showRightFade, setShowRightFade] = useState(false)
   const [showBankMsg, setShowBankMsg] = useState(false)
   const [rowFlashKey, setRowFlashKey] = useState(0)
   const [hasGuessed, setHasGuessed] = useState(false)
@@ -67,15 +68,16 @@ export default function BankPanel({
   }, [bankFull])
 
   useEffect(() => {
-    function updateLeftFade() {
+    function updateFades() {
       const node = bankScrollRef.current
       if (!node) return
       setShowLeftFade(node.scrollLeft > 0)
+      setShowRightFade(node.scrollLeft + node.clientWidth < node.scrollWidth - 1)
     }
 
-    updateLeftFade()
-    window.addEventListener('resize', updateLeftFade)
-    return () => window.removeEventListener('resize', updateLeftFade)
+    updateFades()
+    window.addEventListener('resize', updateFades)
+    return () => window.removeEventListener('resize', updateFades)
   }, [discoveredCount])
 
   function handleSubmit(e) {
@@ -264,11 +266,15 @@ export default function BankPanel({
 
       {/* Discovered items + ghost pills */}
       <div className="overflow-y-auto px-4 pt-2 pb-2" style={{ maxHeight: '40vh' }}>
-        <div className={`bank-scroll-wrap${showLeftFade ? ' bank-scroll-wrap--left-fade' : ''}`}>
+        <div className={`bank-scroll-wrap${showLeftFade ? ' bank-scroll-wrap--left-fade' : ''}${showRightFade ? ' bank-scroll-wrap--right-fade' : ''}`}>
           <div
             ref={bankScrollRef}
             className="bank-scroll-area"
-            onScroll={e => setShowLeftFade(e.currentTarget.scrollLeft > 0)}
+            onScroll={e => {
+              const n = e.currentTarget
+              setShowLeftFade(n.scrollLeft > 0)
+              setShowRightFade(n.scrollLeft + n.clientWidth < n.scrollWidth - 1)
+            }}
           >
             <div className="bank-scroll-grid">
               {[0, 1].map(rowIdx => {

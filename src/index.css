@@ -418,6 +418,12 @@ body {
 .bank-scroll-wrap::after {
   right: 0;
   background: linear-gradient(to left, var(--color-bg), transparent);
+  opacity: 0;
+  transition: opacity 0.15s ease-out;
+}
+
+.bank-scroll-wrap--right-fade::after {
+  opacity: 1;
 }
 
 .bank-scroll-wrap--left-fade::before {

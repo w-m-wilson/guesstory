@@ -11,18 +11,28 @@ function MissTracker({ misses, difficulty = 'medium' }) {
   const cost = cfg.category.missCost
   const burningCoins = misses >= free
   return (
-    <div className="flex items-center gap-1">
-      {!burningCoins ? (
-        Array.from({ length: free }).map((_, i) => (
-          <span
-            key={i}
-            className="text-xs"
-            style={{ color: i < misses ? 'var(--color-text-faint)' : 'var(--color-text-strong)' }}
-          >
-            {i < misses ? '○' : '●'}
-          </span>
-        ))
-      ) : (
+    <div className="flex items-center gap-1.5">
+      <div className="flex flex-col items-center gap-[3px]">
+        {Array.from({ length: free }).map((_, i) => {
+          const consumed = i < misses
+          return (
+            <span
+              key={i}
+              style={{
+                display: 'block',
+                width: '7px',
+                height: '7px',
+                background: consumed
+                  ? 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)'
+                  : 'var(--color-text-strong)',
+                border: `1px solid ${consumed ? 'color-mix(in srgb, var(--color-text) 22%, var(--color-bg))' : 'var(--color-text-strong)'}`,
+                boxShadow: consumed ? 'inset 0 1px 2px rgba(0,0,0,0.18)' : 'none',
+              }}
+            />
+          )
+        })}
+      </div>
+      {burningCoins && (
         <span className="text-xs" style={{ color: 'var(--color-text-faint)' }}>
           −{cost} coins/miss
         </span>
@@ -235,7 +245,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
               className="absolute right-0 top-full mt-2 z-50"
               style={{
                 minWidth: '160px',
-                filter: menuOpen ? 'drop-shadow(0 4px 12px rgba(0,0,0,0.22))' : 'none',
+                filter: menuOpen ? 'drop-shadow(0 6px 16px rgba(0,0,0,0.45)) drop-shadow(0 2px 4px rgba(0,0,0,0.25))' : 'none',
                 transformOrigin: 'top right',
                 transition: menuOpen
                   ? 'opacity 220ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0ms'
@@ -373,16 +383,9 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
               </button>
             </div>
 
-            {/* Miss tracker */}
-            <div className="flex items-center gap-2" style={{ marginBottom: '1.25rem' }}>
-              <span className="text-xs" style={{ color: 'var(--color-text-faint)' }}>
-                {categoryMisses === 0 ? 'Free guesses:' : 'Misses:'}
-              </span>
-              <MissTracker misses={categoryMisses} difficulty={difficulty} />
-            </div>
-
             {/* Input */}
-            <form onSubmit={handleSubmit} className="flex gap-2" style={{ marginBottom: lastHint ? '1.25rem' : 0 }}>
+            <form onSubmit={handleSubmit} className="flex gap-2 items-center" style={{ marginBottom: lastHint ? '1.25rem' : 0 }}>
+              <MissTracker misses={categoryMisses} difficulty={difficulty} />
               <input
                 ref={inputRef}
                 type="text"
@@ -391,9 +394,10 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                 placeholder="The theme is…"
                 className="flex-1 bit-input px-3 py-2.5 text-sm outline-none"
                 style={{
-                  background: 'linear-gradient(135deg, color-mix(in srgb, var(--color-text) 7%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 3%, var(--color-bg)) 30%, var(--color-bg) 65%)',
+                  background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)',
                   color: 'var(--color-text)',
-                  border: '1px solid color-mix(in srgb, var(--color-text) 18%, var(--color-bg))',
+                  border: 'none',
+                  boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.15)',
                   fontSize: '16px',
                 }}
                 autoComplete="off"
