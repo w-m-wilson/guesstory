@@ -332,12 +332,11 @@ function AttemptRow({ slots, feedback, attemptNumber, isFocused, onShowExplainer
       <div style={{
         background: isFocused ? 'var(--color-bg-elevated)' : 'transparent',
         borderRadius: '8px',
-        borderLeft: `3px solid ${accentColor}`,
         padding: '5px 8px',
         display: 'flex', alignItems: 'center', gap: '6px',
         transition: 'background 0.38s cubic-bezier(0.22,1,0.36,1)',
       }}>
-        <span className="tabular-nums shrink-0" style={{ fontSize: '9px', color: 'var(--color-text-faint)', width: '0.9rem', textAlign: 'right' }}>
+        <span className="shrink-0" style={{ fontFamily: "'VT323', monospace", fontSize: '0.85rem', color: 'var(--color-text-faint)', width: '0.9rem', textAlign: 'right' }}>
           {attemptNumber}
         </span>
         <HistoryRankNamesTrack slots={slots} variant="history" />
@@ -365,8 +364,8 @@ function AttemptRow({ slots, feedback, attemptNumber, isFocused, onShowExplainer
 function LiveRow({ slots }) {
   return (
     <div style={{
-      background: 'var(--color-bg-elevated)', borderRadius: '8px',
-      borderLeft: '3px solid var(--color-border)', padding: '5px 8px',
+      background: 'transparent', borderRadius: '8px',
+      padding: '5px 8px',
       margin: '0 12px', display: 'flex', alignItems: 'center', gap: '6px', opacity: 0.45,
     }}>
       <span style={{ width: '0.9rem', flexShrink: 0 }} />

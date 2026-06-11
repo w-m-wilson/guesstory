@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
-
-const COIN_EMOJI = '🪙'
+import PixelCoin from './PixelCoin.jsx'
 
 const DIFFICULTY_LABELS = { lite: 'LITE', medium: 'MED', challenge: 'CHAL' }
 const DIFFICULTY_ORDER = ['lite', 'medium', 'challenge']
@@ -108,7 +107,7 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
       >
         {/* Coin display + difficulty badge */}
         <div className="flex items-center gap-2 relative">
-          <span className="text-base">{COIN_EMOJI}</span>
+          <PixelCoin size={18} />
 
           <span
             key={coins}

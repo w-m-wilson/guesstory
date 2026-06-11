@@ -1,7 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from 'react'
 import ConfirmMatch from './ConfirmMatch.jsx'
-import PixelDivider from './PixelDivider.jsx'
-
 // Heuristic: does this guess look like a category answer typed in the wrong field?
 // Category format is "[things] ranked by [metric]" — key signals are ranking/metric words.
 function looksLikeCategory(guess) {
@@ -151,14 +149,14 @@ export default function BankPanel({
                     className={`shrink-0${isAnimating ? ' circle-drain' : ''}`}
                     onAnimationEnd={isAnimating ? () => setAnimatingCircleIdx(null) : undefined}
                     style={{
-                      fontSize: '7px',
-                      lineHeight: 1,
-                      color: consumed && !isAnimating ? 'var(--color-text-faint)' : 'var(--color-text-strong)',
                       display: 'block',
+                      width: '5px',
+                      height: '5px',
+                      background: consumed && !isAnimating ? 'transparent' : 'var(--color-text-strong)',
+                      border: `1px solid ${consumed && !isAnimating ? 'var(--color-text-faint)' : 'var(--color-text-strong)'}`,
+                      opacity: consumed && !isAnimating ? 0.5 : 1,
                     }}
-                  >
-                    {consumed && !isAnimating ? '○' : '●'}
-                  </span>
+                  />
                 )
               })}
             </div>
@@ -228,9 +226,9 @@ export default function BankPanel({
                   transition: 'box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease',
                 }
               })() : {
-                background: 'linear-gradient(135deg, color-mix(in srgb, var(--color-text) 7%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 3%, var(--color-bg)) 30%, var(--color-bg) 65%)',
+                background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)',
                 color: 'var(--color-text)',
-                border: '1px solid color-mix(in srgb, var(--color-text) 18%, var(--color-bg))',
+                border: '1px solid color-mix(in srgb, var(--color-text) 28%, var(--color-bg))',
                 fontSize: '16px',
                 transition: 'box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease',
               }}
@@ -265,7 +263,6 @@ export default function BankPanel({
 
       {/* Discovered items + ghost pills */}
       <div className="overflow-y-auto px-4 pt-2 pb-2" style={{ maxHeight: '40vh' }}>
-        <PixelDivider />
         <div className={`bank-scroll-wrap${showLeftFade ? ' bank-scroll-wrap--left-fade' : ''}`}>
           <div
             ref={bankScrollRef}
@@ -293,9 +290,11 @@ export default function BankPanel({
                             key={item.rank}
                             className="fade-in flex items-center gap-1.5 px-3 py-1.5 bit-pill text-sm font-medium whitespace-nowrap"
                             style={{
-                              background: placed ? 'var(--color-pill)' : 'var(--color-bg-elevated)',
+                              background: placed
+                                ? 'linear-gradient(to bottom, color-mix(in srgb, white 14%, var(--color-pill)) 0%, var(--color-pill) 55%, color-mix(in srgb, black 12%, var(--color-pill)) 100%)'
+                                : 'linear-gradient(to bottom, color-mix(in srgb, white 8%, var(--color-bg-elevated)) 0%, var(--color-bg-elevated) 55%, color-mix(in srgb, black 6%, var(--color-bg-elevated)) 100%)',
                               color: placed ? 'var(--color-pill-text)' : 'var(--color-text)',
-                              border: nudge ? '1px solid transparent' : '1px solid var(--color-border)',
+                              border: nudge ? '1px solid transparent' : placed ? '1px solid color-mix(in srgb, white 20%, var(--color-pill))' : '1px solid var(--color-border)',
                             }}
                           >
                             {item.seeded && <span className="text-xs" style={{ color: placed ? 'var(--color-pill-text)' : 'var(--color-text-faint)' }}>★</span>}

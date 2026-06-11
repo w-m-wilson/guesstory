@@ -203,15 +203,16 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
             ) : (
               <button
                 onClick={() => setGuessing(true)}
-                className="bit-btn px-4 py-1 text-sm text-center"
+                className="bit-btn px-4 py-1.5 text-sm text-center"
                 style={{
-                  color: 'var(--color-action)',
-                  border: '1px solid var(--color-text-faint)',
-                  background: 'transparent',
+                  color: 'var(--color-action-text)',
+                  border: '1px solid var(--color-action)',
+                  background: 'var(--color-action)',
                   whiteSpace: 'nowrap',
                   minWidth: '150px',
                   maxWidth: '220px',
-                  fontWeight: 500,
+                  fontWeight: 600,
+                  opacity: 0.88,
                 }}
               >
                 {twText}{twCursor ? '|' : ''}

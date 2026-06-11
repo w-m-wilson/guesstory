@@ -538,40 +538,40 @@ body {
 .bit-pill {
   border-radius: 0;
   clip-path: polygon(
-    3px 0%, calc(100% - 6px) 0%,
-    calc(100% - 3px) 0%, calc(100% - 3px) 3px, 100% 3px,
-    100% calc(100% - 3px),
-    calc(100% - 3px) calc(100% - 3px), calc(100% - 3px) 100%,
-    6px 100%,
-    3px 100%, 3px calc(100% - 3px), 0% calc(100% - 3px),
-    0% 6px,
-    0% 3px, 3px 3px, 3px 0%
+    0% 3px, 1px 2px, 2px 1px, 3px 0%,
+    calc(100% - 3px) 0%, calc(100% - 2px) 1px, calc(100% - 1px) 2px, 100% 3px,
+    100% calc(100% - 3px), calc(100% - 1px) calc(100% - 2px), calc(100% - 2px) calc(100% - 1px), calc(100% - 3px) 100%,
+    3px 100%, 2px calc(100% - 1px), 1px calc(100% - 2px), 0% calc(100% - 3px)
   );
 }
 .bit-input {
   border-radius: 0;
   clip-path: polygon(
-    4px 0%, calc(100% - 8px) 0%,
-    calc(100% - 4px) 0%, calc(100% - 4px) 4px, 100% 4px,
-    100% calc(100% - 4px),
-    calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
-    8px 100%,
-    4px 100%, 4px calc(100% - 4px), 0% calc(100% - 4px),
-    0% 8px,
-    0% 4px, 4px 4px, 4px 0%
+    0% 4px, 1px 3px, 2px 2px, 3px 1px, 4px 0%,
+    calc(100% - 4px) 0%, calc(100% - 3px) 1px, calc(100% - 2px) 2px, calc(100% - 1px) 3px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 1px) calc(100% - 3px), calc(100% - 2px) calc(100% - 2px), calc(100% - 3px) calc(100% - 1px), calc(100% - 4px) 100%,
+    4px 100%, 3px calc(100% - 1px), 2px calc(100% - 2px), 1px calc(100% - 3px), 0% calc(100% - 4px)
   );
 }
 .bit-btn {
   border-radius: 0;
   clip-path: polygon(
-    4px 0%, calc(100% - 8px) 0%,
-    calc(100% - 4px) 0%, calc(100% - 4px) 4px, 100% 4px,
-    100% calc(100% - 4px),
-    calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
-    8px 100%,
-    4px 100%, 4px calc(100% - 4px), 0% calc(100% - 4px),
-    0% 8px,
-    0% 4px, 4px 4px, 4px 0%
+    0% 4px, 1px 3px, 2px 2px, 3px 1px, 4px 0%,
+    calc(100% - 4px) 0%, calc(100% - 3px) 1px, calc(100% - 2px) 2px, calc(100% - 1px) 3px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 1px) calc(100% - 3px), calc(100% - 2px) calc(100% - 2px), calc(100% - 3px) calc(100% - 1px), calc(100% - 4px) 100%,
+    4px 100%, 3px calc(100% - 1px), 2px calc(100% - 2px), 1px calc(100% - 3px), 0% calc(100% - 4px)
+  );
+}
+
+/* Pixel circle — staircase approximation of a circle */
+.bit-circle {
+  border-radius: 0;
+  clip-path: polygon(
+    50% 0%,
+    69% 3%, 85% 15%, 97% 31%, 100% 50%,
+    97% 69%, 85% 85%, 69% 97%, 50% 100%,
+    31% 97%, 15% 85%, 3% 69%, 0% 50%,
+    3% 31%, 15% 15%, 31% 3%
   );
 }
 

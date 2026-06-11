@@ -1,6 +1,4 @@
 import { useRef, useEffect, useState } from 'react'
-import PixelDivider from './PixelDivider.jsx'
-
 
 export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMoveSlot, onSubmit, tutorialStep }) {
   const filledCount = rankSlots.filter(Boolean).length
@@ -57,15 +55,14 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
 
   return (
     <div
-      className="shrink-0 px-4 pt-1 pb-2"
+      className="shrink-0 px-2 pt-1 pb-2"
       style={{
         position: 'relative',
         zIndex: 10,
-        background: 'var(--color-bg-elevated)',
+        background: 'var(--color-bg)',
         borderTop: '1px solid var(--color-border)',
       }}
     >
-      <PixelDivider />
       {/* Slots */}
       <div
         className="flex flex-col gap-0.5"
@@ -80,16 +77,21 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
             <div
               key={index}
               data-slot-index={index}
-              className="flex items-center gap-2"
+              className="flex items-center gap-1.5"
               style={{ touchAction: isDraggable ? 'none' : 'auto' }}
             >
               <span
-                className="text-sm font-bold tabular-nums shrink-0"
+                className="bit-circle shrink-0 flex items-center justify-center"
                 style={{
-                  color: 'var(--color-dot-present)',
-                  width: '1.25rem',
-                  textAlign: 'right',
-                  opacity: item ? 1 : 0.4,
+                  fontFamily: "'VT323', monospace",
+                  fontSize: '1rem',
+                  lineHeight: 1,
+                  color: 'var(--color-action-text)',
+                  background: 'var(--color-dot-present)',
+                  width: '1.4rem',
+                  height: '1.4rem',
+                  opacity: item ? 1 : 0.35,
+                  flexShrink: 0,
                 }}
               >
                 {position}
@@ -101,20 +103,17 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                   background: locked
                     ? 'var(--color-border)'
                     : item
-                      ? 'var(--color-bg)'
-                      : 'linear-gradient(135deg, color-mix(in srgb, var(--color-text) 7%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 3%, var(--color-bg)) 30%, var(--color-bg) 65%)',
+                      ? 'linear-gradient(to bottom, color-mix(in srgb, white 7%, var(--color-bg)) 0%, var(--color-bg) 50%, color-mix(in srgb, var(--color-text) 4%, var(--color-bg)) 100%)'
+                      : 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)',
                   ...(item && !isDragging ? {
-                    borderTop: `1px solid ${locked ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
-                    borderRight: `1px solid ${locked ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
-                    borderBottom: `1px solid ${locked ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
-                    borderLeft: `3px solid ${locked ? 'var(--color-text-faint)' : 'var(--color-action)'}`,
+                    border: `1px solid ${locked ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
                   } : {
                     border: isDragging
                       ? '1px solid var(--color-text)'
                       : locked
                         ? '1px solid var(--color-text-faint)'
                         : !item
-                          ? '1px solid color-mix(in srgb, var(--color-text) 18%, var(--color-bg))'
+                          ? '1px solid color-mix(in srgb, var(--color-text) 28%, var(--color-bg))'
                           : '1px solid var(--color-border)',
                   }),
                   boxShadow: isDragging ? '0 4px 12px rgba(0,0,0,0.25)' : 'none',
