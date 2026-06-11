@@ -60,7 +60,6 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
         position: 'relative',
         zIndex: 10,
         background: 'var(--color-bg)',
-        borderTop: '1px solid var(--color-border)',
       }}
     >
       {/* Slots */}
@@ -103,20 +102,14 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                   background: locked
                     ? 'var(--color-border)'
                     : item
-                      ? 'linear-gradient(to bottom, color-mix(in srgb, white 7%, var(--color-bg)) 0%, var(--color-bg) 50%, color-mix(in srgb, var(--color-text) 4%, var(--color-bg)) 100%)'
+                      ? 'linear-gradient(to bottom, color-mix(in srgb, white 10%, var(--color-bg-elevated)) 0%, var(--color-bg-elevated) 55%, color-mix(in srgb, black 8%, var(--color-bg-elevated)) 100%)'
                       : 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)',
-                  ...(item && !isDragging ? {
-                    border: `1px solid ${locked ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
-                  } : {
-                    border: isDragging
-                      ? '1px solid var(--color-text)'
-                      : locked
-                        ? '1px solid var(--color-text-faint)'
-                        : !item
-                          ? '1px solid color-mix(in srgb, var(--color-text) 28%, var(--color-bg))'
-                          : '1px solid var(--color-border)',
-                  }),
-                  boxShadow: isDragging ? '0 4px 12px rgba(0,0,0,0.25)' : 'none',
+                  border: isDragging ? '1px solid var(--color-text)' : 'none',
+                  boxShadow: isDragging
+                    ? '0 4px 12px rgba(0,0,0,0.25)'
+                    : item
+                      ? '0 1px 2px rgba(0,0,0,0.08), 0 1px 0 rgba(255,255,255,0.35) inset'
+                      : 'inset 0 1px 3px rgba(0,0,0,0.15)',
                   minHeight: '32px',
                   opacity: isDragging ? 0.85 : 1,
                   transform: isDragging ? 'scale(1.02)' : 'scale(1)',

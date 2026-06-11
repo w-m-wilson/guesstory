@@ -103,7 +103,6 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
 
       <div
         className="relative flex items-center justify-between px-4 py-3 shrink-0"
-        style={{ borderTop: '1px solid var(--color-border)' }}
       >
         {/* Coin display + difficulty badge */}
         <div className="flex items-center gap-2 relative">

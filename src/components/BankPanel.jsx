@@ -132,10 +132,19 @@ export default function BankPanel({
   return (
     <div className="flex flex-col" style={{ position: 'relative', zIndex: 10, background: 'var(--color-bg)' }}>
       {/* Guess input — hidden once bank is fully discovered */}
-      {!bankFull && <div className="px-4 pt-2 pb-2 shrink-0" style={{ borderBottom: '1px solid var(--color-border)' }}>
+      {!bankFull && <div className="px-4 pt-2 pb-2 shrink-0">
         <form onSubmit={handleSubmit} className="flex gap-2 items-center">
           {/* Vertical miss pips */}
-          {!burningCoins ? (
+          <div className="shrink-0 relative flex flex-col items-center gap-[3px]">
+            {penaltyKey > 0 && (
+              <span
+                key={penaltyKey}
+                className="penalty-float absolute text-xs font-bold"
+                style={{ color: 'var(--color-text-strong)', left: '50%', top: 0, transform: 'translateX(-50%)' }}
+              >
+                −1
+              </span>
+            )}
             <div
               key={rowFlashKey}
               className={`flex flex-col items-center gap-[3px] shrink-0${rowFlashKey > 0 ? ' row-flash' : ''}`}
@@ -150,29 +159,20 @@ export default function BankPanel({
                     onAnimationEnd={isAnimating ? () => setAnimatingCircleIdx(null) : undefined}
                     style={{
                       display: 'block',
-                      width: '5px',
-                      height: '5px',
-                      background: consumed && !isAnimating ? 'transparent' : 'var(--color-text-strong)',
-                      border: `1px solid ${consumed && !isAnimating ? 'var(--color-text-faint)' : 'var(--color-text-strong)'}`,
-                      opacity: consumed && !isAnimating ? 0.5 : 1,
+                      width: '7px',
+                      height: '7px',
+                      background: consumed && !isAnimating
+                        ? 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)'
+                        : 'var(--color-text-strong)',
+                      border: `1px solid ${consumed && !isAnimating ? 'color-mix(in srgb, var(--color-text) 22%, var(--color-bg))' : 'var(--color-text-strong)'}`,
+                      boxShadow: consumed && !isAnimating ? 'inset 0 1px 2px rgba(0,0,0,0.18)' : 'none',
+                      opacity: 1,
                     }}
                   />
                 )
               })}
             </div>
-          ) : (
-            <div className="shrink-0 relative" style={{ width: '10px' }}>
-              {penaltyKey > 0 && (
-                <span
-                  key={penaltyKey}
-                  className="penalty-float absolute text-xs font-bold"
-                  style={{ color: 'var(--color-text-strong)', left: 0, top: 0 }}
-                >
-                  −1
-                </span>
-              )}
-            </div>
-          )}
+          </div>
 
           {/* Input with overlay for idle/feedback state text */}
           <div className={`flex-1 relative${tutorialStep === 1 && !hasGuessed ? ' tutorial-pulse' : ''}`}>
@@ -254,7 +254,7 @@ export default function BankPanel({
 
       {/* Bank complete line */}
       {bankFull && showBankMsg && (
-        <div className="px-4 pt-2 pb-1 shrink-0" style={{ borderBottom: '1px solid var(--color-border)' }}>
+        <div className="px-4 pt-2 pb-1 shrink-0">
           <p className="bank-complete text-xs" style={{ color: 'var(--color-dot-correct)' }}>
             ✓ {bankTotal}/{bankTotal} found — all in the bank
           </p>
@@ -312,9 +312,10 @@ export default function BankPanel({
                           key={`ghost-${globalIdx}`}
                           className="px-3 py-1.5 bit-pill text-sm font-medium whitespace-nowrap"
                           style={{
-                            border: '1.5px dashed var(--color-text-faint)',
-                            background: 'var(--color-bg-elevated)',
-                            color: ghostLetter ? 'var(--color-text-faint)' : 'var(--color-bg-elevated)',
+                            background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)',
+                            border: '1px solid color-mix(in srgb, var(--color-text) 22%, var(--color-bg))',
+                            boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.12)',
+                            color: ghostLetter ? 'var(--color-text-faint)' : 'transparent',
                             userSelect: 'none',
                           }}
                         >
