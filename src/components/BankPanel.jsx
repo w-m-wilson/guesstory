@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from 'react'
 import ConfirmMatch from './ConfirmMatch.jsx'
+import PixelDivider from './PixelDivider.jsx'
 
 // Heuristic: does this guess look like a category answer typed in the wrong field?
 // Category format is "[things] ranked by [metric]" — key signals are ranking/metric words.
@@ -210,7 +211,7 @@ export default function BankPanel({
               onChange={e => setQuery(e.target.value)}
               placeholder=""
               disabled={!!pendingMatch || gameOver}
-              className={`w-full rounded-lg px-3 py-2 text-sm outline-none${feedback ? ' input-feedback' : ''}`}
+              className={`w-full bit-input px-3 py-2 text-sm outline-none${feedback ? ' input-feedback' : ''}`}
               style={feedback ? (() => {
                 const c = feedback.type === 'hit'
                   ? 'var(--color-dot-correct)'
@@ -227,9 +228,9 @@ export default function BankPanel({
                   transition: 'box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease',
                 }
               })() : {
-                background: 'var(--color-bg-elevated)',
+                background: 'linear-gradient(135deg, color-mix(in srgb, var(--color-text) 7%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 3%, var(--color-bg)) 30%, var(--color-bg) 65%)',
                 color: 'var(--color-text)',
-                border: '1px solid var(--color-border)',
+                border: '1px solid color-mix(in srgb, var(--color-text) 18%, var(--color-bg))',
                 fontSize: '16px',
                 transition: 'box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease',
               }}
@@ -263,7 +264,8 @@ export default function BankPanel({
       )}
 
       {/* Discovered items + ghost pills */}
-      <div className="overflow-y-auto px-4 pt-3 pb-2" style={{ maxHeight: '40vh' }}>
+      <div className="overflow-y-auto px-4 pt-2 pb-2" style={{ maxHeight: '40vh' }}>
+        <PixelDivider />
         <div className={`bank-scroll-wrap${showLeftFade ? ' bank-scroll-wrap--left-fade' : ''}`}>
           <div
             ref={bankScrollRef}
@@ -289,7 +291,7 @@ export default function BankPanel({
                           <button
                             onClick={() => placed ? onRemoveSlot(rankToSlotIndex[item.rank]) : onPlaceItem(item)}
                             key={item.rank}
-                            className="fade-in flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap"
+                            className="fade-in flex items-center gap-1.5 px-3 py-1.5 bit-pill text-sm font-medium whitespace-nowrap"
                             style={{
                               background: placed ? 'var(--color-pill)' : 'var(--color-bg-elevated)',
                               color: placed ? 'var(--color-pill-text)' : 'var(--color-text)',
@@ -309,7 +311,7 @@ export default function BankPanel({
                       return (
                         <div
                           key={`ghost-${globalIdx}`}
-                          className="px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap"
+                          className="px-3 py-1.5 bit-pill text-sm font-medium whitespace-nowrap"
                           style={{
                             border: '1.5px dashed var(--color-text-faint)',
                             background: 'var(--color-bg-elevated)',

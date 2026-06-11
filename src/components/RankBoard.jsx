@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react'
+import PixelDivider from './PixelDivider.jsx'
 
 
 export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMoveSlot, onSubmit, tutorialStep }) {
@@ -56,7 +57,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
 
   return (
     <div
-      className="shrink-0 px-4 pt-1.5 pb-2"
+      className="shrink-0 px-4 pt-1 pb-2"
       style={{
         position: 'relative',
         zIndex: 10,
@@ -64,6 +65,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
         borderTop: '1px solid var(--color-border)',
       }}
     >
+      <PixelDivider />
       {/* Slots */}
       <div
         className="flex flex-col gap-0.5"
@@ -94,16 +96,26 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
               </span>
 
               <div
-                className="flex-1 flex items-center rounded-lg px-3 py-1.5 min-w-0"
+                className="flex-1 flex items-center bit-input px-3 py-1.5 min-w-0"
                 style={{
-                  background: locked ? 'var(--color-border)' : 'var(--color-bg)',
+                  background: locked
+                    ? 'var(--color-border)'
+                    : item
+                      ? 'var(--color-bg)'
+                      : 'linear-gradient(135deg, color-mix(in srgb, var(--color-text) 7%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 3%, var(--color-bg)) 30%, var(--color-bg) 65%)',
                   ...(item && !isDragging ? {
                     borderTop: `1px solid ${locked ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
                     borderRight: `1px solid ${locked ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
                     borderBottom: `1px solid ${locked ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
                     borderLeft: `3px solid ${locked ? 'var(--color-text-faint)' : 'var(--color-action)'}`,
                   } : {
-                    border: `1px solid ${isDragging ? 'var(--color-text)' : locked ? 'var(--color-text-faint)' : 'var(--color-border)'}`,
+                    border: isDragging
+                      ? '1px solid var(--color-text)'
+                      : locked
+                        ? '1px solid var(--color-text-faint)'
+                        : !item
+                          ? '1px solid color-mix(in srgb, var(--color-text) 18%, var(--color-bg))'
+                          : '1px solid var(--color-border)',
                   }),
                   boxShadow: isDragging ? '0 4px 12px rgba(0,0,0,0.25)' : 'none',
                   minHeight: '32px',
@@ -152,7 +164,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                             style={{
                               width: '3px',
                               height: '3px',
-                              borderRadius: '50%',
+                              borderRadius: '0',
                               background: isDragging ? 'var(--color-text)' : 'var(--color-text-faint)',
                               opacity: isDragging ? 1 : 0.72,
                               transition: 'background 0.1s, opacity 0.1s',
@@ -179,7 +191,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
         key={submitReadyKey}
         onClick={onSubmit}
         disabled={!hasMinItems}
-        className={`mt-2 w-full py-2 rounded-lg text-sm font-semibold disabled:opacity-30${allFilled && submitReadyKey > 0 ? ' submit-ready' : ''}${tutorialStep === 3 && allFilled ? ' tutorial-pulse' : ''}`}
+        className={`mt-2 w-full py-2 bit-btn text-sm font-semibold disabled:opacity-30${allFilled && submitReadyKey > 0 ? ' submit-ready' : ''}${tutorialStep === 3 && allFilled ? ' tutorial-pulse' : ''}`}
         style={{
           background: hasMinItems ? 'var(--color-action)' : 'var(--color-border)',
           color: hasMinItems ? 'var(--color-action-text)' : 'var(--color-text-faint)',

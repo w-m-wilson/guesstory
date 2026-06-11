@@ -171,7 +171,12 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
           {/* Left: wordmark */}
           <span
             className="text-3xl tracking-tight shrink-0"
-            style={{ fontFamily: "'Grenze Gotisch', serif", color: 'var(--color-action)', transform: 'translateY(-4px)' }}
+            style={{
+              fontFamily: "'Grenze Gotisch', serif",
+              color: 'var(--color-action)',
+              transform: 'translateY(-4px)',
+              textShadow: '-1px -1px 0 rgba(255,255,255,0.08), 1px 1px 0 rgba(0,0,0,0.38), 2px 2px 0 rgba(0,0,0,0.2)',
+            }}
           >
             guesStory
           </span>
@@ -188,7 +193,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
               </p>
             ) : categoryAutoReveal ? (
               <div
-                className="rounded-full px-4 py-1 text-center"
+                className="bit-btn px-4 py-1 text-center"
                 style={{ border: '1px solid var(--color-border)', background: 'var(--color-bg-elevated)', minWidth: '150px', maxWidth: '220px' }}
               >
                 <p className="text-sm leading-snug" style={{ color: 'var(--color-text-faint)' }}>
@@ -198,7 +203,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
             ) : (
               <button
                 onClick={() => setGuessing(true)}
-                className="rounded-full px-4 py-1 text-sm text-center"
+                className="bit-btn px-4 py-1 text-sm text-center"
                 style={{
                   color: 'var(--color-action)',
                   border: '1px solid var(--color-text-faint)',
@@ -378,11 +383,11 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                 value={query}
                 onChange={e => setQuery(e.target.value)}
                 placeholder="The theme is…"
-                className="flex-1 rounded-xl px-3 py-2.5 text-sm outline-none"
+                className="flex-1 bit-input px-3 py-2.5 text-sm outline-none"
                 style={{
-                  background: 'var(--color-bg-elevated)',
+                  background: 'linear-gradient(135deg, color-mix(in srgb, var(--color-text) 7%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 3%, var(--color-bg)) 30%, var(--color-bg) 65%)',
                   color: 'var(--color-text)',
-                  border: '1px solid var(--color-border)',
+                  border: '1px solid color-mix(in srgb, var(--color-text) 18%, var(--color-bg))',
                   fontSize: '16px',
                 }}
                 autoComplete="off"
@@ -393,7 +398,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
               <button
                 type="submit"
                 disabled={!query.trim() || loading}
-                className="px-4 py-2.5 rounded-xl text-sm font-semibold shrink-0 disabled:opacity-40"
+                className="px-4 py-2.5 bit-btn text-sm font-semibold shrink-0 disabled:opacity-40"
                 style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
               >
                 {loading ? '…' : 'Guess'}

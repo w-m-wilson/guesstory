@@ -27,3 +27,5 @@ dist-ssr
 .env*.local
 
 CLAUDE.md
+AGENTS.md
+

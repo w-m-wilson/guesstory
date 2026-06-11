@@ -197,17 +197,7 @@ export default function App() {
           }
         }}
       />
-      {isArchive && (
-        <div className="fixed bottom-4 left-0 right-0 flex justify-center z-40 pointer-events-none">
-          <button
-            onClick={() => setArchiveOpen(true)}
-            className="pointer-events-auto text-xs px-3 py-1 rounded-full tracking-wide active:scale-95 transition-transform"
-            style={{ color: 'var(--color-text-faint)', background: 'var(--color-bg-elevated)', border: '1px solid var(--color-border)' }}
-          >
-            from the archives
-          </button>
-        </div>
-      )}
+
       {introOpen && <IntroModal onClose={closeIntro} onReplayTutorial={replayTutorial} />}
       {settingsOpen && <SettingsModal scheme={scheme} mode={mode} onScheme={setScheme} onMode={setMode} onClose={() => setSettingsOpen(false)} />}
       {aboutOpen && <AboutModal mode={mode} onClose={() => setAboutOpen(false)} />}

@@ -7,7 +7,7 @@ const DIFFICULTY_ORDER = ['lite', 'medium', 'challenge']
 const DIFFICULTY_NAMES = { lite: 'Lite', medium: 'Medium', challenge: 'Challenge' }
 const DIFFICULTY_BLURBS = { lite: 'Most answers given', medium: 'A few starting hints', challenge: 'No hints — from scratch' }
 
-export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideDifficulty = false, onSetDifficulty, onHintsOpen, onShowResults, onRegisterPickerTrigger }) {
+export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideDifficulty = false, isArchive, onSetDifficulty, onHintsOpen, onShowResults, onOpenArchive, onRegisterPickerTrigger }) {
   const prevCoins = useRef(coins)
   const [deltas, setDeltas] = useState([])
   const [pickerOpen, setPickerOpen] = useState(false)
@@ -113,7 +113,7 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
           <span
             key={coins}
             className="coin-pulse text-xl font-bold tabular-nums"
-            style={{ color: 'var(--color-dot-present)' }}
+            style={{ color: 'var(--color-dot-present)', fontFamily: "'VT323', monospace", fontSize: '1.5rem', lineHeight: 1 }}
           >
             {coins}
           </span>
@@ -145,32 +145,47 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
           )}
         </div>
 
-        {/* Results or Hints */}
-        {gameOver ? (
-          <button
-            onClick={onShowResults}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium"
-            style={{
-              background: 'var(--color-bg-elevated)',
-              color: 'var(--color-text)',
-              border: '1px solid var(--color-border)',
-            }}
-          >
-            Results
-          </button>
-        ) : (
-          <button
-            onClick={onHintsOpen}
-            className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium overflow-hidden${hintsGlinting ? ' hints-glint' : ''}`}
-            style={{
-              background: 'var(--color-bg-elevated)',
-              color: 'var(--color-text)',
-              border: '1px solid var(--color-border)',
-            }}
-          >
-            Hints
-          </button>
-        )}
+        {/* Archive / Today's + Results or Hints */}
+        <div className="flex items-center gap-2">
+          {onOpenArchive && (
+            <button
+              onClick={onOpenArchive}
+              className="flex items-center gap-1 px-3 py-1.5 bit-btn text-sm font-medium"
+              style={{
+                background: 'var(--color-bg-elevated)',
+                color: 'var(--color-text-faint)',
+                border: '1px solid var(--color-border)',
+              }}
+            >
+              {isArchive ? 'Archive' : "Today's"}
+            </button>
+          )}
+          {gameOver ? (
+            <button
+              onClick={onShowResults}
+              className="flex items-center gap-1 px-3 py-1.5 bit-btn text-sm font-medium"
+              style={{
+                background: 'var(--color-bg-elevated)',
+                color: 'var(--color-text)',
+                border: '1px solid var(--color-border)',
+              }}
+            >
+              Results
+            </button>
+          ) : (
+            <button
+              onClick={onHintsOpen}
+              className={`flex items-center gap-1 px-3 py-1.5 bit-btn text-sm font-medium overflow-hidden${hintsGlinting ? ' hints-glint' : ''}`}
+              style={{
+                background: 'var(--color-bg-elevated)',
+                color: 'var(--color-text)',
+                border: '1px solid var(--color-border)',
+              }}
+            >
+              Hints
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )

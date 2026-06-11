@@ -300,10 +300,12 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onOpen
         gameOver={gameOver}
         difficulty={difficulty}
         hideDifficulty={!!isTutorial}
+        isArchive={isArchive}
         onSetDifficulty={setDifficulty}
         onRegisterPickerTrigger={fn => { pickerTriggerRef.current = fn }}
         onHintsOpen={() => setHintsOpen(true)}
         onShowResults={gameOver ? () => setEndScreenDismissed(false) : null}
+        onOpenArchive={isTutorial ? null : onOpenArchive}
       />
 
       {hintsOpen && (
