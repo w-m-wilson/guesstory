@@ -220,12 +220,12 @@ export default function BankPanel({
                     : 'var(--color-text-faint)'
                 return {
                   '--feedback-color': c,
-                  background: `color-mix(in srgb, ${c} 8%, var(--color-bg-elevated))`,
-                  border: `1px solid color-mix(in srgb, ${c} 45%, transparent)`,
-                  boxShadow: `0 0 0 2.5px color-mix(in srgb, ${c} 18%, transparent)`,
+                  background: `color-mix(in srgb, ${c} 6%, var(--color-bg-elevated))`,
+                  border: 'none',
+                  boxShadow: `inset 0 1px 4px color-mix(in srgb, ${c} 55%, rgba(0,0,0,0.12))`,
                   color: 'var(--color-text)',
                   fontSize: '16px',
-                  transition: 'box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease',
+                  transition: 'box-shadow 0.2s ease, background 0.2s ease',
                 }
               })() : {
                 background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)',
