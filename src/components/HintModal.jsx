@@ -16,14 +16,14 @@ const EXIT_MS = 200
 const RAISED_BG = 'linear-gradient(to bottom, var(--color-bg-raised) 0%, var(--color-bg-raised) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)'
 const RAISED_WRAP = { filter: 'drop-shadow(0 2px 1px var(--color-raised-shadow))' }
 const EMPTY_STYLE = {
-  background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 8%, var(--color-bg-elevated)) 0%, color-mix(in srgb, var(--color-text) 5%, var(--color-bg-elevated)) 100%)',
+  background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 8%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 5%, var(--color-bg)) 100%)',
   boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.12)',
-  border: '1px solid color-mix(in srgb, var(--color-text) 10%, transparent)',
+  border: 'none',
 }
 const PRESSED_STYLE = {
-  background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-action) 18%, var(--color-bg-elevated)) 0%, color-mix(in srgb, var(--color-action) 10%, var(--color-bg-elevated)) 100%)',
+  background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-action) 18%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-action) 10%, var(--color-bg)) 100%)',
   boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.28)',
-  border: '1px solid color-mix(in srgb, var(--color-action) 30%, transparent)',
+  border: 'none',
 }
 
 export default function HintModal({ coins, allBankFound, categoryGuessed, category, difficulty = 'medium', onPurchase, onClose }) {
@@ -76,7 +76,7 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, catego
       {/* Card */}
       <div
         className={`w-full max-w-[430px] p-5 pb-8${closing ? '' : ' sheet-enter'}`}
-        style={{ background: 'var(--color-bg-elevated)', position: 'relative', zIndex: 1, clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% 100%, 0% 100%)', ...(closing ? { opacity: 0, transform: 'translateY(24px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
+        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1, clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% 100%, 0% 100%)', ...(closing ? { opacity: 0, transform: 'translateY(24px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">

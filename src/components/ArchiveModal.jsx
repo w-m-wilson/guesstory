@@ -130,7 +130,7 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
 
               if (p.status === 'unattempted') {
                 cardBg = 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)'
-                cardBorder = '1px solid color-mix(in srgb, var(--color-text) 22%, var(--color-bg))'
+                cardBorder = 'none'
                 cardShadow = 'inset 0 1px 3px rgba(0,0,0,0.12)'
                 textColor = 'var(--color-text-faint)'
                 subColor = 'var(--color-text-faint)'
@@ -144,7 +144,7 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
                 wrapFilter = 'drop-shadow(0 2px 1px var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))'
               } else {
                 cardBg = 'linear-gradient(to bottom, color-mix(in srgb, black 28%, var(--color-action)) 0%, color-mix(in srgb, black 18%, var(--color-action)) 50%, color-mix(in srgb, black 28%, var(--color-action)) 100%)'
-                cardBorder = '1px solid color-mix(in srgb, black 40%, var(--color-action))'
+                cardBorder = 'none'
                 cardShadow = 'inset 0 2px 4px rgba(0,0,0,0.28)'
                 textColor = 'var(--color-action-text)'
                 subColor = 'var(--color-action-text)'
