@@ -35,7 +35,7 @@ function ScoreExplainerPopup({ feedback, onClose }) {
       : absentCount === 1
         ? ` The other 1 isn't in the top 5 at all.`
         : ` The other ${absentCount} aren't in the top 5 at all.`
-    message = `${inTop5Part}, ${rightSpotPart}.${absentPart} The dots don't tell you which items are which — just the counts.`
+    message = `${inTop5Part}, ${rightSpotPart}.${absentPart} The chips don't tell you which items are which — just the counts.`
   }
 
   return createPortal(
@@ -54,34 +54,40 @@ function ScoreExplainerPopup({ feedback, onClose }) {
         onClick={e => e.stopPropagation()}
       >
         <div
-          className="flex items-center justify-center gap-0.5 rounded-xl px-3 py-3 mb-4"
-          style={{ background: 'var(--color-bg-elevated)' }}
+          className="flex items-center justify-center gap-[4px] px-3 py-3 mb-4"
+          style={{ background: 'var(--color-bg-elevated)', clipPath: CHAMFER_CLIP }}
           role="img"
           aria-label={`Score feedback: ${correctCount} in the right spot, ${presentCount} in the top five but wrong spot, ${absentCount} not in the top five`}
         >
-          {sortedFeedback.map((f, i) => (
-            <span
-              key={i}
-              style={{
-                fontSize: '22px',
-                lineHeight: 1,
-                width: '1.35rem',
-                textAlign: 'center',
-                display: 'inline-block',
-                color: f === 'correct' ? 'var(--color-dot-correct)' : f === 'present' ? 'var(--color-dot-present)' : 'var(--color-text-faint)',
-                opacity: f !== 'correct' && f !== 'present' ? 0.22 : 1,
-              }}
-            >
-              {f === 'correct' ? '●' : f === 'present' ? '○' : '—'}
-            </span>
-          ))}
+          {sortedFeedback.map((f, i) => {
+            const isCorrect = f === 'correct'
+            const isPresent = f === 'present'
+            const chipBg = isCorrect
+              ? 'color-mix(in srgb, var(--color-dot-correct) 85%, var(--color-bg))'
+              : isPresent
+                ? 'color-mix(in srgb, var(--color-dot-present) 42%, var(--color-bg-elevated))'
+                : 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)'
+            const chipShadow = isCorrect
+              ? 'inset 0 2px 5px rgba(0,0,0,0.38)'
+              : isPresent
+                ? 'inset 0 2px 4px rgba(0,0,0,0.24)'
+                : 'inset 0 1px 3px rgba(0,0,0,0.18)'
+            return (
+              <div key={i} style={{
+                width: '28px', height: '28px',
+                clipPath: CHAMFER_CLIP_SM,
+                background: chipBg,
+                boxShadow: chipShadow,
+              }} />
+            )
+          })}
         </div>
         <p id="score-explainer-title" className="text-sm font-semibold mb-2" style={{ color: 'var(--color-text-strong)' }}>What this score means</p>
         <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--color-text)' }}>{message}</p>
         <button
           onClick={onClose}
-          className="w-full py-2 rounded-xl text-sm font-semibold"
-          style={{ background: 'var(--color-action)', color: 'var(--color-action-text)' }}
+          className="w-full py-2 text-sm font-semibold"
+          style={{ background: 'var(--color-action)', color: 'var(--color-action-text)', clipPath: CHAMFER_CLIP }}
         >
           Got it
         </button>
