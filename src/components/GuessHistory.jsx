@@ -243,7 +243,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
                   : 'bottom 0.38s cubic-bezier(0.22,1,0.36,1), transform 0.38s cubic-bezier(0.22,1,0.36,1), opacity 0.28s ease',
                 cursor: isFocused ? 'default' : 'pointer',
                 pointerEvents: opacity < 0.04 ? 'none' : 'auto',
-                filter: isFocused ? 'drop-shadow(0 3px 0 var(--color-raised-shadow))' : 'none',
+                filter: isFocused ? 'drop-shadow(0 2px 1px var(--color-raised-shadow))' : 'none',
               }}
               onClick={() => {
                 if (!isFocused) setFocusIndex(i)

@@ -141,7 +141,7 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
                 cardShadow = 'none'
                 textColor = 'var(--color-text-strong)'
                 subColor = 'var(--color-text-faint)'
-                wrapFilter = 'drop-shadow(0 3px 0 var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))'
+                wrapFilter = 'drop-shadow(0 2px 1px var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))'
               } else {
                 cardBg = 'linear-gradient(to bottom, color-mix(in srgb, black 28%, var(--color-action)) 0%, color-mix(in srgb, black 18%, var(--color-action)) 50%, color-mix(in srgb, black 28%, var(--color-action)) 100%)'
                 cardBorder = '1px solid color-mix(in srgb, black 40%, var(--color-action))'

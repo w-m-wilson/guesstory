@@ -100,9 +100,9 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                 className="flex-1 min-w-0"
                 style={{
                   filter: isDragging
-                    ? 'drop-shadow(0 6px 0 var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))'
+                    ? 'drop-shadow(0 4px 2px var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))'
                     : item && !locked
-                      ? 'drop-shadow(0 3px 0 var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))'
+                      ? 'drop-shadow(0 2px 1px var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))'
                       : 'none',
                   transform: isDragging ? 'scale(1.03)' : 'scale(1)',
                   transition: 'transform 0.1s',

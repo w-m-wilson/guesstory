@@ -311,7 +311,7 @@ export default function BankPanel({
                             {placed && <span className="text-xs opacity-70">✕</span>}
                           </button>
                         )
-                        const wrapFilter = placed ? undefined : { filter: 'drop-shadow(0 3px 0 var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))' }
+                        const wrapFilter = placed ? undefined : { filter: 'drop-shadow(0 2px 1px var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))' }
                         return nudge
                           ? <span key={item.rank} className="pill-trace-wrap" style={wrapFilter}>{pill}</span>
                           : <span key={item.rank} style={wrapFilter}>{pill}</span>
