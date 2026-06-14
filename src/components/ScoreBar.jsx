@@ -2,6 +2,8 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import PixelCoin from './PixelCoin.jsx'
 
 const DIFFICULTY_LABELS = { lite: 'LITE', medium: 'MED', challenge: 'CHAL' }
+const RAISED_BG = 'linear-gradient(to bottom, color-mix(in srgb, white 28%, var(--color-bg-elevated)) 0%, color-mix(in srgb, white 28%, var(--color-bg-elevated)) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)'
+const RAISED_WRAP = { filter: 'drop-shadow(0 3px 0 rgba(0,0,0,0.35))' }
 const DIFFICULTY_ORDER = ['lite', 'medium', 'challenge']
 const DIFFICULTY_NAMES = { lite: 'Lite', medium: 'Medium', challenge: 'Challenge' }
 const DIFFICULTY_BLURBS = { lite: 'Most answers given', medium: 'A few starting hints', challenge: 'No hints — from scratch' }
@@ -131,57 +133,57 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
           ))}
 
           {!hideDifficulty && (
-            <button
-              onClick={canSwitch ? () => setPickerOpen(p => !p) : undefined}
-              className="text-[10px] font-black tracking-widest bit-btn px-2 py-0.5"
-              style={{
-                color: 'var(--color-text-strong)',
-                background: 'linear-gradient(to bottom, color-mix(in srgb, white 18%, var(--color-bg-elevated)) 0%, var(--color-bg-elevated) 55%, color-mix(in srgb, black 12%, var(--color-bg-elevated)) 100%)',
-                cursor: canSwitch ? 'pointer' : 'default',
-              }}
-              aria-label={canSwitch ? 'Change difficulty' : `Difficulty: ${DIFFICULTY_NAMES[difficulty]}`}
-            >
-              {DIFFICULTY_LABELS[difficulty] ?? 'MED'}
-            </button>
+            <span style={{ ...RAISED_WRAP, display: 'flex', alignItems: 'center' }}>
+              <button
+                onClick={canSwitch ? () => setPickerOpen(p => !p) : undefined}
+                className="text-[10px] font-black tracking-widest bit-btn px-2"
+                style={{
+                  color: 'var(--color-text-strong)',
+                  background: RAISED_BG,
+                  cursor: canSwitch ? 'pointer' : 'default',
+                  lineHeight: '1.6rem',
+                }}
+                aria-label={canSwitch ? 'Change difficulty' : `Difficulty: ${DIFFICULTY_NAMES[difficulty]}`}
+              >
+                {DIFFICULTY_LABELS[difficulty] ?? 'MED'}
+              </button>
+            </span>
           )}
         </div>
 
         {/* Archive / Today's + Results or Hints */}
         <div className="flex items-center gap-2">
           {onOpenArchive && (
-            <button
-              onClick={onOpenArchive}
-              className="flex items-center gap-1 px-3 py-1.5 bit-btn text-sm font-medium"
-              style={{
-                background: 'linear-gradient(to bottom, color-mix(in srgb, white 18%, var(--color-bg-elevated)) 0%, var(--color-bg-elevated) 55%, color-mix(in srgb, black 12%, var(--color-bg-elevated)) 100%)',
-                color: 'var(--color-text-faint)',
-              }}
-            >
-              {isArchive ? 'Archive' : "Today's"}
-            </button>
+            <span style={RAISED_WRAP}>
+              <button
+                onClick={onOpenArchive}
+                className="flex items-center gap-1 px-3 py-1.5 bit-btn text-sm font-medium"
+                style={{ background: RAISED_BG, color: 'var(--color-text-faint)' }}
+              >
+                {isArchive ? 'Archive' : "Today's"}
+              </button>
+            </span>
           )}
           {gameOver ? (
-            <button
-              onClick={onShowResults}
-              className="flex items-center gap-1 px-3 py-1.5 bit-btn text-sm font-medium"
-              style={{
-                background: 'linear-gradient(to bottom, color-mix(in srgb, white 18%, var(--color-bg-elevated)) 0%, var(--color-bg-elevated) 55%, color-mix(in srgb, black 12%, var(--color-bg-elevated)) 100%)',
-                color: 'var(--color-text)',
-              }}
-            >
-              Results
-            </button>
+            <span style={RAISED_WRAP}>
+              <button
+                onClick={onShowResults}
+                className="flex items-center gap-1 px-3 py-1.5 bit-btn text-sm font-medium"
+                style={{ background: RAISED_BG, color: 'var(--color-text)' }}
+              >
+                Results
+              </button>
+            </span>
           ) : (
-            <button
-              onClick={onHintsOpen}
-              className={`flex items-center gap-1 px-3 py-1.5 bit-btn text-sm font-medium overflow-hidden${hintsGlinting ? ' hints-glint' : ''}`}
-              style={{
-                background: 'linear-gradient(to bottom, color-mix(in srgb, white 18%, var(--color-bg-elevated)) 0%, var(--color-bg-elevated) 55%, color-mix(in srgb, black 12%, var(--color-bg-elevated)) 100%)',
-                color: 'var(--color-text)',
-              }}
-            >
-              Hints
-            </button>
+            <span style={RAISED_WRAP}>
+              <button
+                onClick={onHintsOpen}
+                className={`flex items-center gap-1 px-3 py-1.5 bit-btn text-sm font-medium overflow-hidden${hintsGlinting ? ' hints-glint' : ''}`}
+                style={{ background: RAISED_BG, color: 'var(--color-text)' }}
+              >
+                Hints
+              </button>
+            </span>
           )}
         </div>
       </div>

@@ -217,13 +217,13 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                 className="bit-btn px-4 py-1.5 text-sm text-center"
                 style={{
                   color: 'var(--color-action-text)',
-                  border: '1px solid var(--color-action)',
-                  background: 'var(--color-action)',
+                  background: 'linear-gradient(to bottom, color-mix(in srgb, black 28%, var(--color-action)) 0%, color-mix(in srgb, black 18%, var(--color-action)) 50%, color-mix(in srgb, black 28%, var(--color-action)) 100%)',
+                  border: '1px solid color-mix(in srgb, black 40%, var(--color-action))',
+                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.28)',
                   whiteSpace: 'nowrap',
                   minWidth: '150px',
                   maxWidth: '220px',
                   fontWeight: 600,
-                  opacity: 0.88,
                 }}
               >
                 {twText}{twCursor ? '|' : ''}

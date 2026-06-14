@@ -298,10 +298,12 @@ export default function BankPanel({
                             className="fade-in flex items-center gap-1.5 px-3 py-1.5 bit-pill text-sm font-medium whitespace-nowrap"
                             style={{
                               background: placed
-                                ? 'linear-gradient(to bottom, color-mix(in srgb, white 14%, var(--color-pill)) 0%, var(--color-pill) 55%, color-mix(in srgb, black 12%, var(--color-pill)) 100%)'
-                                : 'linear-gradient(to bottom, color-mix(in srgb, white 18%, var(--color-bg-elevated)) 0%, var(--color-bg-elevated) 55%, color-mix(in srgb, black 12%, var(--color-bg-elevated)) 100%)',
+                                ? 'linear-gradient(to bottom, color-mix(in srgb, black 28%, var(--color-pill)) 0%, color-mix(in srgb, black 18%, var(--color-pill)) 50%, color-mix(in srgb, black 28%, var(--color-pill)) 100%)'
+                                : 'linear-gradient(to bottom, color-mix(in srgb, white 28%, var(--color-bg-elevated)) 0%, color-mix(in srgb, white 28%, var(--color-bg-elevated)) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)',
                               color: placed ? 'var(--color-pill-text)' : 'var(--color-text)',
-                              border: 'none',
+                              border: placed ? '1px solid color-mix(in srgb, black 40%, var(--color-pill))' : 'none',
+                              boxShadow: placed ? 'inset 0 2px 4px rgba(0,0,0,0.28)' : 'none',
+                              transform: 'none',
                             }}
                           >
                             {item.seeded && <span className="text-xs" style={{ color: placed ? 'var(--color-pill-text)' : 'var(--color-text-faint)' }}>★</span>}
@@ -309,9 +311,10 @@ export default function BankPanel({
                             {placed && <span className="text-xs opacity-70">✕</span>}
                           </button>
                         )
+                        const wrapFilter = placed ? undefined : { filter: 'drop-shadow(0 3px 0 rgba(0,0,0,0.35))' }
                         return nudge
-                          ? <span key={item.rank} className="pill-trace-wrap">{pill}</span>
-                          : <span key={item.rank}>{pill}</span>
+                          ? <span key={item.rank} className="pill-trace-wrap" style={wrapFilter}>{pill}</span>
+                          : <span key={item.rank} style={wrapFilter}>{pill}</span>
                       }
                       const ghostLetter = ghostLetters?.[globalIdx]
                       return (
