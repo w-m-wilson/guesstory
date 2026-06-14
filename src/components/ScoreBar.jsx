@@ -65,22 +65,22 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
     <div style={{ position: 'relative' }}>
       {/* Mid-game difficulty picker — always in DOM, CSS transition like header menu */}
       {!hideDifficulty && (
-        <div ref={pickerRef} className="absolute bottom-full left-4 z-[46] pb-2">
-          {/* animation + shadow wrapper — filter here reads the clipped child shape correctly */}
-          <div
-            style={{
-              minWidth: '200px',
-              transformOrigin: 'bottom left',
-              filter: pickerOpen ? 'drop-shadow(0 -6px 16px rgba(0,0,0,0.45)) drop-shadow(0 -2px 4px rgba(0,0,0,0.25))' : 'none',
-              transition: pickerOpen
-                ? 'opacity 220ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0ms'
-                : 'opacity 140ms cubic-bezier(0.4, 0, 1, 1), transform 140ms cubic-bezier(0.4, 0, 1, 1), visibility 140ms',
-              opacity: pickerOpen ? 1 : 0,
-              transform: pickerOpen ? 'scale(1) translateY(0)' : 'scale(0.92) translateY(8px)',
-              visibility: pickerOpen ? 'visible' : 'hidden',
-              pointerEvents: pickerOpen ? 'auto' : 'none',
-            }}
-          >
+        <div
+          ref={pickerRef}
+          className="absolute bottom-full left-4 z-[46] pb-2"
+          style={{
+            minWidth: '200px',
+            transformOrigin: 'bottom left',
+            filter: pickerOpen ? 'drop-shadow(0 -6px 16px rgba(0,0,0,0.45)) drop-shadow(0 -2px 4px rgba(0,0,0,0.25))' : 'none',
+            transition: pickerOpen
+              ? 'opacity 220ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1), filter 220ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0ms'
+              : 'opacity 140ms cubic-bezier(0.4, 0, 1, 1), transform 140ms cubic-bezier(0.4, 0, 1, 1), filter 140ms cubic-bezier(0.4, 0, 1, 1), visibility 140ms',
+            opacity: pickerOpen ? 1 : 0,
+            transform: pickerOpen ? 'scale(1) translateY(0)' : 'scale(0.92) translateY(8px)',
+            visibility: pickerOpen ? 'visible' : 'hidden',
+            pointerEvents: pickerOpen ? 'auto' : 'none',
+          }}
+        >
           <div
             style={{
               background: 'var(--color-bg-elevated)',
@@ -103,7 +103,6 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
                 </div>
               </button>
             ))}
-          </div>
           </div>
         </div>
       )}
