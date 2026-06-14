@@ -19,8 +19,8 @@ html, body {
 /* ── Guesstory light ── */
 :root,
 [data-theme="guesstory-light"] {
-  --color-bg:           #fdf6e3;  /* cream — solarized base3 */
-  --color-bg-elevated:  #f2ead8;  /* soft step — pills/slots blend gently */
+  --color-bg:           #fdf8ee;  /* near-white cream */
+  --color-bg-elevated:  #e8d8be;  /* warm tan — clear step above bg */
   --color-text:         #88705e;  /* warm taupe-brown — readable, not stark */
   --color-text-strong:  #675848;  /* grey-brown — labels only */
   --color-text-faint:   #c0b89e;  /* warm khaki — annotations */
@@ -152,14 +152,14 @@ html, body {
 
 /* ── Bailly light (rose & sage) ── */
 [data-theme="bailly-light"] {
-  --color-bg:           #FEF2F5;
-  --color-bg-elevated:  #FBDFE8;
+  --color-bg:           #FEF8FA;
+  --color-bg-elevated:  #F5B8CE;
   --color-text:         #6B3D52;
   --color-text-strong:  #4A1F35;
   --color-text-faint:   #BA849A;
-  --color-border:       #F5C8D8;
+  --color-border:       #EFA0BB;
   --color-action:       #4A1F35;
-  --color-action-text:  #FEF2F5;
+  --color-action-text:  #FEF8FA;
   --color-dot-correct:  #4A1F35;
   --color-dot-present:  #BA849A;
   --color-dot-absent:   #F5C8D8;

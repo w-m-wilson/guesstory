@@ -55,7 +55,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
 
   return (
     <div
-      className="shrink-0 px-2 pt-1 pb-2"
+      className="shrink-0 px-2 pt-1 pb-1"
       style={{
         position: 'relative',
         zIndex: 10,
@@ -64,7 +64,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
     >
       {/* Slots */}
       <div
-        className="flex flex-col gap-0.5"
+        className="flex flex-col gap-1.5"
       >
         {rankSlots.map((item, index) => {
           const position = index + 1
@@ -97,26 +97,35 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
               </span>
 
               <div
-                className="flex-1 flex items-center bit-input px-3 py-1.5 min-w-0"
+                className="flex-1 min-w-0"
+                style={{
+                  filter: item && !locked && !isDragging
+                    ? 'drop-shadow(0 3px 0 color-mix(in srgb, black 50%, var(--color-bg-elevated)))'
+                    : 'none',
+                  transform: isDragging ? 'scale(1.02)' : 'scale(1)',
+                  transition: 'transform 0.1s',
+                  position: 'relative',
+                  zIndex: isDragging ? 10 : 'auto',
+                }}
+              >
+              <div
+                className="flex items-center bit-input px-3 py-1.5 min-w-0"
                 style={{
                   background: locked
                     ? 'var(--color-border)'
                     : item
-                      ? 'linear-gradient(to bottom, color-mix(in srgb, white 10%, var(--color-bg-elevated)) 0%, var(--color-bg-elevated) 55%, color-mix(in srgb, black 8%, var(--color-bg-elevated)) 100%)'
+                      ? 'linear-gradient(to bottom, color-mix(in srgb, white 28%, var(--color-bg-elevated)) 0%, color-mix(in srgb, white 28%, var(--color-bg-elevated)) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)'
                       : 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)',
                   border: isDragging ? '1px solid var(--color-text)' : 'none',
                   boxShadow: isDragging
                     ? '0 4px 12px rgba(0,0,0,0.25)'
                     : item
-                      ? '0 1px 2px rgba(0,0,0,0.08)'
+                      ? 'none'
                       : 'inset 0 1px 3px rgba(0,0,0,0.15)',
                   minHeight: '32px',
                   opacity: isDragging ? 0.85 : 1,
-                  transform: isDragging ? 'scale(1.02)' : 'scale(1)',
-                  transition: 'box-shadow 0.15s, border-color 0.15s, transform 0.1s, opacity 0.1s',
+                  transition: 'box-shadow 0.15s, border-color 0.15s, opacity 0.1s',
                   cursor: isDraggable ? 'pointer' : 'default',
-                  position: 'relative',
-                  zIndex: isDragging ? 10 : 'auto',
                 }}
                 onPointerDown={isDraggable ? (e) => { e.preventDefault(); startDrag(index, { onTap: () => onRemoveSlot(index) }) } : undefined}
               >
@@ -169,6 +178,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                   </>
                 ) : null}
               </div>
+              </div>
             </div>
           )
         })}
@@ -179,7 +189,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
         key={submitReadyKey}
         onClick={onSubmit}
         disabled={!hasMinItems}
-        className={`mt-2 w-full py-2 bit-btn text-sm font-semibold disabled:opacity-30${allFilled && submitReadyKey > 0 ? ' submit-ready' : ''}${tutorialStep === 3 && allFilled ? ' tutorial-pulse' : ''}`}
+        className={`mt-4 w-full py-1.5 bit-btn text-sm font-semibold disabled:opacity-30${allFilled && submitReadyKey > 0 ? ' submit-ready' : ''}${tutorialStep === 3 && allFilled ? ' tutorial-pulse' : ''}`}
         style={{
           background: hasMinItems ? 'var(--color-action)' : 'var(--color-border)',
           color: hasMinItems ? 'var(--color-action-text)' : 'var(--color-text-faint)',

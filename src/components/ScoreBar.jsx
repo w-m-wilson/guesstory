@@ -3,7 +3,7 @@ import PixelCoin from './PixelCoin.jsx'
 
 const DIFFICULTY_LABELS = { lite: 'LITE', medium: 'MED', challenge: 'CHAL' }
 const RAISED_BG = 'linear-gradient(to bottom, color-mix(in srgb, white 28%, var(--color-bg-elevated)) 0%, color-mix(in srgb, white 28%, var(--color-bg-elevated)) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)'
-const RAISED_WRAP = { filter: 'drop-shadow(0 3px 0 rgba(0,0,0,0.35))' }
+const RAISED_WRAP = { filter: 'drop-shadow(0 3px 0 color-mix(in srgb, black 50%, var(--color-bg-elevated)))' }
 const DIFFICULTY_ORDER = ['lite', 'medium', 'challenge']
 const DIFFICULTY_NAMES = { lite: 'Lite', medium: 'Medium', challenge: 'Challenge' }
 const DIFFICULTY_BLURBS = { lite: 'Most answers given', medium: 'A few starting hints', challenge: 'No hints — from scratch' }
