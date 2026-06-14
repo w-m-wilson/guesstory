@@ -322,8 +322,8 @@ export default function BankPanel({
                           key={`ghost-${globalIdx}`}
                           className="px-3 py-1.5 bit-pill text-sm font-medium whitespace-nowrap"
                           style={{
-                            background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)',
-                            border: '1px solid color-mix(in srgb, var(--color-text) 22%, var(--color-bg))',
+                            background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 22%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 16%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 20%, var(--color-bg)) 100%)',
+                            border: 'none',
                             boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.12)',
                             color: ghostLetter ? 'var(--color-text-faint)' : 'transparent',
                             userSelect: 'none',
