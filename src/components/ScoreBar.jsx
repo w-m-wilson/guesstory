@@ -62,51 +62,7 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
   const canSwitch = !hideDifficulty && easierOptions.length > 0
 
   return (
-    <div style={{ position: 'relative' }}>
-      {/* Mid-game difficulty picker — always in DOM, CSS transition like header menu */}
-      {!hideDifficulty && (
-        <div
-          ref={pickerRef}
-          className="absolute bottom-full left-4 z-[46] pb-2"
-          style={{
-            minWidth: '200px',
-            transformOrigin: 'bottom left',
-            filter: pickerOpen ? 'drop-shadow(0 -6px 16px rgba(0,0,0,0.45)) drop-shadow(0 -2px 4px rgba(0,0,0,0.25))' : 'none',
-            transition: pickerOpen
-              ? 'opacity 220ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1), filter 220ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0ms'
-              : 'opacity 140ms cubic-bezier(0.4, 0, 1, 1), transform 140ms cubic-bezier(0.4, 0, 1, 1), filter 140ms cubic-bezier(0.4, 0, 1, 1), visibility 140ms',
-            opacity: pickerOpen ? 1 : 0,
-            transform: pickerOpen ? 'scale(1) translateY(0)' : 'scale(0.92) translateY(8px)',
-            visibility: pickerOpen ? 'visible' : 'hidden',
-            pointerEvents: pickerOpen ? 'auto' : 'none',
-          }}
-        >
-          <div
-            style={{
-              background: 'var(--color-bg-elevated)',
-              clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%, 8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px))',
-            }}
-          >
-            <p className="text-[10px] font-black tracking-widest uppercase px-4 pt-3 pb-1" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
-              Make it easier
-            </p>
-            {easierOptions.map((d, i) => (
-              <button
-                key={d}
-                onClick={() => { closePicker(); onSetDifficulty?.(d) }}
-                className="w-full flex items-center gap-2.5 px-4 py-3 text-left"
-                style={{ borderTop: '1px solid var(--color-border)', color: 'var(--color-text)' }}
-              >
-                <div>
-                  <p className="text-sm font-medium" style={{ color: 'var(--color-text-strong)' }}>{DIFFICULTY_NAMES[d]}</p>
-                  <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-faint)' }}>{DIFFICULTY_BLURBS[d]}</p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
+    <div>
       <div
         className="relative flex items-center justify-between px-4 py-3 shrink-0"
       >
@@ -132,22 +88,66 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
             </span>
           ))}
 
+
           {!hideDifficulty && (
-            <span style={{ ...RAISED_WRAP, display: 'flex', alignItems: 'center' }}>
-              <button
-                onClick={canSwitch ? () => setPickerOpen(p => !p) : undefined}
-                className="text-[10px] font-black tracking-widest bit-btn px-2"
+            <div className="relative" ref={pickerRef}>
+              {/* Mid-game difficulty picker — co-located with trigger, same pattern as hamburger menu */}
+              <div
+                className="absolute bottom-full left-0 z-[46] pb-2"
                 style={{
-                  color: 'var(--color-text-strong)',
-                  background: RAISED_BG,
-                  cursor: canSwitch ? 'pointer' : 'default',
-                  lineHeight: '1.6rem',
+                  minWidth: '200px',
+                  transformOrigin: 'bottom left',
+                  filter: pickerOpen ? 'drop-shadow(0 -6px 16px rgba(0,0,0,0.45)) drop-shadow(0 -2px 4px rgba(0,0,0,0.25))' : 'none',
+                  transition: pickerOpen
+                    ? 'opacity 220ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1), filter 220ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0ms'
+                    : 'opacity 140ms cubic-bezier(0.4, 0, 1, 1), transform 140ms cubic-bezier(0.4, 0, 1, 1), filter 140ms cubic-bezier(0.4, 0, 1, 1), visibility 140ms',
+                  opacity: pickerOpen ? 1 : 0,
+                  transform: pickerOpen ? 'scale(1) translateY(0)' : 'scale(0.92) translateY(8px)',
+                  visibility: pickerOpen ? 'visible' : 'hidden',
+                  pointerEvents: pickerOpen ? 'auto' : 'none',
                 }}
-                aria-label={canSwitch ? 'Change difficulty' : `Difficulty: ${DIFFICULTY_NAMES[difficulty]}`}
               >
-                {DIFFICULTY_LABELS[difficulty] ?? 'MED'}
-              </button>
-            </span>
+                <div
+                  style={{
+                    background: 'var(--color-bg-elevated)',
+                    clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%, 8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px))',
+                  }}
+                >
+                  <p className="text-[10px] font-black tracking-widest uppercase px-4 pt-3 pb-1" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
+                    Make it easier
+                  </p>
+                  {easierOptions.map((d) => (
+                    <button
+                      key={d}
+                      onClick={() => { closePicker(); onSetDifficulty?.(d) }}
+                      className="w-full flex items-center gap-2.5 px-4 py-3 text-left"
+                      style={{ borderTop: '1px solid var(--color-border)', color: 'var(--color-text)' }}
+                    >
+                      <div>
+                        <p className="text-sm font-medium" style={{ color: 'var(--color-text-strong)' }}>{DIFFICULTY_NAMES[d]}</p>
+                        <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-faint)' }}>{DIFFICULTY_BLURBS[d]}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {/* Trigger button */}
+              <span style={{ ...RAISED_WRAP, display: 'flex', alignItems: 'center' }}>
+                <button
+                  onClick={canSwitch ? () => setPickerOpen(p => !p) : undefined}
+                  className="text-[10px] font-black tracking-widest bit-btn px-2"
+                  style={{
+                    color: 'var(--color-text-strong)',
+                    background: RAISED_BG,
+                    cursor: canSwitch ? 'pointer' : 'default',
+                    lineHeight: '1.6rem',
+                  }}
+                  aria-label={canSwitch ? 'Change difficulty' : `Difficulty: ${DIFFICULTY_NAMES[difficulty]}`}
+                >
+                  {DIFFICULTY_LABELS[difficulty] ?? 'MED'}
+                </button>
+              </span>
+            </div>
           )}
         </div>
 
