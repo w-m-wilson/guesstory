@@ -13,6 +13,19 @@ const HINT_DEFS = [
 
 const EXIT_MS = 200
 
+const RAISED_BG = 'linear-gradient(to bottom, var(--color-bg-raised) 0%, var(--color-bg-raised) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)'
+const RAISED_WRAP = { filter: 'drop-shadow(0 3px 0 var(--color-raised-shadow))' }
+const EMPTY_STYLE = {
+  background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 8%, var(--color-bg-elevated)) 0%, color-mix(in srgb, var(--color-text) 5%, var(--color-bg-elevated)) 100%)',
+  boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.12)',
+  border: '1px solid color-mix(in srgb, var(--color-text) 10%, transparent)',
+}
+const PRESSED_STYLE = {
+  background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-action) 18%, var(--color-bg-elevated)) 0%, color-mix(in srgb, var(--color-action) 10%, var(--color-bg-elevated)) 100%)',
+  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.28)',
+  border: '1px solid color-mix(in srgb, var(--color-action) 30%, transparent)',
+}
+
 export default function HintModal({ coins, allBankFound, categoryGuessed, category, difficulty = 'medium', onPurchase, onClose }) {
   const hintCosts = (DIFFICULTY_CONFIG[difficulty] ?? DIFFICULTY_CONFIG.medium).hints
   const HINTS = HINT_DEFS.map(h => ({ ...h, cost: hintCosts[h.key] }))
@@ -63,7 +76,7 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, catego
       {/* Card */}
       <div
         className={`w-full max-w-[430px] p-5 pb-8${closing ? '' : ' sheet-enter'}`}
-        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1, clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% 100%, 0% 100%)', ...(closing ? { opacity: 0, transform: 'translateY(24px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
+        style={{ background: 'var(--color-bg-elevated)', position: 'relative', zIndex: 1, clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% 100%, 0% 100%)', ...(closing ? { opacity: 0, transform: 'translateY(24px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
@@ -98,32 +111,35 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, catego
               (key === 'revealBankItem' && allBankFound) ||
               (key === 'revealCategory' && categoryGuessed) ||
               (key === 'revealCategoryNudge' && categoryGuessed)
+            const disabled = !canAfford || unavailable
+            const state = unavailable ? 'pressed' : !canAfford ? 'empty' : 'raised'
             return (
-              <button
-                key={key}
-                onClick={() => handlePurchase(key)}
-                disabled={!canAfford || unavailable}
-                className="flex items-center justify-between w-full rounded-xl px-4 py-3 text-left disabled:opacity-40"
-                style={{
-                  background: 'var(--color-bg-elevated)',
-                  border: '1px solid var(--color-border)',
-                }}
-              >
-                <div>
-                  <p className="text-sm font-medium" style={{ color: 'var(--color-text-strong)' }}>
-                    {label}
-                  </p>
-                  <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-faint)' }}>
-                    {description}
-                  </p>
-                </div>
-                <span
-                  className="text-sm font-semibold ml-3 shrink-0 flex items-center gap-1"
-                  style={{ color: canAfford ? 'var(--color-text-strong)' : 'var(--color-text-faint)' }}
+              <span key={key} style={state === 'raised' ? RAISED_WRAP : undefined}>
+                <button
+                  onClick={() => handlePurchase(key)}
+                  disabled={disabled}
+                  className="flex items-center justify-between w-full bit-btn px-4 py-3 text-left"
+                  style={{
+                    ...(state === 'raised' ? { background: RAISED_BG } : state === 'pressed' ? PRESSED_STYLE : EMPTY_STYLE),
+                    opacity: state === 'empty' ? 0.5 : 1,
+                  }}
                 >
-                  <PixelCoin size={14} /> {String(cost)}
-                </span>
-              </button>
+                  <div>
+                    <p className="text-sm font-medium" style={{ color: 'var(--color-text-strong)' }}>
+                      {label}
+                    </p>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-faint)' }}>
+                      {description}
+                    </p>
+                  </div>
+                  <span
+                    className="text-sm font-semibold ml-3 shrink-0 flex items-center gap-1"
+                    style={{ color: 'var(--color-text-strong)' }}
+                  >
+                    <PixelCoin size={14} /> {String(cost)}
+                  </span>
+                </button>
+              </span>
             )
           })}
         </div>

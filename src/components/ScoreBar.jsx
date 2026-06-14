@@ -71,7 +71,7 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
             style={{
               minWidth: '200px',
               transformOrigin: 'bottom left',
-              filter: 'drop-shadow(0 -4px 12px rgba(0,0,0,0.4)) drop-shadow(0 -1px 3px rgba(0,0,0,0.2))',
+              filter: pickerOpen ? 'drop-shadow(0 -6px 16px rgba(0,0,0,0.45)) drop-shadow(0 -2px 4px rgba(0,0,0,0.25))' : 'none',
               transition: pickerOpen
                 ? 'opacity 220ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0ms'
                 : 'opacity 140ms cubic-bezier(0.4, 0, 1, 1), transform 140ms cubic-bezier(0.4, 0, 1, 1), visibility 140ms',
