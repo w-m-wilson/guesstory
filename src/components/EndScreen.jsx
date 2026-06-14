@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 
 const EXIT_MS = 200
 import { modalScrimBackground } from '../utils/modalScrim.js'
+import ChamferedSurface from './primitives/ChamferedSurface.jsx'
 
 const GRADES = [
   { min: 100, label: 'Perfect' },
@@ -188,9 +189,11 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
       style={closing ? { opacity: 0, transition: `opacity ${EXIT_MS}ms ease` } : { animation: 'scrimIn 0.2s ease' }}
     >
       <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'dialog' }), pointerEvents: 'none' }} />
-      <div
-        className={`w-full max-w-sm p-6 flex flex-col gap-5${closing ? '' : ' dialog-enter'}`}
-        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1, clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%, 8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px))', ...(closing ? { opacity: 0, transform: 'scale(0.95) translateY(6px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
+      <ChamferedSurface
+        shadow="dialog"
+        bg="var(--color-bg)"
+        style={{ position: 'relative', zIndex: 1, ...(closing ? { opacity: 0, transform: 'scale(0.95) translateY(6px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
+        innerClassName={`w-full max-w-sm p-6 flex flex-col gap-5${closing ? '' : ' dialog-enter'}`}
         onClick={e => e.stopPropagation()}
       >
         <button
@@ -330,7 +333,7 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
             )}
           </>
         )}
-      </div>
+      </ChamferedSurface>
     </div>
   )
 }

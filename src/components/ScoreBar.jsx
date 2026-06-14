@@ -1,10 +1,9 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import PixelCoin from './PixelCoin.jsx'
 import ChamferedSurface from './primitives/ChamferedSurface.jsx'
+import RaisedPill from './primitives/RaisedPill.jsx'
 
 const DIFFICULTY_LABELS = { lite: 'LITE', medium: 'MED', challenge: 'CHAL' }
-const RAISED_BG = 'linear-gradient(to bottom, var(--color-bg-raised) 0%, var(--color-bg-raised) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)'
-const RAISED_WRAP = { filter: 'drop-shadow(0 2px 1px var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))' }
 const DIFFICULTY_ORDER = ['lite', 'medium', 'challenge']
 const DIFFICULTY_NAMES = { lite: 'Lite', medium: 'Medium', challenge: 'Challenge' }
 const DIFFICULTY_BLURBS = { lite: 'Most answers given', medium: 'A few starting hints', challenge: 'No hints — from scratch' }
@@ -126,21 +125,19 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
                   ))}
               </ChamferedSurface>
               {/* Trigger button */}
-              <span style={{ ...RAISED_WRAP, display: 'flex', alignItems: 'center' }}>
-                <button
-                  onClick={canSwitch ? () => setPickerOpen(p => !p) : undefined}
-                  className="text-[10px] font-black tracking-widest bit-btn px-2"
-                  style={{
-                    color: 'var(--color-text-strong)',
-                    background: RAISED_BG,
-                    cursor: canSwitch ? 'pointer' : 'default',
-                    lineHeight: '1.6rem',
-                  }}
-                  aria-label={canSwitch ? 'Change difficulty' : `Difficulty: ${DIFFICULTY_NAMES[difficulty]}`}
-                >
-                  {DIFFICULTY_LABELS[difficulty] ?? 'MED'}
-                </button>
-              </span>
+              <RaisedPill
+                onClick={canSwitch ? () => setPickerOpen(p => !p) : undefined}
+                className="text-[10px] font-black tracking-widest px-2"
+                style={{
+                  color: 'var(--color-text-strong)',
+                  cursor: canSwitch ? 'pointer' : 'default',
+                  lineHeight: '1.6rem',
+                }}
+                wrapStyle={{ alignItems: 'center' }}
+                aria-label={canSwitch ? 'Change difficulty' : `Difficulty: ${DIFFICULTY_NAMES[difficulty]}`}
+              >
+                {DIFFICULTY_LABELS[difficulty] ?? 'MED'}
+              </RaisedPill>
             </div>
           )}
         </div>
@@ -148,36 +145,30 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
         {/* Archive / Today's + Results or Hints */}
         <div className="flex items-center gap-2">
           {onOpenArchive && (
-            <span style={RAISED_WRAP}>
-              <button
-                onClick={onOpenArchive}
-                className="flex items-center gap-1 px-3 py-1.5 bit-btn text-sm font-medium"
-                style={{ background: RAISED_BG, color: 'var(--color-text)' }}
-              >
-                {isArchive ? 'Archive' : "Today's"}
-              </button>
-            </span>
+            <RaisedPill
+              onClick={onOpenArchive}
+              className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium"
+              style={{ color: 'var(--color-text)' }}
+            >
+              {isArchive ? 'Archive' : "Today's"}
+            </RaisedPill>
           )}
           {gameOver ? (
-            <span style={RAISED_WRAP}>
-              <button
-                onClick={onShowResults}
-                className="flex items-center gap-1 px-3 py-1.5 bit-btn text-sm font-medium"
-                style={{ background: RAISED_BG, color: 'var(--color-text)' }}
-              >
-                Results
-              </button>
-            </span>
+            <RaisedPill
+              onClick={onShowResults}
+              className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium"
+              style={{ color: 'var(--color-text)' }}
+            >
+              Results
+            </RaisedPill>
           ) : (
-            <span style={RAISED_WRAP}>
-              <button
-                onClick={onHintsOpen}
-                className={`flex items-center gap-1 px-3 py-1.5 bit-btn text-sm font-medium overflow-hidden${hintsGlinting ? ' hints-glint' : ''}`}
-                style={{ background: RAISED_BG, color: 'var(--color-text)' }}
-              >
-                Hints
-              </button>
-            </span>
+            <RaisedPill
+              onClick={onHintsOpen}
+              className={`flex items-center gap-1 px-3 py-1.5 text-sm font-medium overflow-hidden${hintsGlinting ? ' hints-glint' : ''}`}
+              style={{ color: 'var(--color-text)' }}
+            >
+              Hints
+            </RaisedPill>
           )}
         </div>
       </div>

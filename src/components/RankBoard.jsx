@@ -100,9 +100,9 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                 className="flex-1 min-w-0"
                 style={{
                   filter: isDragging
-                    ? 'drop-shadow(0 4px 2px var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))'
+                    ? 'var(--shadow-raised-lg)'
                     : item && !locked
-                      ? 'drop-shadow(0 2px 1px var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))'
+                      ? 'var(--shadow-raised)'
                       : 'none',
                   transform: isDragging ? 'scale(1.03)' : 'scale(1)',
                   transition: 'transform 0.1s',
@@ -116,7 +116,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                   background: locked
                     ? 'var(--color-border)'
                     : item
-                      ? 'linear-gradient(to bottom, var(--color-bg-raised) 0%, var(--color-bg-raised) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)'
+                      ? 'var(--elev-raised-bg)'
                       : 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)',
                   border: 'none',
                   boxShadow: item && !isDragging ? 'none' : !item ? 'inset 0 1px 3px rgba(0,0,0,0.15)' : 'none',

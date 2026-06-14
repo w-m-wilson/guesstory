@@ -33,8 +33,6 @@ export default function BankPanel({
   const [haikuHint, setHaikuHint] = useState(null)
   const [animatingCircleIdx, setAnimatingCircleIdx] = useState(null)
   const [penaltyKey, setPenaltyKey] = useState(0)
-  const [showLeftFade, setShowLeftFade] = useState(false)
-  const [showRightFade, setShowRightFade] = useState(false)
   const [showBankMsg, setShowBankMsg] = useState(false)
   const [rowFlashKey, setRowFlashKey] = useState(0)
   const [hasGuessed, setHasGuessed] = useState(false)
@@ -42,7 +40,6 @@ export default function BankPanel({
   const haikuTimerRef = useRef(null)
   const bankMsgTimer = useRef(null)
   const inputRef = useRef(null)
-  const bankScrollRef = useRef(null)
 
   const burningCoins = bankMisses >= freeMisses
   const discoveredCount = discoveredList.filter(Boolean).length
@@ -66,19 +63,6 @@ export default function BankPanel({
       bankMsgTimer.current = setTimeout(() => setShowBankMsg(false), 2500)
     }
   }, [bankFull])
-
-  useEffect(() => {
-    function updateFades() {
-      const node = bankScrollRef.current
-      if (!node) return
-      setShowLeftFade(node.scrollLeft > 0)
-      setShowRightFade(node.scrollLeft + node.clientWidth < node.scrollWidth - 1)
-    }
-
-    updateFades()
-    window.addEventListener('resize', updateFades)
-    return () => window.removeEventListener('resize', updateFades)
-  }, [discoveredCount])
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -265,79 +249,62 @@ export default function BankPanel({
       )}
 
       {/* Discovered items + ghost pills */}
-      <div className="overflow-y-auto px-4 pt-2 pb-4" style={{ maxHeight: '40vh' }}>
-        <div className={`bank-scroll-wrap${showLeftFade ? ' bank-scroll-wrap--left-fade' : ''}${showRightFade ? ' bank-scroll-wrap--right-fade' : ''}`}>
-          <div
-            ref={bankScrollRef}
-            className="bank-scroll-area"
-            onScroll={e => {
-              const n = e.currentTarget
-              setShowLeftFade(n.scrollLeft > 0)
-              setShowRightFade(n.scrollLeft + n.clientWidth < n.scrollWidth - 1)
-            }}
-          >
-            <div className="bank-scroll-grid">
-              {[0, 1].map(rowIdx => {
-                // interleave: row 0 gets items at global positions 0,2,4… row 1 gets 1,3,5…
-                const totalPerRow = Math.ceil((rowIdx === 0 ? bankTotal : bankTotal) / 2)
-                const rowItems = Array.from({ length: Math.ceil(bankTotal / 2) }, (_, col) => {
-                  const globalIdx = col * 2 + rowIdx
-                  return globalIdx < bankTotal ? (discoveredList[globalIdx] ?? null) : null
-                }).filter((_, col) => col * 2 + rowIdx < bankTotal)
-                return (
-                  <div key={rowIdx} className="flex gap-2">
-                    {rowItems.map((item, col) => {
-                      const globalIdx = col * 2 + rowIdx
-                      if (item) {
-                        const placed = placedRanks.has(item.rank)
-                        const nudge = tutorialStep === 2 && !placed
-                        const pill = (
-                          <button
-                            onClick={() => placed ? onRemoveSlot(rankToSlotIndex[item.rank]) : onPlaceItem(item)}
-                            key={item.rank}
-                            className="fade-in flex items-center gap-1.5 px-3 py-1.5 bit-pill text-sm font-medium whitespace-nowrap"
-                            style={{
-                              background: placed
-                                ? 'linear-gradient(to bottom, color-mix(in srgb, black 28%, var(--color-pill)) 0%, color-mix(in srgb, black 18%, var(--color-pill)) 50%, color-mix(in srgb, black 28%, var(--color-pill)) 100%)'
-                                : 'linear-gradient(to bottom, var(--color-bg-raised) 0%, var(--color-bg-raised) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)',
-                              color: placed ? 'var(--color-pill-text)' : 'var(--color-text)',
-                              border: 'none',
-                              boxShadow: placed ? 'inset 0 2px 4px rgba(0,0,0,0.28)' : 'none',
-                              transform: 'none',
-                            }}
-                          >
-                            {item.seeded && <span className="text-xs" style={{ color: placed ? 'var(--color-pill-text)' : 'var(--color-text-faint)' }}>★</span>}
-                            {item.display ?? item.name}
-                            {placed && <span className="text-xs opacity-70">✕</span>}
-                          </button>
-                        )
-                        const wrapFilter = placed ? undefined : { filter: 'drop-shadow(0 2px 1px var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))' }
-                        return nudge
-                          ? <span key={item.rank} className="pill-trace-wrap" style={wrapFilter}>{pill}</span>
-                          : <span key={item.rank} style={wrapFilter}>{pill}</span>
-                      }
-                      const ghostLetter = ghostLetters?.[globalIdx]
-                      return (
-                        <div
-                          key={`ghost-${globalIdx}`}
-                          className="px-3 py-1.5 bit-pill text-sm font-medium whitespace-nowrap"
-                          style={{
-                            background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 22%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 16%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 20%, var(--color-bg)) 100%)',
-                            border: 'none',
-                            boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.12)',
-                            color: ghostLetter ? 'var(--color-text-faint)' : 'transparent',
-                            userSelect: 'none',
-                          }}
-                        >
-                          {ghostLetter ?? '———'}
-                        </div>
-                      )
-                    })}
-                  </div>
-                )
-              })}
-            </div>
-          </div>
+      <div className="px-4 pt-2 pb-4 bank-scroll">
+        <div className="bank-grid">
+          {[0, 1].map(rowIdx => {
+            const rowIndices = []
+            for (let i = rowIdx; i < bankTotal; i += 2) rowIndices.push(i)
+            return (
+              <div key={rowIdx} className="bank-row">
+                {rowIndices.map(globalIdx => {
+                  const item = discoveredList[globalIdx] ?? null
+                  if (item) {
+                    const placed = placedRanks.has(item.rank)
+                    const nudge = tutorialStep === 2 && !placed
+                    const pill = (
+                      <button
+                        onClick={() => placed ? onRemoveSlot(rankToSlotIndex[item.rank]) : onPlaceItem(item)}
+                        className="fade-in flex items-center gap-1.5 px-3 py-1.5 bit-pill text-sm font-medium whitespace-nowrap"
+                        style={{
+                          background: placed
+                            ? 'linear-gradient(to bottom, color-mix(in srgb, black 28%, var(--color-pill)) 0%, color-mix(in srgb, black 18%, var(--color-pill)) 50%, color-mix(in srgb, black 28%, var(--color-pill)) 100%)'
+                            : 'var(--elev-raised-bg)',
+                          color: placed ? 'var(--color-pill-text)' : 'var(--color-text)',
+                          border: 'none',
+                          boxShadow: placed ? 'var(--inset-pressed)' : 'none',
+                          transform: 'none',
+                        }}
+                      >
+                        {item.seeded && <span className="text-xs" style={{ color: placed ? 'var(--color-pill-text)' : 'var(--color-text-faint)' }}>★</span>}
+                        {item.display ?? item.name}
+                        {placed && <span className="text-xs opacity-70">✕</span>}
+                      </button>
+                    )
+                    const wrapFilter = placed ? undefined : { filter: 'var(--shadow-raised)' }
+                    return nudge
+                      ? <span key={item.rank} className="pill-trace-wrap" style={wrapFilter}>{pill}</span>
+                      : <span key={item.rank} style={wrapFilter}>{pill}</span>
+                  }
+                  const ghostLetter = ghostLetters?.[globalIdx]
+                  return (
+                    <div
+                      key={`ghost-${globalIdx}`}
+                      className="px-3 py-1.5 bit-pill text-sm font-medium whitespace-nowrap"
+                      style={{
+                        background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 22%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 16%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 20%, var(--color-bg)) 100%)',
+                        border: 'none',
+                        boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.12)',
+                        color: ghostLetter ? 'var(--color-text-faint)' : 'transparent',
+                        userSelect: 'none',
+                      }}
+                    >
+                      {ghostLetter ?? '———'}
+                    </div>
+                  )
+                })}
+              </div>
+            )
+          })}
         </div>
       </div>
     </div>

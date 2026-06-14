@@ -3,6 +3,7 @@ import React, { useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import { modalScrimBackground } from '../utils/modalScrim.js'
 import { AVAILABLE_DATES } from '../data/puzzles/available.js'
+import ChamferedSurface from './primitives/ChamferedSurface.jsx'
 
 const EXIT_MS = 200
 
@@ -71,16 +72,14 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
           ...(closing ? { opacity: 0, transition: `opacity ${EXIT_MS}ms ease` } : { animation: 'scrimIn 0.2s ease' }) 
         }} 
       />
-      <div
-        className={`w-full max-w-[430px] flex flex-col max-h-[85dvh] overflow-hidden${closing ? '' : ' sheet-enter'}`}
-        style={{
-          background: 'var(--color-bg)',
-          position: 'relative',
-          zIndex: 1,
-          touchAction: 'pan-y',
-          clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% 100%, 0% 100%)',
-          ...(closing ? { opacity: 0, transform: 'translateY(24px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {})
-        }}
+      <ChamferedSurface
+        shadow="sheet"
+        variant="top"
+        bg="var(--color-bg)"
+        className="w-full max-w-[430px]"
+        style={{ position: 'relative', zIndex: 1, ...(closing ? { opacity: 0, transform: 'translateY(24px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
+        innerClassName={`flex flex-col max-h-[85dvh] overflow-hidden${closing ? '' : ' sheet-enter'}`}
+        innerStyle={{ touchAction: 'pan-y' }}
         onClick={e => e.stopPropagation()}
       >
         {/* Sticky Header with Fade */}
@@ -124,28 +123,28 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
               const isActive = p.date === activeDate
               const isToday = p.isToday
               
-              const CHAMFER = 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%, 8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px))'
+              const CHAMFER = 'var(--chamfer-8)'
 
               let cardBg, cardBorder, cardShadow, textColor, subColor, wrapFilter
 
               if (p.status === 'unattempted') {
-                cardBg = 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)'
+                cardBg = 'var(--elev-empty-bg)'
                 cardBorder = 'none'
-                cardShadow = 'inset 0 1px 3px rgba(0,0,0,0.12)'
+                cardShadow = 'var(--inset-empty)'
                 textColor = 'var(--color-text-faint)'
                 subColor = 'var(--color-text-faint)'
                 wrapFilter = 'none'
               } else if (p.status === 'in-progress') {
-                cardBg = 'linear-gradient(to bottom, var(--color-bg-raised) 0%, var(--color-bg-raised) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)'
+                cardBg = 'var(--elev-raised-bg)'
                 cardBorder = 'none'
                 cardShadow = 'none'
                 textColor = 'var(--color-text-strong)'
                 subColor = 'var(--color-text-faint)'
-                wrapFilter = 'drop-shadow(0 2px 1px var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))'
+                wrapFilter = 'var(--shadow-raised)'
               } else {
                 cardBg = 'linear-gradient(to bottom, color-mix(in srgb, black 28%, var(--color-action)) 0%, color-mix(in srgb, black 18%, var(--color-action)) 50%, color-mix(in srgb, black 28%, var(--color-action)) 100%)'
                 cardBorder = 'none'
-                cardShadow = 'inset 0 2px 4px rgba(0,0,0,0.28)'
+                cardShadow = 'var(--inset-pressed)'
                 textColor = 'var(--color-action-text)'
                 subColor = 'var(--color-action-text)'
                 wrapFilter = 'none'
@@ -199,7 +198,7 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
             })}
           </div>
         </div>
-      </div>
+      </ChamferedSurface>
 
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes pulse {

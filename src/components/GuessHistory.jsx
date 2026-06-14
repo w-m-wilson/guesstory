@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { modalScrimBackground } from '../utils/modalScrim.js'
+import ChamferedSurface from './primitives/ChamferedSurface.jsx'
 
 function sortFeedbackForDots(feedback) {
   return [...feedback].sort((a, b) => {
@@ -47,10 +48,11 @@ function ScoreExplainerPopup({ feedback, onClose }) {
       onClick={onClose}
     >
       <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ variant: 'dialog' }), pointerEvents: 'none' }} />
-      <div style={{ position: 'relative', zIndex: 1, filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.35)) drop-shadow(0 2px 6px rgba(0,0,0,0.2))' }}>
-      <div
-        className="w-full max-w-xs p-5 fade-in"
-        style={{ background: 'var(--color-bg)', clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%, 8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px))' }}
+      <ChamferedSurface
+        shadow="dialog"
+        bg="var(--color-bg)"
+        style={{ position: 'relative', zIndex: 1 }}
+        innerClassName="w-full max-w-xs p-5 fade-in"
         onClick={e => e.stopPropagation()}
       >
         <div
@@ -91,8 +93,7 @@ function ScoreExplainerPopup({ feedback, onClose }) {
         >
           Got it
         </button>
-      </div>
-      </div>
+      </ChamferedSurface>
     </div>,
     document.body,
   )
@@ -103,8 +104,8 @@ const PX_PER_CARD  = 52   // px of drag to advance one card
 const BOTTOM_PAD   = 8    // px from area bottom to front card bottom
 const WHEEL_THRESH = 60   // accumulated deltaY before advancing one card
 
-const CHAMFER_CLIP = 'polygon(0% 6px, 2px 4px, 4px 2px, 6px 0%, calc(100% - 6px) 0%, calc(100% - 4px) 2px, calc(100% - 2px) 4px, 100% 6px, 100% calc(100% - 6px), calc(100% - 2px) calc(100% - 4px), calc(100% - 4px) calc(100% - 2px), calc(100% - 6px) 100%, 6px 100%, 4px calc(100% - 2px), 2px calc(100% - 4px), 0% calc(100% - 6px))'
-const CHAMFER_CLIP_SM = 'polygon(0% 3px, 1px 2px, 2px 1px, 3px 0%, calc(100% - 3px) 0%, calc(100% - 2px) 1px, calc(100% - 1px) 2px, 100% 3px, 100% calc(100% - 3px), calc(100% - 1px) calc(100% - 2px), calc(100% - 2px) calc(100% - 1px), calc(100% - 3px) 100%, 3px 100%, 2px calc(100% - 1px), 1px calc(100% - 2px), 0% calc(100% - 3px))'
+const CHAMFER_CLIP = 'var(--chamfer-6)'
+const CHAMFER_CLIP_SM = 'var(--chamfer-3)'
 
 const FIRST_REAL_FEEDBACK_EXPLAINER_KEY = 'guesstory-first-real-feedback-explainer'
 

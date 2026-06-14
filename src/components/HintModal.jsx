@@ -14,16 +14,16 @@ const HINT_DEFS = [
 
 const EXIT_MS = 200
 
-const RAISED_BG = 'linear-gradient(to bottom, var(--color-bg-raised) 0%, var(--color-bg-raised) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)'
-const RAISED_WRAP = { filter: 'drop-shadow(0 2px 1px var(--color-raised-shadow))' }
+const RAISED_BG = 'var(--elev-raised-bg)'
+const RAISED_WRAP = { filter: 'var(--shadow-raised)' }
 const EMPTY_STYLE = {
-  background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 8%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 5%, var(--color-bg)) 100%)',
-  boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.12)',
+  background: 'var(--elev-empty-bg)',
+  boxShadow: 'var(--inset-empty)',
   border: 'none',
 }
 const PRESSED_STYLE = {
-  background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-action) 18%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-action) 10%, var(--color-bg)) 100%)',
-  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.28)',
+  background: 'var(--elev-pressed-bg)',
+  boxShadow: 'var(--inset-pressed)',
   border: 'none',
 }
 

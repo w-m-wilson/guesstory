@@ -68,8 +68,8 @@ export function AboutModal({ mode, onClose }) {
   )
 }
 
-const CHAMFER_6 = 'polygon(0% 6px, 2px 4px, 4px 2px, 6px 0%, calc(100% - 6px) 0%, calc(100% - 4px) 2px, calc(100% - 2px) 4px, 100% 6px, 100% calc(100% - 6px), calc(100% - 2px) calc(100% - 4px), calc(100% - 4px) calc(100% - 2px), calc(100% - 6px) 100%, 6px 100%, 4px calc(100% - 2px), 2px calc(100% - 4px), 0% calc(100% - 6px))'
-const CHAMFER_4 = 'polygon(0% 4px, 2px 2px, 4px 0%, calc(100% - 4px) 0%, calc(100% - 2px) 2px, 100% 4px, 100% calc(100% - 4px), calc(100% - 2px) calc(100% - 2px), calc(100% - 4px) 100%, 4px 100%, 2px calc(100% - 2px), 0% calc(100% - 4px))'
+const CHAMFER_6 = 'var(--chamfer-6)'
+const CHAMFER_4 = 'var(--chamfer-4)'
 
 export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose }) {
   const [changed, setChanged] = React.useState(false)

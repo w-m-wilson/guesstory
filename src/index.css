@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./styles/tokens.css";
 
 html, body {
   overscroll-behavior: none;
@@ -418,56 +419,38 @@ body {
 }
 .bank-complete { animation: bankComplete 0.3s ease-out; }
 
-/* ── Horizontal two-row bank scroller ── */
-.bank-scroll-wrap {
-  position: relative;
-}
-
-.bank-scroll-wrap::before,
-.bank-scroll-wrap::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 20px;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.bank-scroll-wrap::before {
-  left: 0;
-  background: linear-gradient(to right, var(--color-bg), transparent);
-  opacity: 0;
-  transition: opacity 0.15s ease-out;
-}
-
-.bank-scroll-wrap::after {
-  right: 0;
-  background: linear-gradient(to left, var(--color-bg), transparent);
-  opacity: 0;
-  transition: opacity 0.15s ease-out;
-}
-
-.bank-scroll-wrap--right-fade::after {
-  opacity: 1;
-}
-
-.bank-scroll-wrap--left-fade::before {
-  opacity: 1;
-}
-
-.bank-scroll-area {
+/* ── Two-row bank scroller ──
+   Pills flow column-by-column into 2 rows, scroll horizontally when wider
+   than the viewport. Edge mask fades the left/right gutters intrinsically,
+   so we don't need JS to track scroll position. */
+.bank-scroll {
   overflow-x: auto;
   overflow-y: hidden;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black 16px,
+    black calc(100% - 16px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black 16px,
+    black calc(100% - 16px),
+    transparent 100%
+  );
 }
-
-.bank-scroll-grid {
+.bank-grid {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   width: max-content;
 }
-
+.bank-row {
+  display: flex;
+  gap: 0.5rem;
+}
 
 @keyframes coinPulse {
   0%   { transform: scale(1); }
@@ -563,81 +546,12 @@ body {
   animation: pillTrace 2.8s linear infinite;
 }
 
-/* ── 8-bit frame utilities ── */
-
-/*
- * Chamfer + shadow tokens for popovers, dialogs, and sheets.
- * Single source of truth — keep clip-path on the inner surface, filter on a wrapper.
- * See ChamferedSurface.jsx for the canonical usage.
- */
-:root {
-  --chamfer-8: polygon(
-    0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%,
-    calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px,
-    100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%,
-    8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px)
-  );
-  --chamfer-8-top: polygon(
-    0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%,
-    calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px,
-    100% 100%, 0% 100%
-  );
-
-  /* Crisp hard-edge shadows — avoid heavy Gaussian blur over stair-stepped chamfers
-     (blur smears across each step and reads as noisy corner artifacts). */
-  --shadow-popover: drop-shadow(0 4px 0 var(--color-raised-shadow)) drop-shadow(0 2px 6px rgba(0,0,0,0.22));
-  --shadow-popover-up: drop-shadow(0 -4px 0 var(--color-raised-shadow)) drop-shadow(0 -2px 6px rgba(0,0,0,0.22));
-  --shadow-dialog: drop-shadow(0 4px 0 var(--color-raised-shadow)) drop-shadow(0 2px 8px rgba(0,0,0,0.28));
-  --shadow-sheet: drop-shadow(0 -4px 0 var(--color-raised-shadow)) drop-shadow(0 -2px 10px rgba(0,0,0,0.25));
-}
-
-.bit-surface {
-  border-radius: 0;
-  clip-path: var(--chamfer-8);
-  background: var(--color-bg-elevated);
-}
-.bit-surface-top {
-  border-radius: 0;
-  clip-path: var(--chamfer-8-top);
-  background: var(--color-bg);
-}
-
-/* Shadow wrappers — apply on a parent that has NO clip-path of its own.
-   will-change keeps a stable compositor layer so open/close animations don't
-   create/destroy filter layers and produce mobile flicker or ghost silhouettes. */
-.shadow-popover    { filter: var(--shadow-popover);    will-change: filter, opacity, transform; }
-.shadow-popover-up { filter: var(--shadow-popover-up); will-change: filter, opacity, transform; }
-.shadow-dialog     { filter: var(--shadow-dialog);     will-change: filter, opacity, transform; }
-.shadow-sheet      { filter: var(--shadow-sheet);      will-change: filter, opacity, transform; }
-
-/* Chamfered corners — 2-step pixel staircase per corner */
-.bit-pill {
-  border-radius: 0;
-  clip-path: polygon(
-    0% 3px, 1px 2px, 2px 1px, 3px 0%,
-    calc(100% - 3px) 0%, calc(100% - 2px) 1px, calc(100% - 1px) 2px, 100% 3px,
-    100% calc(100% - 3px), calc(100% - 1px) calc(100% - 2px), calc(100% - 2px) calc(100% - 1px), calc(100% - 3px) 100%,
-    3px 100%, 2px calc(100% - 1px), 1px calc(100% - 2px), 0% calc(100% - 3px)
-  );
-}
-.bit-input {
-  border-radius: 0;
-  clip-path: polygon(
-    0% 4px, 1px 3px, 2px 2px, 3px 1px, 4px 0%,
-    calc(100% - 4px) 0%, calc(100% - 3px) 1px, calc(100% - 2px) 2px, calc(100% - 1px) 3px, 100% 4px,
-    100% calc(100% - 4px), calc(100% - 1px) calc(100% - 3px), calc(100% - 2px) calc(100% - 2px), calc(100% - 3px) calc(100% - 1px), calc(100% - 4px) 100%,
-    4px 100%, 3px calc(100% - 1px), 2px calc(100% - 2px), 1px calc(100% - 3px), 0% calc(100% - 4px)
-  );
-}
-.bit-btn {
-  border-radius: 0;
-  clip-path: polygon(
-    0% 4px, 1px 3px, 2px 2px, 3px 1px, 4px 0%,
-    calc(100% - 4px) 0%, calc(100% - 3px) 1px, calc(100% - 2px) 2px, calc(100% - 1px) 3px, 100% 4px,
-    100% calc(100% - 4px), calc(100% - 1px) calc(100% - 3px), calc(100% - 2px) calc(100% - 2px), calc(100% - 3px) calc(100% - 1px), calc(100% - 4px) 100%,
-    4px 100%, 3px calc(100% - 1px), 2px calc(100% - 2px), 1px calc(100% - 3px), 0% calc(100% - 4px)
-  );
-}
+/* ── 8-bit frame utilities ──
+   Surface tokens, overlay shadows, and elevation gradients live in
+   src/styles/tokens.css. The classes below just bind to those tokens. */
+.bit-pill  { border-radius: 0; clip-path: var(--chamfer-3); }
+.bit-input { border-radius: 0; clip-path: var(--chamfer-4); }
+.bit-btn   { border-radius: 0; clip-path: var(--chamfer-4); }
 
 /* Pixel circle — staircase approximation of a circle */
 .bit-circle {
