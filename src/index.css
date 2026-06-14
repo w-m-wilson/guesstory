@@ -62,13 +62,13 @@ html, body {
 /* ── Gruvbox light ── */
 [data-theme="gruvbox-light"] {
   --color-bg:           #F2EAD5;
-  --color-bg-elevated:  #E4D9C3;
-  --color-bg-raised:    #EDE2CF;
+  --color-bg-elevated:  #C8B896;  /* gruvbox bg2 zone — clear step from sandy bg */
+  --color-bg-raised:    #D8C8A8;  /* highlight face */
   --color-raised-shadow: color-mix(in srgb, black 50%, var(--color-bg-elevated));
   --color-text:         #665C54;
   --color-text-strong:  #3C3836;
   --color-text-faint:   #928374;
-  --color-border:       #CEC4AC;
+  --color-border:       #D8C8A8;  /* between bg and elevated */
   --color-action:       #3C3836;
   --color-action-text:  #F2EAD5;
   --color-dot-correct:  #3C3836;
@@ -80,8 +80,8 @@ html, body {
 /* ── Gruvbox dark ── */
 [data-theme="gruvbox-dark"] {
   --color-bg:           #282828;
-  --color-bg-elevated:  #3C3836;
-  --color-bg-raised:    #45413E;
+  --color-bg-elevated:  #504945;  /* gruvbox bg2 — bigger jump than bg1 (#3C3836) */
+  --color-bg-raised:    #585048;  /* highlight face */
   --color-raised-shadow: color-mix(in srgb, black 75%, var(--color-bg-elevated));
   --color-raised-highlight: rgba(255,255,255,0.07);
   --color-text:         #BDAE93;
@@ -99,13 +99,13 @@ html, body {
 /* ── Solarized light ── */
 [data-theme="solarized-light"] {
   --color-bg:           #FDF6E3;
-  --color-bg-elevated:  #EEE8D5;
-  --color-bg-raised:    #F5F0E2;
+  --color-bg-elevated:  #D5CEBC;  /* deeper than base2 — palette only has 2 bg steps, so we go below */
+  --color-bg-raised:    #E5DEC9;  /* highlight face */
   --color-raised-shadow: color-mix(in srgb, black 50%, var(--color-bg-elevated));
   --color-text:         #657B83;
   --color-text-strong:  #586E75;
   --color-text-faint:   #93A1A1;
-  --color-border:       #EEE8D5;
+  --color-border:       #E2DBC8;  /* between bg and elevated */
   --color-action:       #586E75;
   --color-action-text:  #FDF6E3;
   --color-dot-correct:  #586E75;
@@ -117,8 +117,8 @@ html, body {
 /* ── Solarized dark ── */
 [data-theme="solarized-dark"] {
   --color-bg:           #002B36;
-  --color-bg-elevated:  #073642;
-  --color-bg-raised:    #0d3d4a;
+  --color-bg-elevated:  #0F4555;  /* meaningful teal lift — between base02 and base01 */
+  --color-bg-raised:    #145060;  /* highlight face */
   --color-raised-shadow: color-mix(in srgb, black 75%, var(--color-bg-elevated));
   --color-raised-highlight: rgba(255,255,255,0.07);
   --color-text:         #839496;
@@ -136,8 +136,8 @@ html, body {
 /* ── Minimal light ── */
 [data-theme="minimal-light"] {
   --color-bg:           #FFFFFF;
-  --color-bg-elevated:  #F2F2F2;
-  --color-bg-raised:    #FAFAFA;
+  --color-bg-elevated:  #E0E0E0;  /* meaningful gray step — old #F2F2F2 was barely visible */
+  --color-bg-raised:    #EBEBEB;  /* highlight face */
   --color-raised-shadow: color-mix(in srgb, black 50%, var(--color-bg-elevated));
   --color-text:         #555555;
   --color-text-strong:  #111111;
@@ -154,8 +154,8 @@ html, body {
 /* ── Minimal dark ── */
 [data-theme="minimal-dark"] {
   --color-bg:           #111111;
-  --color-bg-elevated:  #1E1E1E;
-  --color-bg-raised:    #252525;
+  --color-bg-elevated:  #2C2C2C;  /* clearer step — old #1E1E1E blended into bg */
+  --color-bg-raised:    #333333;  /* highlight face */
   --color-raised-shadow: color-mix(in srgb, black 75%, var(--color-bg-elevated));
   --color-raised-highlight: rgba(255,255,255,0.07);
   --color-text:         #BBBBBB;
