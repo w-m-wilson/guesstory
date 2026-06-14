@@ -66,11 +66,12 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
       {/* Mid-game difficulty picker — always in DOM, CSS transition like header menu */}
       {!hideDifficulty && (
         <div ref={pickerRef} className="absolute bottom-full left-4 z-[46] pb-2">
-          {/* animation wrapper — no clip-path so transform/opacity work cleanly */}
+          {/* animation + shadow wrapper — filter here reads the clipped child shape correctly */}
           <div
             style={{
               minWidth: '200px',
               transformOrigin: 'bottom left',
+              filter: 'drop-shadow(0 -4px 12px rgba(0,0,0,0.4)) drop-shadow(0 -1px 3px rgba(0,0,0,0.2))',
               transition: pickerOpen
                 ? 'opacity 220ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0ms'
                 : 'opacity 140ms cubic-bezier(0.4, 0, 1, 1), transform 140ms cubic-bezier(0.4, 0, 1, 1), visibility 140ms',
@@ -80,8 +81,6 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
               pointerEvents: pickerOpen ? 'auto' : 'none',
             }}
           >
-          {/* shadow wrapper — drop-shadow must sit outside clip-path */}
-          <div style={{ filter: 'drop-shadow(0 -4px 12px rgba(0,0,0,0.4)) drop-shadow(0 -1px 3px rgba(0,0,0,0.2))' }}>
           <div
             style={{
               background: 'var(--color-bg-elevated)',
@@ -104,7 +103,6 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
                 </div>
               </button>
             ))}
-          </div>
           </div>
           </div>
         </div>
