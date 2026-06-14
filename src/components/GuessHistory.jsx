@@ -98,6 +98,7 @@ const BOTTOM_PAD   = 8    // px from area bottom to front card bottom
 const WHEEL_THRESH = 60   // accumulated deltaY before advancing one card
 
 const CHAMFER_CLIP = 'polygon(0% 6px, 2px 4px, 4px 2px, 6px 0%, calc(100% - 6px) 0%, calc(100% - 4px) 2px, calc(100% - 2px) 4px, 100% 6px, 100% calc(100% - 6px), calc(100% - 2px) calc(100% - 4px), calc(100% - 4px) calc(100% - 2px), calc(100% - 6px) 100%, 6px 100%, 4px calc(100% - 2px), 2px calc(100% - 4px), 0% calc(100% - 6px))'
+const CHAMFER_CLIP_SM = 'polygon(0% 3px, 1px 2px, 2px 1px, 3px 0%, calc(100% - 3px) 0%, calc(100% - 2px) 1px, calc(100% - 1px) 2px, 100% 3px, 100% calc(100% - 3px), calc(100% - 1px) calc(100% - 2px), calc(100% - 2px) calc(100% - 1px), calc(100% - 3px) 100%, 3px 100%, 2px calc(100% - 1px), 1px calc(100% - 2px), 0% calc(100% - 3px))'
 
 const FIRST_REAL_FEEDBACK_EXPLAINER_KEY = 'guesstory-first-real-feedback-explainer'
 
@@ -347,19 +348,31 @@ function AttemptRow({ slots, feedback, attemptNumber, isFocused, onShowExplainer
         <HistoryRankNamesTrack slots={slots} variant="history" />
         <button
           onClick={e => { e.stopPropagation(); onShowExplainer(feedback) }}
-          className="flex items-center shrink-0"
+          className="flex items-center shrink-0 gap-[3px]"
           aria-label="What does this score mean?"
         >
-          {sortedFeedback.map((f, i) => (
-            <span key={i} style={{
-              fontSize: '13px', lineHeight: 1,
-              width: '15px', textAlign: 'center', display: 'inline-block',
-              color: f === 'correct' ? 'var(--color-dot-correct)' : f === 'present' ? 'var(--color-dot-present)' : 'var(--color-text-faint)',
-              opacity: f !== 'correct' && f !== 'present' ? 0.2 : 1,
-            }}>
-              {f === 'correct' ? '●' : f === 'present' ? '○' : '—'}
-            </span>
-          ))}
+          {sortedFeedback.map((f, i) => {
+            const isCorrect = f === 'correct'
+            const isPresent = f === 'present'
+            const chipBg = isCorrect
+              ? 'color-mix(in srgb, var(--color-dot-correct) 85%, var(--color-bg))'
+              : isPresent
+                ? 'color-mix(in srgb, var(--color-dot-present) 42%, var(--color-bg-elevated))'
+                : 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)'
+            const chipShadow = isCorrect
+              ? 'inset 0 2px 5px rgba(0,0,0,0.38)'
+              : isPresent
+                ? 'inset 0 2px 4px rgba(0,0,0,0.24)'
+                : 'inset 0 1px 3px rgba(0,0,0,0.18)'
+            return (
+              <div key={i} style={{
+                width: '18px', height: '20px',
+                clipPath: CHAMFER_CLIP_SM,
+                background: chipBg,
+                boxShadow: chipShadow,
+              }} />
+            )
+          })}
         </button>
       </div>
     </>
