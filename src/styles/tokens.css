@@ -1,0 +1,119 @@
+/*
+ * Visual design tokens — single source of truth for the surface system.
+ *
+ * Layering:
+ *   - Theme color tokens (--color-bg, --color-bg-elevated, --color-bg-raised,
+ *     --color-raised-shadow, --color-raised-highlight, --color-text, ...) live
+ *     in index.css under each [data-theme] block. They are per-theme.
+ *   - This file defines theme-agnostic *recipes* — chamfer polygons, shadow
+ *     filters, and elevation gradients — that compose those color tokens.
+ *   - Recipes inherit theme awareness automatically through their nested
+ *     var() references.
+ *
+ * Rule: any time you reach for `clip-path: polygon(...)`, `filter: drop-shadow(...)`,
+ * or a `linear-gradient(to bottom, ...)` that resembles the raised/pressed/empty
+ * vocabulary, look here first.
+ */
+
+:root {
+  /* ── Chamfer polygons (pixel-stair corners) ──
+     The numeric suffix is the corner depth in pixels. */
+  --chamfer-3: polygon(
+    0% 3px, 1px 2px, 2px 1px, 3px 0%,
+    calc(100% - 3px) 0%, calc(100% - 2px) 1px, calc(100% - 1px) 2px, 100% 3px,
+    100% calc(100% - 3px), calc(100% - 1px) calc(100% - 2px), calc(100% - 2px) calc(100% - 1px), calc(100% - 3px) 100%,
+    3px 100%, 2px calc(100% - 1px), 1px calc(100% - 2px), 0% calc(100% - 3px)
+  );
+  --chamfer-4: polygon(
+    0% 4px, 1px 3px, 2px 2px, 3px 1px, 4px 0%,
+    calc(100% - 4px) 0%, calc(100% - 3px) 1px, calc(100% - 2px) 2px, calc(100% - 1px) 3px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 1px) calc(100% - 3px), calc(100% - 2px) calc(100% - 2px), calc(100% - 3px) calc(100% - 1px), calc(100% - 4px) 100%,
+    4px 100%, 3px calc(100% - 1px), 2px calc(100% - 2px), 1px calc(100% - 3px), 0% calc(100% - 4px)
+  );
+  --chamfer-6: polygon(
+    0% 6px, 2px 4px, 4px 2px, 6px 0%,
+    calc(100% - 6px) 0%, calc(100% - 4px) 2px, calc(100% - 2px) 4px, 100% 6px,
+    100% calc(100% - 6px), calc(100% - 2px) calc(100% - 4px), calc(100% - 4px) calc(100% - 2px), calc(100% - 6px) 100%,
+    6px 100%, 4px calc(100% - 2px), 2px calc(100% - 4px), 0% calc(100% - 6px)
+  );
+  --chamfer-8: polygon(
+    0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%,
+    calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px,
+    100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%,
+    8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px)
+  );
+  --chamfer-8-top: polygon(
+    0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%,
+    calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px,
+    100% 100%, 0% 100%
+  );
+  --chamfer-8-bottom: polygon(
+    0% 0%, 100% 0%,
+    100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%,
+    8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px)
+  );
+
+  /* ── Overlay shadows (popovers, dialogs, sheets) ──
+     Crisp hard-edge — avoid heavy Gaussian blur over stair-stepped chamfers
+     because the blur smears across each step and reads as noisy corner artifacts. */
+  --shadow-popover:    drop-shadow(0 4px 0 var(--color-raised-shadow)) drop-shadow(0 2px 6px rgba(0,0,0,0.22));
+  --shadow-popover-up: drop-shadow(0 -4px 0 var(--color-raised-shadow)) drop-shadow(0 -2px 6px rgba(0,0,0,0.22));
+  --shadow-dialog:     drop-shadow(0 4px 0 var(--color-raised-shadow)) drop-shadow(0 2px 8px rgba(0,0,0,0.28));
+  --shadow-sheet:      drop-shadow(0 -4px 0 var(--color-raised-shadow)) drop-shadow(0 -2px 10px rgba(0,0,0,0.25));
+
+  /* ── Tactile elevation shadows (raised pills, board slots) ──
+     Used on a wrapper element (no clip-path) around a chamfered child. */
+  --shadow-raised:    drop-shadow(0 2px 1px var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent));
+  --shadow-raised-lg: drop-shadow(0 4px 2px var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent));
+
+  /* ── Tactile elevation gradients ──
+     Three-state surface vocabulary from the surface system in CLAUDE.md.
+     `raised` is the bright-band gradient for un-pressed pills/buttons.
+     `pressed` is the dark-band selected/placed state on action-tinted bg.
+     `empty` is the recessed ghost-slot. */
+  --elev-raised-bg: linear-gradient(
+    to bottom,
+    var(--color-bg-raised) 0%,
+    var(--color-bg-raised) 48%,
+    var(--color-bg-elevated) 49%,
+    color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%
+  );
+  --elev-pressed-bg: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-action) 18%, var(--color-bg)) 0%,
+    color-mix(in srgb, var(--color-action) 10%, var(--color-bg)) 100%
+  );
+  --elev-empty-bg: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-text) 8%, var(--color-bg)) 0%,
+    color-mix(in srgb, var(--color-text) 5%, var(--color-bg)) 100%
+  );
+
+  /* Inset shadows that go inside the chamfered child for pressed/empty states.
+     These are clipped by clip-path but stay subtle enough to read correctly. */
+  --inset-pressed: inset 0 2px 4px rgba(0,0,0,0.28);
+  --inset-empty:   inset 0 1px 3px rgba(0,0,0,0.12);
+}
+
+/* ── Surface utilities ──
+   `.bit-surface*` apply the clip-path; pair with a `.shadow-*` parent. */
+.bit-surface {
+  border-radius: 0;
+  clip-path: var(--chamfer-8);
+  background: var(--color-bg-elevated);
+}
+.bit-surface-top {
+  border-radius: 0;
+  clip-path: var(--chamfer-8-top);
+  background: var(--color-bg);
+}
+
+/* Shadow wrappers — apply on a parent that has NO clip-path of its own.
+   `will-change` keeps a stable compositor layer so open/close animations don't
+   create/destroy filter layers (which causes mobile flicker / ghost shadows). */
+.shadow-popover    { filter: var(--shadow-popover);    will-change: filter, opacity, transform; }
+.shadow-popover-up { filter: var(--shadow-popover-up); will-change: filter, opacity, transform; }
+.shadow-dialog     { filter: var(--shadow-dialog);     will-change: filter, opacity, transform; }
+.shadow-sheet      { filter: var(--shadow-sheet);      will-change: filter, opacity, transform; }
+.shadow-raised     { filter: var(--shadow-raised); }
+.shadow-raised-lg  { filter: var(--shadow-raised-lg); }
