@@ -265,7 +265,7 @@ export default function BankPanel({
       )}
 
       {/* Discovered items + ghost pills */}
-      <div className="overflow-y-auto px-4 pt-2 pb-2" style={{ maxHeight: '40vh' }}>
+      <div className="overflow-y-auto px-4 pt-2 pb-4" style={{ maxHeight: '40vh' }}>
         <div className={`bank-scroll-wrap${showLeftFade ? ' bank-scroll-wrap--left-fade' : ''}${showRightFade ? ' bank-scroll-wrap--right-fade' : ''}`}>
           <div
             ref={bankScrollRef}

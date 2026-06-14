@@ -268,7 +268,8 @@ body {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  overflow: clip;
+  overflow: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
   background-color: var(--color-bg);
 }
 
