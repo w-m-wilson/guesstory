@@ -89,7 +89,7 @@ export default function IntroModal({ onClose, onReplayTutorial }) {
           </h2>
           <button
             onClick={() => close()}
-            className="text-lg leading-none opacity-50 hover:opacity-100"
+            className="text-lg leading-none opacity-50 hover:opacity-100 transition-opacity"
             style={{ color: 'var(--color-text-faint)' }}
             aria-label="Close"
           >

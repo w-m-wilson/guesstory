@@ -38,7 +38,7 @@ export function AboutModal({ mode, onClose }) {
           </span>
           <button
             onClick={close}
-            className="text-lg leading-none"
+            className="text-lg leading-none opacity-50 hover:opacity-100 transition-opacity"
             style={{ color: 'var(--color-text-faint)' }}
             aria-label="Close"
           >
@@ -94,7 +94,7 @@ export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose 
           </span>
           <button
             onClick={close}
-            className="text-base leading-none"
+            className="text-lg leading-none opacity-50 hover:opacity-100 transition-opacity"
             style={{ color: 'var(--color-text-faint)' }}
             aria-label="Close"
           >

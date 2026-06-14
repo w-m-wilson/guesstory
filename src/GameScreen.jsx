@@ -357,8 +357,10 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onOpen
         <ConfirmModal
           title="Reset puzzle?"
           message="This will clear all your progress for this puzzle. You'll start back at 100 coins."
-          confirmLabel="Reset"
-          onConfirm={() => {
+          confirmLabel="Don't reset"
+          secondaryLabel="Reset"
+          onConfirm={() => {}}
+          onSecondary={() => {
             resetGame()
             setSelectorDismissed(false)
           }}

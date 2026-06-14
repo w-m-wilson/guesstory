@@ -195,8 +195,8 @@ export default function EndScreen({ puzzleId, coins, rankHistory, gameStatus, di
       >
         <button
           onClick={() => close()}
-          className="absolute top-4 right-4 text-lg leading-none"
-          style={{ color: 'var(--color-text-faint)', opacity: 0.4 }}
+          className="absolute top-4 right-4 text-lg leading-none opacity-50 hover:opacity-100 transition-opacity"
+          style={{ color: 'var(--color-text-faint)' }}
           aria-label="Close"
         >
           ✕

@@ -104,8 +104,8 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
             </div>
             <button
               onClick={close}
-              className="w-8 h-8 flex items-center justify-center rounded-full opacity-60 hover:opacity-100 transition-opacity"
-              style={{ color: 'var(--color-text)', background: 'linear-gradient(to bottom, var(--color-bg-raised) 0%, var(--color-bg-raised) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)', filter: 'drop-shadow(0 3px 0 var(--color-raised-shadow))' }}
+              className="text-lg leading-none opacity-50 hover:opacity-100 transition-opacity"
+              style={{ color: 'var(--color-text-faint)' }}
               aria-label="Close"
             >
               ✕
@@ -141,7 +141,7 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
                 cardShadow = 'none'
                 textColor = 'var(--color-text-strong)'
                 subColor = 'var(--color-text-faint)'
-                wrapFilter = 'drop-shadow(0 3px 0 var(--color-raised-shadow))'
+                wrapFilter = 'drop-shadow(0 3px 0 var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))'
               } else {
                 cardBg = 'linear-gradient(to bottom, color-mix(in srgb, black 28%, var(--color-action)) 0%, color-mix(in srgb, black 18%, var(--color-action)) 50%, color-mix(in srgb, black 28%, var(--color-action)) 100%)'
                 cardBorder = '1px solid color-mix(in srgb, black 40%, var(--color-action))'

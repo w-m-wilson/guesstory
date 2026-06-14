@@ -42,7 +42,8 @@ html, body {
   --color-bg:           #0d0905;  /* deep espresso */
   --color-bg-elevated:  #221508;  /* candlelit lift — more separation */
   --color-bg-raised:    #2b1d0a;  /* barely lighter — subtle top face */
-  --color-raised-shadow: color-mix(in srgb, var(--color-text) 35%, var(--color-bg-elevated));
+  --color-raised-shadow: color-mix(in srgb, black 75%, var(--color-bg-elevated));
+  --color-raised-highlight: rgba(255,255,255,0.07);
   --color-text:         #c9bc9a;  /* aged parchment */
   --color-text-strong:  #e2d7bb;  /* warm off-white */
   --color-text-faint:   #7a6a48;  /* muted saddle — annotations */
@@ -81,7 +82,8 @@ html, body {
   --color-bg:           #282828;
   --color-bg-elevated:  #3C3836;
   --color-bg-raised:    #45413E;
-  --color-raised-shadow: color-mix(in srgb, var(--color-text) 35%, var(--color-bg-elevated));
+  --color-raised-shadow: color-mix(in srgb, black 75%, var(--color-bg-elevated));
+  --color-raised-highlight: rgba(255,255,255,0.07);
   --color-text:         #BDAE93;
   --color-text-strong:  #EBDBB2;
   --color-text-faint:   #928374;
@@ -117,7 +119,8 @@ html, body {
   --color-bg:           #002B36;
   --color-bg-elevated:  #073642;
   --color-bg-raised:    #0d3d4a;
-  --color-raised-shadow: color-mix(in srgb, var(--color-text) 35%, var(--color-bg-elevated));
+  --color-raised-shadow: color-mix(in srgb, black 75%, var(--color-bg-elevated));
+  --color-raised-highlight: rgba(255,255,255,0.07);
   --color-text:         #839496;
   --color-text-strong:  #93A1A1;
   --color-text-faint:   #586E75;
@@ -153,7 +156,8 @@ html, body {
   --color-bg:           #111111;
   --color-bg-elevated:  #1E1E1E;
   --color-bg-raised:    #252525;
-  --color-raised-shadow: color-mix(in srgb, var(--color-text) 35%, var(--color-bg-elevated));
+  --color-raised-shadow: color-mix(in srgb, black 75%, var(--color-bg-elevated));
+  --color-raised-highlight: rgba(255,255,255,0.07);
   --color-text:         #BBBBBB;
   --color-text-strong:  #FFFFFF;
   --color-text-faint:   #666666;
@@ -189,7 +193,8 @@ html, body {
   --color-bg:           #270D1A;
   --color-bg-elevated:  #3C1628;
   --color-bg-raised:    #451e30;
-  --color-raised-shadow: color-mix(in srgb, var(--color-text) 35%, var(--color-bg-elevated));
+  --color-raised-shadow: color-mix(in srgb, black 75%, var(--color-bg-elevated));
+  --color-raised-highlight: rgba(255,255,255,0.07);
   --color-text:         #E0A8BC;
   --color-text-strong:  #F5D0DF;
   --color-text-faint:   #7A4560;

@@ -76,7 +76,7 @@ export default function HintModal({ coins, allBankFound, categoryGuessed, catego
             </span>
             <button
               onClick={close}
-              className="text-lg leading-none"
+              className="text-lg leading-none opacity-50 hover:opacity-100 transition-opacity"
               style={{ color: 'var(--color-text-faint)' }}
               aria-label="Close"
             >
