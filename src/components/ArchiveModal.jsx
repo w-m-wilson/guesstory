@@ -105,7 +105,7 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
             <button
               onClick={close}
               className="w-8 h-8 flex items-center justify-center rounded-full opacity-60 hover:opacity-100 transition-opacity"
-              style={{ color: 'var(--color-text)', background: 'var(--color-bg-elevated)' }}
+              style={{ color: 'var(--color-text)', background: 'linear-gradient(to bottom, var(--color-bg-raised) 0%, var(--color-bg-raised) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)', filter: 'drop-shadow(0 3px 0 color-mix(in srgb, black 50%, var(--color-bg-elevated)))' }}
               aria-label="Close"
             >
               ✕
@@ -126,7 +126,7 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
               
               const CHAMFER = 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%, 8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px))'
 
-              let cardBg, cardBorder, cardShadow, textColor, subColor
+              let cardBg, cardBorder, cardShadow, textColor, subColor, wrapFilter
 
               if (p.status === 'unattempted') {
                 cardBg = 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)'
@@ -134,18 +134,21 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
                 cardShadow = 'inset 0 1px 3px rgba(0,0,0,0.12)'
                 textColor = 'var(--color-text-faint)'
                 subColor = 'var(--color-text-faint)'
+                wrapFilter = 'none'
               } else if (p.status === 'in-progress') {
-                cardBg = 'linear-gradient(to bottom, color-mix(in srgb, white 18%, var(--color-bg-elevated)) 0%, var(--color-bg-elevated) 55%, color-mix(in srgb, black 12%, var(--color-bg-elevated)) 100%)'
+                cardBg = 'linear-gradient(to bottom, var(--color-bg-raised) 0%, var(--color-bg-raised) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)'
                 cardBorder = 'none'
                 cardShadow = 'none'
                 textColor = 'var(--color-text-strong)'
                 subColor = 'var(--color-text-faint)'
+                wrapFilter = 'drop-shadow(0 3px 0 color-mix(in srgb, black 50%, var(--color-bg-elevated)))'
               } else {
-                cardBg = 'linear-gradient(to bottom, color-mix(in srgb, white 14%, var(--color-action)) 0%, var(--color-action) 55%, color-mix(in srgb, black 12%, var(--color-action)) 100%)'
-                cardBorder = 'none'
-                cardShadow = 'none'
+                cardBg = 'linear-gradient(to bottom, color-mix(in srgb, black 28%, var(--color-action)) 0%, color-mix(in srgb, black 18%, var(--color-action)) 50%, color-mix(in srgb, black 28%, var(--color-action)) 100%)'
+                cardBorder = '1px solid color-mix(in srgb, black 40%, var(--color-action))'
+                cardShadow = 'inset 0 2px 4px rgba(0,0,0,0.28)'
                 textColor = 'var(--color-action-text)'
                 subColor = 'var(--color-action-text)'
+                wrapFilter = 'none'
               }
 
               const card = (
@@ -188,9 +191,11 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
                 </button>
               )
 
-              return isActive
-                ? <div key={p.date} style={{ filter: 'drop-shadow(0 0 4px color-mix(in srgb, var(--color-action) 50%, transparent))', width: '100%' }}>{card}</div>
-                : <React.Fragment key={p.date}>{card}</React.Fragment>
+              const activeGlow = isActive ? 'drop-shadow(0 0 4px color-mix(in srgb, var(--color-action) 50%, transparent))' : ''
+              const combinedFilter = [wrapFilter !== 'none' ? wrapFilter : '', activeGlow].filter(Boolean).join(' ') || 'none'
+              return (
+                <div key={p.date} style={{ filter: combinedFilter, width: '100%' }}>{card}</div>
+              )
             })}
           </div>
         </div>

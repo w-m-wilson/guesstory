@@ -299,7 +299,7 @@ export default function BankPanel({
                             style={{
                               background: placed
                                 ? 'linear-gradient(to bottom, color-mix(in srgb, black 28%, var(--color-pill)) 0%, color-mix(in srgb, black 18%, var(--color-pill)) 50%, color-mix(in srgb, black 28%, var(--color-pill)) 100%)'
-                                : 'linear-gradient(to bottom, color-mix(in srgb, white 28%, var(--color-bg-elevated)) 0%, color-mix(in srgb, white 28%, var(--color-bg-elevated)) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)',
+                                : 'linear-gradient(to bottom, var(--color-bg-raised) 0%, var(--color-bg-raised) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)',
                               color: placed ? 'var(--color-pill-text)' : 'var(--color-text)',
                               border: placed ? '1px solid color-mix(in srgb, black 40%, var(--color-pill))' : 'none',
                               boxShadow: placed ? 'inset 0 2px 4px rgba(0,0,0,0.28)' : 'none',

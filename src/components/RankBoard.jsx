@@ -114,7 +114,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                   background: locked
                     ? 'var(--color-border)'
                     : item
-                      ? 'linear-gradient(to bottom, color-mix(in srgb, white 28%, var(--color-bg-elevated)) 0%, color-mix(in srgb, white 28%, var(--color-bg-elevated)) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)'
+                      ? 'linear-gradient(to bottom, var(--color-bg-raised) 0%, var(--color-bg-raised) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)'
                       : 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)',
                   border: isDragging ? '1px solid var(--color-text)' : 'none',
                   boxShadow: isDragging
