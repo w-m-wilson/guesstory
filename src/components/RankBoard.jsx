@@ -99,10 +99,12 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
               <div
                 className="flex-1 min-w-0"
                 style={{
-                  filter: item && !locked && !isDragging
-                    ? 'drop-shadow(0 3px 0 var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))'
-                    : 'none',
-                  transform: isDragging ? 'scale(1.02)' : 'scale(1)',
+                  filter: isDragging
+                    ? 'drop-shadow(0 6px 0 var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))'
+                    : item && !locked
+                      ? 'drop-shadow(0 3px 0 var(--color-raised-shadow)) drop-shadow(0 -1px 0 var(--color-raised-highlight, transparent))'
+                      : 'none',
+                  transform: isDragging ? 'scale(1.03)' : 'scale(1)',
                   transition: 'transform 0.1s',
                   position: 'relative',
                   zIndex: isDragging ? 10 : 'auto',
@@ -116,12 +118,8 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                     : item
                       ? 'linear-gradient(to bottom, var(--color-bg-raised) 0%, var(--color-bg-raised) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)'
                       : 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)',
-                  border: isDragging ? '1px solid var(--color-text)' : 'none',
-                  boxShadow: isDragging
-                    ? '0 4px 12px rgba(0,0,0,0.25)'
-                    : item
-                      ? 'none'
-                      : 'inset 0 1px 3px rgba(0,0,0,0.15)',
+                  border: 'none',
+                  boxShadow: item && !isDragging ? 'none' : !item ? 'inset 0 1px 3px rgba(0,0,0,0.15)' : 'none',
                   minHeight: '32px',
                   opacity: isDragging ? 0.85 : 1,
                   transition: 'box-shadow 0.15s, border-color 0.15s, opacity 0.1s',
