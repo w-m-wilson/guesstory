@@ -1,5 +1,6 @@
 import React from 'react'
 import { modalScrimBackground } from '../utils/modalScrim.js'
+import ChamferedSurface from './primitives/ChamferedSurface.jsx'
 
 const MODES = [
   { key: 'light',  label: 'Light' },
@@ -27,9 +28,12 @@ export function AboutModal({ mode, onClose }) {
       style={closing ? { opacity: 0, transition: `opacity ${EXIT_MS}ms ease` } : { animation: 'scrimIn 0.2s ease' }}
     >
       <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, background: modalScrimBackground({ mode, variant: 'dialog' }), pointerEvents: 'none' }} />
-      <div
-        className={`w-full max-w-sm p-6 mx-4${closing ? '' : ' dialog-enter'}`}
-        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1, clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%, 8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px))', ...(closing ? { opacity: 0, transform: 'scale(0.95) translateY(6px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
+      <ChamferedSurface
+        shadow="dialog"
+        bg="var(--color-bg)"
+        className="mx-4"
+        style={{ position: 'relative', zIndex: 1, ...(closing ? { opacity: 0, transform: 'scale(0.95) translateY(6px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
+        innerClassName={`w-full max-w-sm p-6${closing ? '' : ' dialog-enter'}`}
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
@@ -59,7 +63,7 @@ export function AboutModal({ mode, onClose }) {
         <p className="text-sm leading-relaxed" style={{ color: 'var(--color-text-faint)' }}>
           Appearance preferences are saved locally on your device only.
         </p>
-      </div>
+      </ChamferedSurface>
     </div>
   )
 }
@@ -82,9 +86,13 @@ export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose 
       onClick={close}
     >
       <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: scrim, pointerEvents: 'none', ...(closing ? { opacity: 0, transition: `opacity ${EXIT_MS}ms ease` } : { animation: 'scrimIn 0.2s ease' }) }} />
-      <div
-        className={`w-full max-w-[430px] px-5 pt-4 pb-7${closing ? '' : ' sheet-enter'}`}
-        style={{ background: 'var(--color-bg)', position: 'relative', zIndex: 1, clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% 100%, 0% 100%)', ...(closing ? { opacity: 0, transform: 'translateY(24px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
+      <ChamferedSurface
+        shadow="sheet"
+        variant="top"
+        bg="var(--color-bg)"
+        className="w-full max-w-[430px]"
+        style={{ position: 'relative', zIndex: 1, ...(closing ? { opacity: 0, transform: 'translateY(24px)', transition: `opacity ${EXIT_MS}ms ease, transform ${EXIT_MS}ms ease` } : {}) }}
+        innerClassName={`px-5 pt-4 pb-7${closing ? '' : ' sheet-enter'}`}
         onClick={e => e.stopPropagation()}
       >
         {/* Header row */}
@@ -167,7 +175,7 @@ export default function SettingsModal({ scheme, mode, onScheme, onMode, onClose 
           </p>
         )}
 
-      </div>
+      </ChamferedSurface>
     </div>
   )
 }

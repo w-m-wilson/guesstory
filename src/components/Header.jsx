@@ -4,6 +4,7 @@ import { modalScrimBackground } from '../utils/modalScrim.js'
 import ConfirmModal from './ConfirmModal.jsx'
 import { AVAILABLE_DATES } from '../data/puzzles/available.js'
 import { PixelCalendar, PixelArchive, PixelHelp, PixelAppearance, PixelAbout, PixelDifficulty, PixelReset } from './PixelMenuIcons.jsx'
+import ChamferedSurface from './primitives/ChamferedSurface.jsx'
 
 function MissTracker({ misses, difficulty = 'medium' }) {
   const cfg = DIFFICULTY_CONFIG[difficulty] ?? DIFFICULTY_CONFIG.medium
@@ -242,11 +243,11 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                 <span key={i} style={{ display: 'block', width: '14px', height: '2px', borderRadius: '1px', background: 'var(--color-text)' }} />
               ))}
             </button>
-            <div
+            <ChamferedSurface
+              shadow="popover"
               className="absolute right-0 top-full mt-2 z-50"
               style={{
                 minWidth: '160px',
-                filter: menuOpen ? 'drop-shadow(0 6px 16px rgba(0,0,0,0.45)) drop-shadow(0 2px 4px rgba(0,0,0,0.25))' : 'none',
                 transformOrigin: 'top right',
                 transition: menuOpen
                   ? 'opacity 220ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0ms'
@@ -255,12 +256,6 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                 transform: menuOpen ? 'scale(1) translateY(0)' : 'scale(0.92) translateY(-8px)',
                 visibility: menuOpen ? 'visible' : 'hidden',
                 pointerEvents: menuOpen ? 'auto' : 'none',
-              }}
-            >
-            <div
-              style={{
-                background: 'var(--color-bg-elevated)',
-                clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%, 8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px))',
               }}
             >
                 {isArchive && onJumpToToday && (
@@ -333,8 +328,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                     <span>Reset game</span>
                   </button>
                 )}
-            </div>
-            </div>
+            </ChamferedSurface>
           </div>
         </div>
       </header>

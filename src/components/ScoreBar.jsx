@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import PixelCoin from './PixelCoin.jsx'
+import ChamferedSurface from './primitives/ChamferedSurface.jsx'
 
 const DIFFICULTY_LABELS = { lite: 'LITE', medium: 'MED', challenge: 'CHAL' }
 const RAISED_BG = 'linear-gradient(to bottom, var(--color-bg-raised) 0%, var(--color-bg-raised) 48%, var(--color-bg-elevated) 49%, color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%)'
@@ -92,27 +93,21 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
           {!hideDifficulty && (
             <div className="relative" ref={pickerRef}>
               {/* Mid-game difficulty picker — co-located with trigger, same pattern as hamburger menu */}
-              <div
+              <ChamferedSurface
+                shadow="popover-up"
                 className="absolute bottom-full left-0 z-[46] pb-2"
                 style={{
                   minWidth: '200px',
                   transformOrigin: 'bottom left',
-                  filter: pickerOpen ? 'drop-shadow(0 -6px 16px rgba(0,0,0,0.45)) drop-shadow(0 -2px 4px rgba(0,0,0,0.25))' : 'none',
                   transition: pickerOpen
-                    ? 'opacity 220ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1), filter 220ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0ms'
-                    : 'opacity 140ms cubic-bezier(0.4, 0, 1, 1), transform 140ms cubic-bezier(0.4, 0, 1, 1), filter 140ms cubic-bezier(0.4, 0, 1, 1), visibility 140ms',
+                    ? 'opacity 220ms cubic-bezier(0.22, 1, 0.36, 1), transform 220ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0ms'
+                    : 'opacity 140ms cubic-bezier(0.4, 0, 1, 1), transform 140ms cubic-bezier(0.4, 0, 1, 1), visibility 140ms',
                   opacity: pickerOpen ? 1 : 0,
                   transform: pickerOpen ? 'scale(1) translateY(0)' : 'scale(0.92) translateY(8px)',
                   visibility: pickerOpen ? 'visible' : 'hidden',
                   pointerEvents: pickerOpen ? 'auto' : 'none',
                 }}
               >
-                <div
-                  style={{
-                    background: 'var(--color-bg-elevated)',
-                    clipPath: 'polygon(0% 8px, 2px 6px, 4px 4px, 6px 2px, 8px 0%, calc(100% - 8px) 0%, calc(100% - 6px) 2px, calc(100% - 4px) 4px, calc(100% - 2px) 6px, 100% 8px, 100% calc(100% - 8px), calc(100% - 2px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 2px), calc(100% - 8px) 100%, 8px 100%, 6px calc(100% - 2px), 4px calc(100% - 4px), 2px calc(100% - 6px), 0% calc(100% - 8px))',
-                  }}
-                >
                   <p className="text-[10px] font-black tracking-widest uppercase px-4 pt-3 pb-1" style={{ color: 'var(--color-text-faint)', opacity: 0.5 }}>
                     Make it easier
                   </p>
@@ -129,8 +124,7 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
                       </div>
                     </button>
                   ))}
-                </div>
-              </div>
+              </ChamferedSurface>
               {/* Trigger button */}
               <span style={{ ...RAISED_WRAP, display: 'flex', alignItems: 'center' }}>
                 <button
