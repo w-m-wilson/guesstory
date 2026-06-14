@@ -97,6 +97,8 @@ const PX_PER_CARD  = 52   // px of drag to advance one card
 const BOTTOM_PAD   = 8    // px from area bottom to front card bottom
 const WHEEL_THRESH = 60   // accumulated deltaY before advancing one card
 
+const CHAMFER_CLIP = 'polygon(0% 6px, 2px 4px, 4px 2px, 6px 0%, calc(100% - 6px) 0%, calc(100% - 4px) 2px, calc(100% - 2px) 4px, 100% 6px, 100% calc(100% - 6px), calc(100% - 2px) calc(100% - 4px), calc(100% - 4px) calc(100% - 2px), calc(100% - 6px) 100%, 6px 100%, 4px calc(100% - 2px), 2px calc(100% - 4px), 0% calc(100% - 6px))'
+
 const FIRST_REAL_FEEDBACK_EXPLAINER_KEY = 'guesstory-first-real-feedback-explainer'
 
 function readFirstRealFeedbackExplainerSeen() {
@@ -234,6 +236,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
                   : 'bottom 0.38s cubic-bezier(0.22,1,0.36,1), transform 0.38s cubic-bezier(0.22,1,0.36,1), opacity 0.28s ease',
                 cursor: isFocused ? 'default' : 'pointer',
                 pointerEvents: opacity < 0.04 ? 'none' : 'auto',
+                filter: isFocused ? 'drop-shadow(0 3px 0 var(--color-raised-shadow))' : 'none',
               }}
               onClick={() => {
                 if (!isFocused) setFocusIndex(i)
@@ -333,7 +336,7 @@ function AttemptRow({ slots, feedback, attemptNumber, isFocused, onShowExplainer
     <>
       <div style={{
         background: isFocused ? 'var(--color-bg-elevated)' : 'transparent',
-        borderRadius: '8px',
+        clipPath: CHAMFER_CLIP,
         padding: '5px 8px',
         display: 'flex', alignItems: 'center', gap: '6px',
         transition: 'background 0.38s cubic-bezier(0.22,1,0.36,1)',
@@ -366,9 +369,12 @@ function AttemptRow({ slots, feedback, attemptNumber, isFocused, onShowExplainer
 function LiveRow({ slots }) {
   return (
     <div style={{
-      background: 'transparent', borderRadius: '8px',
+      background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)',
+      clipPath: CHAMFER_CLIP,
+      border: '1px solid color-mix(in srgb, var(--color-text) 22%, var(--color-bg))',
+      boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.18)',
       padding: '5px 8px',
-      margin: '0 12px', display: 'flex', alignItems: 'center', gap: '6px', opacity: 0.45,
+      margin: '0 12px', display: 'flex', alignItems: 'center', gap: '6px', opacity: 0.7,
     }}>
       <span style={{ width: '0.9rem', flexShrink: 0 }} />
       <HistoryRankNamesTrack slots={slots} variant="live" />
