@@ -100,7 +100,7 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                 className="flex-1 min-w-0"
                 style={{
                   filter: item && !locked && !isDragging
-                    ? 'drop-shadow(0 3px 0 color-mix(in srgb, black 50%, var(--color-bg-elevated)))'
+                    ? 'drop-shadow(0 3px 0 var(--color-raised-shadow))'
                     : 'none',
                   transform: isDragging ? 'scale(1.02)' : 'scale(1)',
                   transition: 'transform 0.1s',
