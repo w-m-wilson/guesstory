@@ -1,5 +1,7 @@
 import { memo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { useDrag, useWheel } from '@use-gesture/react'
+import { useSpring, animated } from '@react-spring/web'
 import { modalScrimBackground } from '../utils/modalScrim.js'
 import ChamferedSurface from './primitives/ChamferedSurface.jsx'
 
@@ -105,7 +107,7 @@ function ScoreExplainerPopup({ feedback, onClose }) {
 
 const PX_PER_CARD  = 52   // px of drag to advance one card
 const WHEEL_THRESH = 60   // accumulated deltaY before advancing one card
-const DRAG_THRESH  = 6    // px of movement before we commit to a drag (vs. tap)
+const SPRING_CONFIG = { tension: 320, friction: 34, clamp: false }
 
 const CHAMFER_CLIP = 'var(--chamfer-6)'
 const CHAMFER_CLIP_SM = 'var(--chamfer-3)'
@@ -130,22 +132,40 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
   const hasLiveSlot = rankSlots?.some(Boolean)
   const total = rankHistory.length
 
-  // focusIndex: which card is in the foreground (0=oldest, total-1=latest)
+  // focusIndex is the "settled" integer used for React render decisions
+  // (which card is data-focused, click-to-restore target). The visual position
+  // is driven by a SpringValue (`focus`) that bypasses React renders entirely.
   const [focusIndex, setFocusIndex] = useState(Math.max(0, total - 1))
   const [explainerFeedback, setExplainerFeedback] = useState(null)
   const [isDragging, setIsDragging] = useState(false)
   const stackRef = useRef(null)
-  const dragStartY = useRef(null)
-  const lastTickRef = useRef(0)
-  const velocityRef = useRef({ y: 0, t: 0, vy: 0 })
   const wheelAccumRef = useRef(0)
+  const lastTickRef = useRef(focusIndex)
+  const totalRef = useRef(total)
+  totalRef.current = total
   const [prevTotal, setPrevTotal] = useState(total)
+
+  const [{ focus }, api] = useSpring(() => ({
+    focus: focusIndex,
+    config: SPRING_CONFIG,
+    onChange: ({ value }) => {
+      const r = Math.round(value.focus)
+      if (r !== lastTickRef.current && r >= 0 && r <= totalRef.current - 1) {
+        lastTickRef.current = r
+        try { navigator.vibrate?.(6) } catch { /* ignore */ }
+      }
+    },
+  }))
 
   // Adjust state during render when total changes — preferred over useEffect+setState
   // (https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes).
   if (prevTotal !== total) {
     setPrevTotal(total)
-    if (total > 0) setFocusIndex(total - 1)
+    if (total > 0) {
+      setFocusIndex(total - 1)
+      lastTickRef.current = total - 1
+      api.start({ focus: total - 1 })
+    }
     if (!isTutorial && !readFirstRealFeedbackExplainerSeen()) {
       if (total === 1) {
         const fb = rankHistory[0]?.feedback
@@ -166,101 +186,67 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
 
   function clamp(v) { return Math.max(0, Math.min(total - 1, v)) }
 
-  function hapticTick() {
-    try { navigator.vibrate?.(8) } catch { /* ignore */ }
-  }
+  // useDrag handles velocity, tap-vs-drag, pointer capture, and (with `bounds`
+  // + `rubberband`) elastic resistance at the ends. We feed `movement[1]` into
+  // the spring during the drag and a velocity-projected target on release.
+  const bindDrag = useDrag(
+    ({ down, movement: [, my], velocity: [, vy], direction: [, dy], tap, first }) => {
+      if (tap || total <= 1) return
+      if (first && typeof document !== 'undefined') document.activeElement?.blur?.()
+      setIsDragging(down)
 
-  // Lazy gesture: we don't preventDefault or capture the pointer until movement
-  // crosses DRAG_THRESH. Below that, the touch behaves like a normal tap so the
-  // child card's onClick still fires. iOS Safari suppresses synthesised clicks
-  // when pointerdown.preventDefault() runs, so this matters for tap-to-restore.
-  function handlePointerDown(e) {
-    if (total <= 1) return
-    dragStartY.current = e.clientY
-    lastTickRef.current = focusIndex
-    velocityRef.current = { y: e.clientY, t: performance.now(), vy: 0 }
-  }
+      const delta = -my / PX_PER_CARD
+      if (down) {
+        // Follow the finger directly. `bounds` + `rubberband` below clamp `my`
+        // before we ever see it, so we don't redo the elastic math here.
+        api.start({ focus: focusIndex + delta, immediate: true })
+      } else {
+        // Velocity is unsigned px/ms; multiply by direction to recover sign.
+        const projectedCards = -dy * vy * 110 / PX_PER_CARD
+        const next = clamp(Math.round(focusIndex + delta + projectedCards))
+        setFocusIndex(next)
+        api.start({ focus: next, immediate: false, config: SPRING_CONFIG })
+      }
+    },
+    {
+      axis: 'y',
+      filterTaps: true,
+      pointer: { touch: true },
+      preventScroll: true,
+      rubberband: 0.15,
+      bounds: () => ({
+        top:    -(total - 1 - focusIndex) * PX_PER_CARD,
+        bottom: focusIndex * PX_PER_CARD,
+      }),
+    },
+  )
 
-  function handlePointerMove(e) {
-    if (dragStartY.current === null) return
-    const dy = e.clientY - dragStartY.current
-    if (!isDragging) {
-      if (Math.abs(dy) < DRAG_THRESH) return
-      // Commit to a drag: dismiss any open keyboard (prevents iOS viewport
-      // reflow mid-gesture), claim the pointer, and suppress default scroll.
-      if (typeof document !== 'undefined') document.activeElement?.blur?.()
-      try { e.currentTarget.setPointerCapture(e.pointerId) } catch { /* ignore */ }
-      setIsDragging(true)
-    }
-    e.preventDefault()
-
-    // Velocity sample for release-fling projection.
-    const now = performance.now()
-    const dt = now - velocityRef.current.t
-    if (dt > 0) {
-      const instV = (e.clientY - velocityRef.current.y) / dt
-      // Low-pass so a single jittery sample doesn't dominate the projection.
-      velocityRef.current.vy = velocityRef.current.vy * 0.7 + instV * 0.3
-    }
-    velocityRef.current.y = e.clientY
-    velocityRef.current.t = now
-
-    // Raw target before rubber-band, then resist past the ends.
-    const raw = focusIndex + (-dy / PX_PER_CARD)
-    let ef = raw
-    const maxI = total - 1
-    if (raw < 0) ef = -Math.sqrt(-raw) * 0.55
-    else if (raw > maxI) ef = maxI + Math.sqrt(raw - maxI) * 0.55
-    stackRef.current?.style.setProperty('--effective-focus', String(ef))
-
-    // Per-tick haptic as we cross integer card boundaries (in-range only).
-    const rounded = Math.round(ef)
-    if (rounded !== lastTickRef.current && rounded >= 0 && rounded <= maxI) {
-      lastTickRef.current = rounded
-      hapticTick()
-    }
-  }
-
-  function handlePointerUp(e) {
-    const started = dragStartY.current
-    dragStartY.current = null
-    try { e.currentTarget.releasePointerCapture?.(e.pointerId) } catch { /* ignore */ }
-    if (!isDragging) return  // tap — let child onClick handle it
-    const dy = e.clientY - (started ?? e.clientY)
-    setIsDragging(false)
-    // Project a small fling distance from terminal velocity (px/ms × ~110ms),
-    // capped so a fast flick advances at most ~3 cards beyond the raw release.
-    const vy = velocityRef.current.vy
-    const projectedPx = Math.max(-3 * PX_PER_CARD, Math.min(3 * PX_PER_CARD, -vy * 110))
-    const settleDy = dy + projectedPx
-    setFocusIndex(prev => {
-      const next = clamp(Math.round(prev - settleDy / PX_PER_CARD))
-      if (next !== prev) hapticTick()
-      return next
-    })
-  }
-
-  // Accumulate wheel delta — prevents per-event over-sensitivity on trackpads
-  // scroll DOWN (deltaY > 0) → older
-  function handleWheel(e) {
-    e.preventDefault()
-    wheelAccumRef.current += e.deltaY
-    if (Math.abs(wheelAccumRef.current) >= WHEEL_THRESH) {
-      setFocusIndex(prev => {
-        const next = clamp(prev - Math.sign(wheelAccumRef.current))
-        if (next !== prev) hapticTick()
-        return next
-      })
-      wheelAccumRef.current = 0
-    }
-  }
+  // When `target` is set, useWheel auto-attaches via internal effect and the
+  // return value is unused — do NOT call it.
+  useWheel(
+    ({ event, delta: [, dyW] }) => {
+      event.preventDefault?.()
+      if (total <= 1) return
+      wheelAccumRef.current += dyW
+      if (Math.abs(wheelAccumRef.current) >= WHEEL_THRESH) {
+        const step = Math.sign(wheelAccumRef.current)
+        wheelAccumRef.current = 0
+        setFocusIndex(prev => {
+          const next = clamp(prev - step)
+          if (next !== prev) api.start({ focus: next })
+          return next
+        })
+      }
+    },
+    { target: stackRef, eventOptions: { passive: false } },
+  )
 
   return (
     <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-      <div
+      <animated.div
         ref={stackRef}
         className="absolute inset-0"
-        data-dragging={isDragging || undefined}
+        {...bindDrag()}
         style={{
           overflow: 'hidden',
           cursor: total > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
@@ -270,15 +256,10 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
           // under it. Stays constant whether LiveRow is rendered or not so
           // the stack doesn't reflow when the user clears all slots.
           '--stack-bottom': hasLiveSlot ? '52px' : '8px',
-          // Skip writing the CSS var during a drag; handlePointerMove writes it
-          // straight to the DOM so React doesn't overwrite each pointer event.
-          '--effective-focus': isDragging ? undefined : focusIndex,
+          // The SpringValue writes --effective-focus straight to the DOM each
+          // frame; React never re-renders for visual updates.
+          '--effective-focus': focus,
         }}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
-        onWheel={total > 1 ? handleWheel : undefined}
       >
         {rankHistory.map(({ slots, feedback }, i) => {
           // No culling: during drag, --effective-focus moves without a React
@@ -309,7 +290,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
           background: 'linear-gradient(to bottom, var(--color-bg) 15%, transparent)',
           pointerEvents: 'none', zIndex: 30,
         }} />
-      </div>
+      </animated.div>
 
       {hasLiveSlot && (
         <div
@@ -393,11 +374,13 @@ const AttemptRow = memo(function AttemptRow({ slots, feedback, attemptNumber, is
   return (
     <>
       <div style={{
-        background: isFocused ? 'var(--color-bg-raised)' : 'transparent',
+        // --focus-strength inherits from .attempt-card; peaks at 1 when this
+        // card is at depth=0 and fades to 0 by |depth|=1, so the highlight
+        // flows continuously with the spring instead of snapping on settle.
+        background: 'color-mix(in srgb, var(--color-bg-raised) calc(var(--focus-strength) * 100%), transparent)',
         clipPath: CHAMFER_CLIP,
         padding: '5px 8px',
         display: 'flex', alignItems: 'center', gap: '6px',
-        transition: 'background 0.38s cubic-bezier(0.22,1,0.36,1)',
       }}>
         <span className="shrink-0" style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--color-text-faint)', width: '0.9rem', textAlign: 'right' }}>
           {attemptNumber}

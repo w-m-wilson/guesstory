@@ -3,7 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "engines": { "node": ">=20.19.0" },
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
@@ -12,7 +14,9 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",
+    "@react-spring/web": "^10.1.1",
     "@tailwindcss/vite": "^4.2.2",
+    "@use-gesture/react": "^10.3.1",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "fuse.js": "^7.1.0",

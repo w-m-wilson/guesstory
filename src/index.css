@@ -448,34 +448,30 @@ body {
    handles per-card recomputation natively. */
 .attempt-card {
   --depth: calc(var(--effective-focus) - var(--card-index));
+  /* |depth|, then a 0→1 strength that peaks at depth=0 and fades by depth=1.
+     Drives focus-only styling (drop-shadow) so the bottom-most visible card
+     always looks focused mid-drag — not just the React-settled card. */
+  --abs-depth: max(var(--depth), calc(-1 * var(--depth)));
+  --focus-strength: max(0, calc(1 - var(--abs-depth)));
   position: absolute;
   left: 12px;
   right: 12px;
   bottom: var(--stack-bottom, 8px);
-  /* Depth-driven shrink: focused card is full size; older cards (depth>0) recede
-     slightly so the stack feels like physical layered cards instead of a flat
-     translation. Clamped to depth>=0 so cards ahead of focus don't grow. */
-  transform:
-    translateY(calc(var(--depth) * -32px))
-    scale(calc(1 - max(0, var(--depth)) * 0.045));
-  transform-origin: 50% 100%;
+  transform: translateY(calc(var(--depth) * -32px));
   /* Fade older cards (depth>0) gently; hard-hide newer cards (depth<0) so they
      don't peek below the focused row into the active bar's territory. */
   opacity: max(0, calc(min(1, 1 - var(--depth) * 0.3) + min(0, var(--depth) * 1000)));
   z-index: calc(20 - round(var(--depth)));
   cursor: pointer;
-  filter: none;
+  filter: drop-shadow(0 calc(2px * var(--focus-strength)) 1px var(--color-raised-shadow));
   will-change: transform;
-  transition:
-    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.28s ease;
+  /* No transform transition: react-spring drives --effective-focus per frame,
+     so the cascade recomputes the translate continuously. A CSS transition
+     here would double-animate and lag the spring. */
+  transition: opacity 0.28s ease;
 }
 .attempt-card[data-focused] {
   cursor: default;
-  filter: drop-shadow(0 2px 1px var(--color-raised-shadow));
-}
-[data-dragging] .attempt-card {
-  transition: none;
 }
 /* Cards newer than the focused row must vanish instantly — never animate
    through visible opacity values, which would flash them in the gap between
