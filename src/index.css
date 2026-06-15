@@ -537,8 +537,14 @@ body {
      cards at depth<-0.5, letting a fading card render on top of the incoming
      one mid-drag. */
   z-index: calc(20 - round(var(--abs-depth)));
+  /* Drop shadow traces the chamfered child (`.attempt-card` has no clip-path,
+     so drop-shadow follows the child's polygon instead of the box). Scales with
+     --focus-strength so it fades in/out with the spring alongside the background
+     tint, giving the focused card the full raised-surface look without the
+     intra-pill gradient. */
+  filter: drop-shadow(0 2px 1px color-mix(in srgb, var(--color-raised-shadow) calc(var(--focus-strength) * 100%), transparent));
   cursor: pointer;
-  will-change: transform, opacity;
+  will-change: transform, opacity, filter;
   /* Everything visual derives from --depth, which the spring updates every
      frame. No CSS transitions — they would double-animate the spring. */
 }
