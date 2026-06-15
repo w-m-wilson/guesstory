@@ -248,7 +248,6 @@ export default function BankPanel({
                     const innerClass = 'fade-in flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium whitespace-nowrap'
                     const contents = (
                       <>
-                        {item.seeded && <span className="text-xs" style={{ color: placed ? 'var(--color-pill-text)' : 'var(--color-text-faint)' }}>★</span>}
                         {item.display ?? item.name}
                         {placed && <span className="text-xs opacity-70">✕</span>}
                       </>

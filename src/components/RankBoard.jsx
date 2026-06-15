@@ -102,12 +102,12 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                 className="flex items-center bit-input px-3 py-1.5 min-w-0"
                 style={{
                   background: locked
-                    ? 'var(--color-border)'
+                    ? 'var(--elev-pressed-bg)'
                     : item
                       ? 'var(--elev-raised-bg)'
                       : 'var(--elev-empty-bg)',
                   border: 'none',
-                  boxShadow: !item ? 'var(--inset-empty)' : 'none',
+                  boxShadow: locked ? 'var(--inset-pressed)' : !item ? 'var(--inset-empty)' : 'none',
                   minHeight: '32px',
                   opacity: isDragging ? 0.85 : 1,
                   transition: 'box-shadow 0.15s, border-color 0.15s, opacity 0.1s',
@@ -120,13 +120,12 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                     <span
                       className="text-sm flex-1 min-w-0 overflow-hidden"
                       style={{
-                        color: locked ? 'var(--color-text-strong)' : 'var(--color-text)',
+                        color: locked ? 'var(--color-pill-text)' : 'var(--color-text)',
                         WebkitMaskImage: 'linear-gradient(to right, black calc(100% - 18px), transparent 100%)',
                         maskImage: 'linear-gradient(to right, black calc(100% - 18px), transparent 100%)',
                       }}
                     >
                       {item.display ?? item.name}
-                      {locked && <span className="ml-1.5 text-xs opacity-50">★</span>}
                     </span>
                     {isDraggable && (
                       <span
