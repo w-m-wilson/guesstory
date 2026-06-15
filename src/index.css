@@ -522,12 +522,21 @@ body {
   transform: translate3d(0, calc(var(--depth) * -30px), calc(var(--depth-pos) * -14px))
              rotateX(calc(var(--depth-pos) * 8deg));
   transform-origin: 50% 50%;
-  /* Opacity falls off so only ~3–4 cards read at once; hard-hide cards newer
-     than focus (depth<0) via the `min(0, depth*1000)` cutoff. NO opacity
-     transition — the spring drives --effective-focus per frame, so any CSS
-     transition fights it and produces the visible flicker on release. */
-  opacity: max(0, calc(min(1, 1 - var(--depth-pos) * 0.22) + min(0, var(--depth) * 1000)));
-  z-index: calc(20 - round(var(--depth)));
+  /* Two-factor opacity:
+     Factor A: above-focus falloff — ~3–4 cards readable at once.
+     Factor B: soft gate for cards newer than focus (depth<0). The old approach
+     used `min(0, depth*1000)` (instant cutoff), which caused the focused card
+     to vanish the moment a drag made depth dip below zero, then snap back on
+     release. Replacing with clamp(0, depth*2+1, 1) fades over ~19 px of drag
+     (half a card) instead of instantly, so releases without a full advance
+     unwind smoothly rather than popping. No CSS transition — spring drives
+     --effective-focus per frame; a transition would double-animate it. */
+  opacity: calc(max(0, min(1, 1 - var(--depth-pos) * 0.22)) * clamp(0, calc(var(--depth) * 2 + 1), 1));
+  /* Use abs-depth so the focused card (depth=0, z=20) always wins over cards
+     above or below it. The old `20 - round(depth)` formula assigned z=21 to
+     cards at depth<-0.5, letting a fading card render on top of the incoming
+     one mid-drag. */
+  z-index: calc(20 - round(var(--abs-depth)));
   cursor: pointer;
   will-change: transform, opacity;
   /* Everything visual derives from --depth, which the spring updates every
