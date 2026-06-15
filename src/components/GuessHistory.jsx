@@ -163,6 +163,10 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
 
   function clamp(v) { return Math.max(0, Math.min(total - 1, v)) }
 
+  function hapticTick() {
+    try { navigator.vibrate?.(8) } catch { /* ignore */ }
+  }
+
   // drag DOWN (dy > 0) → older cards into focus
   function handlePointerDown(e) {
     if (total <= 1) return
@@ -186,7 +190,11 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
     const dy = e.clientY - (dragStartY.current ?? e.clientY)
     dragStartY.current = null
     setIsDragging(false)
-    setFocusIndex(prev => clamp(Math.round(prev - dy / PX_PER_CARD)))
+    setFocusIndex(prev => {
+      const next = clamp(Math.round(prev - dy / PX_PER_CARD))
+      if (next !== prev) hapticTick()
+      return next
+    })
   }
 
   // Accumulate wheel delta — prevents per-event over-sensitivity on trackpads
@@ -195,7 +203,11 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
     e.preventDefault()
     wheelAccumRef.current += e.deltaY
     if (Math.abs(wheelAccumRef.current) >= WHEEL_THRESH) {
-      setFocusIndex(prev => clamp(prev - Math.sign(wheelAccumRef.current)))
+      setFocusIndex(prev => {
+        const next = clamp(prev - Math.sign(wheelAccumRef.current))
+        if (next !== prev) hapticTick()
+        return next
+      })
       wheelAccumRef.current = 0
     }
   }
@@ -237,7 +249,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
               data-focused={isFocused || undefined}
               style={{ '--card-index': i }}
               onClick={() => {
-                if (!isFocused) setFocusIndex(i)
+                if (!isFocused) { setFocusIndex(i); hapticTick() }
                 else onPickHistoryRow?.(slots)
               }}
             >
