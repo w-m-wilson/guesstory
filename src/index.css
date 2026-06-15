@@ -5,6 +5,56 @@ html, body {
   overscroll-behavior: none;
 }
 
+/* ── Typed custom properties for the guess-stack focus animation ──
+   --effective-focus is written every frame by react-spring (onChange writes
+   to .stack style). Without @property, the engine treats it as an opaque
+   string: re-parsed on every write, all derived calc()s re-tokenized, and
+   the cascade can't interpolate it. Registering as <number> makes the value
+   parsed-once-then-stored, dramatically cheaper to update per frame, and
+   eligible for CSS-native transitions/animations if we want them later.
+
+   The cascaded derivations (--depth, --abs-depth, --focus-strength) are
+   also <number>s — registering them lets the engine evaluate the calc
+   chain numerically instead of as string substitution + reparse. */
+@property --effective-focus {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+@property --card-index {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+@property --depth {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+@property --depth-pos {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+@property --abs-depth {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+@property --focus-t {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+@property --focus-strength {
+  /* Must inherit: AttemptRow's inner content div consumes this for its
+     background color-mix. inherits:false would default descendants to 0
+     and the focused card would never light up. */
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
 /* ── Solarized palette registered as Tailwind theme tokens ── */
 @theme {
   --color-sol-base03: #002B36;
@@ -476,11 +526,7 @@ body {
      than focus (depth<0) via the `min(0, depth*1000)` cutoff. NO opacity
      transition — the spring drives --effective-focus per frame, so any CSS
      transition fights it and produces the visible flicker on release. */
-  /* Above the bar (depth>0): gentle fade with distance. Below the bar
-     (depth in [-1, 0)): fully visible — the card slides downward through the
-     window and gets occluded by LiveRow's opaque background. Beyond depth=-1
-     (fully past LiveRow): hard-hide so it doesn't clip into anything below. */
-  opacity: max(0, calc(min(1, 1 - var(--depth-pos) * 0.22) - max(0, calc(-1 * var(--depth) - 1)) * 1000));
+  opacity: max(0, calc(min(1, 1 - var(--depth-pos) * 0.22) + min(0, var(--depth) * 1000)));
   z-index: calc(20 - round(var(--depth)));
   cursor: pointer;
   will-change: transform, opacity;

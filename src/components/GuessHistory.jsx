@@ -112,8 +112,11 @@ const WHEEL_THRESH = 48   // accumulated deltaY before advancing one card
 // reads as "abrupt then dragging." A quintic ease-out feels tactile because
 // it decelerates *smoothly through* the rest point instead of bouncing into
 // it. No overshoot, no precision-cutoff snap.
-const easeOutQuint = t => 1 - Math.pow(1 - t, 5)
-const SPRING_CONFIG = { duration: 480, easing: easeOutQuint }
+// Underdamped on purpose: a touch of overshoot reads as inertia and gives the
+// stack a "weighty" feel. Critically-damped (no overshoot) feels fast but
+// dead. precision keeps the spring from idling on sub-pixel oscillation,
+// which is what produces the per-frame style-recalc flicker on weak GPUs.
+const SPRING_CONFIG = { tension: 380, friction: 26, clamp: false, precision: 0.01 }
 
 const CHAMFER_CLIP = 'var(--chamfer-6)'
 const CHAMFER_CLIP_SM = 'var(--chamfer-3)'
@@ -282,25 +285,6 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
           '--effective-focus': focus,
         }}
       >
-        {/* Stationary focus window — the iOS-picker-style "lens" the cards
-            slide through. Sits at the focused-row resting position, behind
-            every card (z-index 1). Cards have no own background, so whichever
-            card is currently at depth≈0 visually picks up the darker surface
-            because this window is showing through. The transition smooths
-            itself out: the window never moves, so there's nothing to swap. */}
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'absolute',
-            left: '12px', right: '12px',
-            bottom: 'var(--stack-bottom, 8px)',
-            height: '30px',
-            background: 'var(--color-bg-raised)',
-            clipPath: CHAMFER_CLIP,
-            zIndex: 1,
-            pointerEvents: 'none',
-          }}
-        />
         {rankHistory.map(({ slots, feedback }, i) => {
           // No culling: during drag, --effective-focus moves without a React
           // re-render, so any cull keyed off React's focusIndex would leave
@@ -413,10 +397,11 @@ const AttemptRow = memo(function AttemptRow({ slots, feedback, attemptNumber, is
   return (
     <>
       <div style={{
-        // No background on the card itself — the focus highlight is a fixed
-        // window rendered behind the stack (iOS picker pattern). Cards slide
-        // through the window; whichever card sits at depth=0 visually picks
-        // up the darker surface because the window shows through.
+        // --focus-strength inherits from .attempt-card; peaks at 1 when this
+        // card is at depth=0 and fades to 0 by |depth|=1, so the highlight
+        // flows continuously with the spring instead of snapping on settle.
+        background: 'color-mix(in srgb, var(--color-bg-raised) calc(var(--focus-strength) * 100%), transparent)',
+        clipPath: CHAMFER_CLIP,
         padding: '5px 8px',
         display: 'flex', alignItems: 'center', gap: '6px',
       }}>
