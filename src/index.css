@@ -452,7 +452,13 @@ body {
   left: 12px;
   right: 12px;
   bottom: var(--stack-bottom, 8px);
-  transform: translateY(calc(var(--depth) * -32px));
+  /* Depth-driven shrink: focused card is full size; older cards (depth>0) recede
+     slightly so the stack feels like physical layered cards instead of a flat
+     translation. Clamped to depth>=0 so cards ahead of focus don't grow. */
+  transform:
+    translateY(calc(var(--depth) * -32px))
+    scale(calc(1 - max(0, var(--depth)) * 0.045));
+  transform-origin: 50% 100%;
   /* Fade older cards (depth>0) gently; hard-hide newer cards (depth<0) so they
      don't peek below the focused row into the active bar's territory. */
   opacity: max(0, calc(min(1, 1 - var(--depth) * 0.3) + min(0, var(--depth) * 1000)));

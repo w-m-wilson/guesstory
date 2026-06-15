@@ -136,6 +136,8 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
   const [isDragging, setIsDragging] = useState(false)
   const stackRef = useRef(null)
   const dragStartY = useRef(null)
+  const lastTickRef = useRef(0)
+  const velocityRef = useRef({ y: 0, t: 0, vy: 0 })
   const wheelAccumRef = useRef(0)
   const [prevTotal, setPrevTotal] = useState(total)
 
@@ -175,6 +177,8 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
   function handlePointerDown(e) {
     if (total <= 1) return
     dragStartY.current = e.clientY
+    lastTickRef.current = focusIndex
+    velocityRef.current = { y: e.clientY, t: performance.now(), vy: 0 }
   }
 
   function handlePointerMove(e) {
@@ -189,9 +193,32 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
       setIsDragging(true)
     }
     e.preventDefault()
-    const offset = -dy / PX_PER_CARD
-    const ef = clamp(focusIndex + offset)
+
+    // Velocity sample for release-fling projection.
+    const now = performance.now()
+    const dt = now - velocityRef.current.t
+    if (dt > 0) {
+      const instV = (e.clientY - velocityRef.current.y) / dt
+      // Low-pass so a single jittery sample doesn't dominate the projection.
+      velocityRef.current.vy = velocityRef.current.vy * 0.7 + instV * 0.3
+    }
+    velocityRef.current.y = e.clientY
+    velocityRef.current.t = now
+
+    // Raw target before rubber-band, then resist past the ends.
+    const raw = focusIndex + (-dy / PX_PER_CARD)
+    let ef = raw
+    const maxI = total - 1
+    if (raw < 0) ef = -Math.sqrt(-raw) * 0.55
+    else if (raw > maxI) ef = maxI + Math.sqrt(raw - maxI) * 0.55
     stackRef.current?.style.setProperty('--effective-focus', String(ef))
+
+    // Per-tick haptic as we cross integer card boundaries (in-range only).
+    const rounded = Math.round(ef)
+    if (rounded !== lastTickRef.current && rounded >= 0 && rounded <= maxI) {
+      lastTickRef.current = rounded
+      hapticTick()
+    }
   }
 
   function handlePointerUp(e) {
@@ -201,8 +228,13 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
     if (!isDragging) return  // tap — let child onClick handle it
     const dy = e.clientY - (started ?? e.clientY)
     setIsDragging(false)
+    // Project a small fling distance from terminal velocity (px/ms × ~110ms),
+    // capped so a fast flick advances at most ~3 cards beyond the raw release.
+    const vy = velocityRef.current.vy
+    const projectedPx = Math.max(-3 * PX_PER_CARD, Math.min(3 * PX_PER_CARD, -vy * 110))
+    const settleDy = dy + projectedPx
     setFocusIndex(prev => {
-      const next = clamp(Math.round(prev - dy / PX_PER_CARD))
+      const next = clamp(Math.round(prev - settleDy / PX_PER_CARD))
       if (next !== prev) hapticTick()
       return next
     })
@@ -249,9 +281,9 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
         onWheel={total > 1 ? handleWheel : undefined}
       >
         {rankHistory.map(({ slots, feedback }, i) => {
-          // Cull cards far from focus — pure JS optimisation, irrelevant to the
-          // drag itself (which updates the CSS var directly without re-rendering).
-          if (Math.abs(focusIndex - i) > 5) return null
+          // No culling: during drag, --effective-focus moves without a React
+          // re-render, so any cull keyed off React's focusIndex would leave
+          // distant cards unmounted and pop them in on release.
           const isFocused = i === focusIndex
 
           return (
