@@ -117,6 +117,13 @@ const WHEEL_THRESH = 48   // accumulated deltaY before advancing one card
 // dead. precision keeps the spring from idling on sub-pixel oscillation,
 // which is what produces the per-frame style-recalc flicker on weak GPUs.
 const SPRING_CONFIG = { tension: 380, friction: 26, clamp: false, precision: 0.01 }
+// Fraction of over-boundary drag that is tracked (the rest is resisted).
+// 0.25 = 25% tracking → noticeably elastic, communicates the hard edge.
+const RUBBER = 0.25
+// Bouncier settle config used when releasing against an end boundary. The
+// spring overshoots slightly past the limit and rebounds, giving the oldest /
+// newest cards a physical "stop here" feel instead of a flat snap.
+const END_SPRING_CONFIG = { tension: 500, friction: 22, clamp: false, precision: 0.01 }
 
 const CHAMFER_CLIP = 'var(--chamfer-6)'
 const CHAMFER_CLIP_SM = 'var(--chamfer-3)'
@@ -152,6 +159,11 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
   const lastTickRef = useRef(focusIndex)
   const totalRef = useRef(total)
   totalRef.current = total
+  // Captures focus.get() at gesture start so the drag base is the spring's
+  // actual animated position, not focusIndex (React state). Without this,
+  // grabbing mid-animation (e.g. during overshoot from a previous fling)
+  // snaps the spring to focusIndex+0 before the first pointer-move fires.
+  const dragBaseRef = useRef(focusIndex)
   const [prevTotal, setPrevTotal] = useState(total)
 
   // Factory form keeps the spring instance stable across renders. We never
@@ -201,36 +213,53 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
 
   function clamp(v) { return Math.max(0, Math.min(total - 1, v)) }
 
-  // useDrag handles velocity, tap-vs-drag, pointer capture, and (with `bounds`
-  // + `rubberband`) elastic resistance at the ends. We feed `movement[1]` into
-  // the spring during the drag and a velocity-projected target on release.
+  // useDrag handles velocity, tap-vs-drag, and pointer capture. Rubber-band
+  // resistance and projection capping are implemented manually (not via the
+  // gesture options) so they are anchored to the spring's live animated value
+  // rather than the React-state focusIndex, which may lag mid-animation.
   const bindDrag = useDrag(
     ({ down, movement: [, my], velocity: [, vy], direction: [, dy], tap, first }) => {
       if (tap || total <= 1) return
-      if (first && typeof document !== 'undefined') document.activeElement?.blur?.()
+      if (first) {
+        if (typeof document !== 'undefined') document.activeElement?.blur?.()
+        // Snap the drag base to the current animated position, not focusIndex.
+        // If a previous fling is still in flight (spring overshooting), this
+        // prevents the grab from jumping to the stale integer target.
+        dragBaseRef.current = focus.get()
+      }
       setIsDragging(down)
 
-      const delta = -my / PX_PER_CARD
+      const base     = dragBaseRef.current
+      const rawDelta = -my / PX_PER_CARD   // positive = toward newer cards
+      const lo = 0, hi = total - 1
+
       if (down) {
-        // Follow the finger directly. `bounds` + `rubberband` below clamp `my`
-        // before we ever see it, so we don't redo the elastic math here.
-        api.start({ focus: focusIndex + delta, immediate: true })
+        // Apply elastic resistance when dragging past either end.
+        const raw = base + rawDelta
+        const target = raw < lo ? lo - (lo - raw) * RUBBER
+                     : raw > hi ? hi + (raw - hi) * RUBBER
+                     : raw
+        api.start({ focus: target, immediate: true })
       } else {
         // Velocity is unsigned px/ms; multiply by direction to recover sign.
-        const projectedCards = -dy * vy * 200 / PX_PER_CARD
-        const next = clamp(Math.round(focusIndex + delta + projectedCards))
+        // Cap at ±2 cards — an uncapped factor 200 let a short fast touch from
+        // the oldest card fling all the way to the newest without intent.
+        const projectedCards = Math.max(-2, Math.min(2, -dy * vy * 80 / PX_PER_CARD))
+        const rawNext = Math.round(base + rawDelta + projectedCards)
+        const next    = clamp(rawNext)
         setFocusIndex(next)
-        api.start({ focus: next, immediate: false, config: SPRING_CONFIG })
+        // Use bouncier spring when the user was pushing against an end boundary
+        // (projection wanted to go past 0 or total-1). The slight overshoot and
+        // rebound communicates the edge with weight rather than a flat stop.
+        const pushedPast = rawNext !== next
+        api.start({ focus: next, immediate: false, config: pushedPast ? END_SPRING_CONFIG : SPRING_CONFIG })
       }
     },
     {
       axis: 'y',
       filterTaps: true,
-      rubberband: 0.15,
-      bounds: () => ({
-        top:    -(total - 1 - focusIndex) * PX_PER_CARD,
-        bottom: focusIndex * PX_PER_CARD,
-      }),
+      // No gesture-level bounds or rubberband — handled manually above so the
+      // rubber band is correctly anchored to focus.get() (the live spring value).
     },
   )
 
@@ -298,7 +327,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
               data-focused={isFocused || undefined}
               style={{ '--card-index': i }}
               onClick={() => {
-                if (!isFocused) { setFocusIndex(i); hapticTick() }
+                if (!isFocused) { setFocusIndex(i); try { navigator.vibrate?.(6) } catch { /* ignore */ } }
                 else onPickHistoryRow?.(slots)
               }}
             >
