@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { DIFFICULTY_CONFIG } from '../config.js'
 import { modalScrimBackground } from '../utils/modalScrim.js'
+import useClickOutside from '../hooks/useClickOutside.js'
 import ConfirmModal from './ConfirmModal.jsx'
 import { AVAILABLE_DATES } from '../data/puzzles/available.js'
 import { PixelCalendar, PixelArchive, PixelHelp, PixelAppearance, PixelAbout, PixelDifficulty, PixelReset } from './PixelMenuIcons.jsx'
@@ -14,24 +15,9 @@ function MissTracker({ misses, difficulty = 'medium' }) {
   return (
     <div className="flex items-center gap-1.5">
       <div className="flex flex-col items-center gap-[3px]">
-        {Array.from({ length: free }).map((_, i) => {
-          const consumed = i < misses
-          return (
-            <span
-              key={i}
-              style={{
-                display: 'block',
-                width: '7px',
-                height: '7px',
-                background: consumed
-                  ? 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)'
-                  : 'var(--color-text-strong)',
-                border: `1px solid ${consumed ? 'color-mix(in srgb, var(--color-text) 22%, var(--color-bg))' : 'var(--color-text-strong)'}`,
-                boxShadow: consumed ? 'inset 0 1px 2px rgba(0,0,0,0.18)' : 'none',
-              }}
-            />
-          )
-        })}
+        {Array.from({ length: free }).map((_, i) => (
+          <span key={i} className="miss-pip" data-consumed={i < misses || undefined} />
+        ))}
       </div>
       {burningCoins && (
         <span className="text-xs" style={{ color: 'var(--color-text-faint)' }}>
@@ -74,15 +60,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
   const menuRef = useRef(null)
 
   const closeMenu = useCallback(() => setMenuOpen(false), [])
-
-  useEffect(() => {
-    if (!menuOpen) return
-    function handleClick(e) {
-      if (menuRef.current && !menuRef.current.contains(e.target)) closeMenu()
-    }
-    document.addEventListener('pointerdown', handleClick)
-    return () => document.removeEventListener('pointerdown', handleClick)
-  }, [menuOpen, closeMenu])
+  useClickOutside(menuRef, menuOpen, closeMenu)
   const [query, setQuery] = useState('')
   const [lastHint, setLastHint] = useState(null)  // { text, warm } | null
   const [loading, setLoading] = useState(false)
@@ -220,7 +198,7 @@ export default function Header({ categoryText, categoryAutoReveal, categoryHint,
                   '--surface-tint': 'var(--color-action)',
                   color: 'var(--color-action-text)',
                   background: 'var(--elev-pressed-bg)',
-                  border: '1px solid color-mix(in srgb, black 40%, var(--color-action))',
+                  border: 'none',
                   boxShadow: 'var(--inset-pressed)',
                   whiteSpace: 'nowrap',
                   minWidth: '150px',

@@ -411,13 +411,19 @@ body {
   pointer-events: none;
 }
 
-/* ── Bank complete pop ── */
-@keyframes bankComplete {
+/* ── Bank complete flash ──
+   Fades in, holds, fades out — all in CSS so we don't need a JS timer to hide. */
+@keyframes bankCompleteFlash {
   0%   { opacity: 0; transform: translateY(-6px) scale(0.95); }
-  60%  { opacity: 1; transform: translateY(1px)  scale(1.02); }
-  100% { opacity: 1; transform: translateY(0)    scale(1); }
+  8%   { opacity: 1; transform: translateY(1px)  scale(1.02); }
+  12%  { opacity: 1; transform: translateY(0)    scale(1); }
+  85%  { opacity: 1; transform: translateY(0)    scale(1); }
+  100% { opacity: 0; transform: translateY(-2px) scale(0.98); }
 }
-.bank-complete { animation: bankComplete 0.3s ease-out; }
+.bank-complete-flash {
+  animation: bankCompleteFlash 2.5s ease forwards;
+  pointer-events: none;
+}
 
 /* ── Two-row bank scroller ──
    Pills flow column-by-column into 2 rows, scroll horizontally when wider
@@ -478,6 +484,24 @@ body {
 }
 [data-dragging] .attempt-card {
   transition: none;
+}
+
+/* ── Miss pip ──
+   Tiny 7×7 indicator used in the bank guess panel and the header for free-miss
+   tracking. Active = solid text-strong dot; consumed = empty-surface recessed dot.
+   data-consumed flips the recess; theme stays in sync via the empty-bg token. */
+.miss-pip {
+  display: block;
+  width: 7px;
+  height: 7px;
+  background: var(--color-text-strong);
+  border: 1px solid var(--color-text-strong);
+  box-shadow: none;
+}
+.miss-pip[data-consumed] {
+  background: var(--elev-empty-bg);
+  border-color: color-mix(in srgb, var(--color-text) 22%, var(--color-bg));
+  box-shadow: var(--inset-empty);
 }
 
 @keyframes coinPulse {

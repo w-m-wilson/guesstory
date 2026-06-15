@@ -36,12 +36,10 @@ export default function BankPanel({
   const [haikuHint, setHaikuHint] = useState(null)
   const [animatingCircleIdx, setAnimatingCircleIdx] = useState(null)
   const [penaltyKey, setPenaltyKey] = useState(0)
-  const [showBankMsg, setShowBankMsg] = useState(false)
   const [rowFlashKey, setRowFlashKey] = useState(0)
   const [hasGuessed, setHasGuessed] = useState(false)
   const feedbackTimer = useRef(null)
   const haikuTimerRef = useRef(null)
-  const bankMsgTimer = useRef(null)
   const inputRef = useRef(null)
 
   const burningCoins = bankMisses >= freeMisses
@@ -57,15 +55,7 @@ export default function BankPanel({
   useEffect(() => () => {
     clearTimeout(feedbackTimer.current)
     clearTimeout(haikuTimerRef.current)
-    clearTimeout(bankMsgTimer.current)
   }, [])
-
-  useEffect(() => {
-    if (bankFull) {
-      setShowBankMsg(true)
-      bankMsgTimer.current = setTimeout(() => setShowBankMsg(false), 2500)
-    }
-  }, [bankFull])
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -144,19 +134,9 @@ export default function BankPanel({
                 return (
                   <span
                     key={i}
-                    className={`shrink-0${isAnimating ? ' circle-drain' : ''}`}
+                    className={`miss-pip shrink-0${isAnimating ? ' circle-drain' : ''}`}
+                    data-consumed={(consumed && !isAnimating) || undefined}
                     onAnimationEnd={isAnimating ? () => setAnimatingCircleIdx(null) : undefined}
-                    style={{
-                      display: 'block',
-                      width: '7px',
-                      height: '7px',
-                      background: consumed && !isAnimating
-                        ? 'var(--elev-empty-bg)'
-                        : 'var(--color-text-strong)',
-                      border: `1px solid ${consumed && !isAnimating ? 'color-mix(in srgb, var(--color-text) 22%, var(--color-bg))' : 'var(--color-text-strong)'}`,
-                      boxShadow: consumed && !isAnimating ? 'var(--inset-empty)' : 'none',
-                      opacity: 1,
-                    }}
                   />
                 )
               })}
@@ -242,10 +222,10 @@ export default function BankPanel({
         )}
       </div>}
 
-      {/* Bank complete line */}
-      {bankFull && showBankMsg && (
+      {/* Bank complete line — auto-fades via CSS animation, no JS timer */}
+      {bankFull && (
         <div className="px-4 pt-2 pb-1 shrink-0">
-          <p className="bank-complete text-xs" style={{ color: 'var(--color-dot-correct)' }}>
+          <p className="bank-complete-flash text-xs" style={{ color: 'var(--color-dot-correct)' }}>
             ✓ {bankTotal}/{bankTotal} found — all in the bank
           </p>
         </div>

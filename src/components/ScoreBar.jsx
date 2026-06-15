@@ -2,6 +2,7 @@ import { useRef, useState, useEffect, useCallback } from 'react'
 import PixelCoin from './PixelCoin.jsx'
 import ChamferedSurface from './primitives/ChamferedSurface.jsx'
 import RaisedPill from './primitives/RaisedPill.jsx'
+import useClickOutside from '../hooks/useClickOutside.js'
 
 const DIFFICULTY_LABELS = { lite: 'LITE', medium: 'MED', challenge: 'CHAL' }
 const DIFFICULTY_ORDER = ['lite', 'medium', 'challenge']
@@ -38,15 +39,7 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
     onRegisterPickerTrigger?.(openPicker)
   }, [onRegisterPickerTrigger, openPicker])
 
-  // Close on pointerdown outside (same pattern as header menu)
-  useEffect(() => {
-    if (!pickerOpen) return
-    function handleOutside(e) {
-      if (pickerRef.current && !pickerRef.current.contains(e.target)) closePicker()
-    }
-    document.addEventListener('pointerdown', handleOutside)
-    return () => document.removeEventListener('pointerdown', handleOutside)
-  }, [pickerOpen, closePicker])
+  useClickOutside(pickerRef, pickerOpen, closePicker)
 
   useEffect(() => {
     const delta = prevCoins.current - coins

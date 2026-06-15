@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from 'react'
+import { memo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { modalScrimBackground } from '../utils/modalScrim.js'
 import ChamferedSurface from './primitives/ChamferedSurface.jsx'
@@ -132,32 +132,27 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
   // focusIndex: which card is in the foreground (0=oldest, total-1=latest)
   const [focusIndex, setFocusIndex] = useState(Math.max(0, total - 1))
   const [explainerFeedback, setExplainerFeedback] = useState(null)
-  const [dragOffset, setDragOffset] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
+  const stackRef = useRef(null)
   const dragStartY = useRef(null)
   const wheelAccumRef = useRef(0)
+  const [prevTotal, setPrevTotal] = useState(total)
 
-  useEffect(() => {
+  // Adjust state during render when total changes — preferred over useEffect+setState
+  // (https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes).
+  if (prevTotal !== total) {
+    setPrevTotal(total)
     if (total > 0) setFocusIndex(total - 1)
-  }, [total])
-
-  useEffect(() => {
-    if (isTutorial) return
-    if (readFirstRealFeedbackExplainerSeen()) return
-    if (rankHistory.length >= 2) {
-      markFirstRealFeedbackExplainerSeen()
-      setExplainerFeedback(null)
+    if (!isTutorial && !readFirstRealFeedbackExplainerSeen()) {
+      if (total === 1) {
+        const fb = rankHistory[0]?.feedback
+        if (fb?.length === 5) setExplainerFeedback(fb)
+      } else if (total >= 2) {
+        markFirstRealFeedbackExplainerSeen()
+        setExplainerFeedback(null)
+      }
     }
-  }, [isTutorial, rankHistory.length])
-
-  useEffect(() => {
-    if (isTutorial) return
-    if (readFirstRealFeedbackExplainerSeen()) return
-    if (rankHistory.length !== 1) return
-    const fb = rankHistory[0]?.feedback
-    if (!fb || fb.length !== 5) return
-    setExplainerFeedback(fb)
-  }, [isTutorial, rankHistory])
+  }
 
   function closeScoreExplainer() {
     setExplainerFeedback(null)
@@ -167,7 +162,6 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
   if (total === 0 && !hasLiveSlot) return null
 
   function clamp(v) { return Math.max(0, Math.min(total - 1, v)) }
-  const effectiveFocus = clamp(focusIndex + dragOffset)
 
   // drag DOWN (dy > 0) → older cards into focus
   function handlePointerDown(e) {
@@ -178,9 +172,13 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
     e.preventDefault()
   }
 
+  // During drag we write the live focus straight to the CSS variable on the stack,
+  // skipping React entirely — only the browser's style recalc runs per pointer event.
   function handlePointerMove(e) {
-    if (!isDragging || dragStartY.current === null) return
-    setDragOffset(-(e.clientY - dragStartY.current) / PX_PER_CARD)
+    if (dragStartY.current === null) return
+    const offset = -(e.clientY - dragStartY.current) / PX_PER_CARD
+    const ef = clamp(focusIndex + offset)
+    stackRef.current?.style.setProperty('--effective-focus', String(ef))
   }
 
   function handlePointerUp(e) {
@@ -188,7 +186,6 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
     const dy = e.clientY - (dragStartY.current ?? e.clientY)
     dragStartY.current = null
     setIsDragging(false)
-    setDragOffset(0)
     setFocusIndex(prev => clamp(Math.round(prev - dy / PX_PER_CARD)))
   }
 
@@ -209,6 +206,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
       className="flex flex-col"
     >
       <div
+        ref={stackRef}
         className="flex-1 min-h-0 relative"
         data-dragging={isDragging || undefined}
         style={{
@@ -216,21 +214,21 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
           cursor: total > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
           touchAction: 'none',
           userSelect: 'none',
-          '--effective-focus': effectiveFocus,
+          // Skip writing the CSS var during a drag; handlePointerMove writes it
+          // straight to the DOM so React doesn't overwrite each pointer event.
+          '--effective-focus': isDragging ? undefined : focusIndex,
         }}
         onPointerDown={handlePointerDown}
-        onPointerMove={isDragging ? handlePointerMove : undefined}
+        onPointerMove={handlePointerMove}
         onPointerUp={isDragging ? handlePointerUp : undefined}
         onPointerCancel={isDragging ? handlePointerUp : undefined}
         onWheel={total > 1 ? handleWheel : undefined}
       >
         {rankHistory.map(({ slots, feedback }, i) => {
-          // depth 0 = foreground (bottom), positive = older (above, receding over the hill)
-          const depth = effectiveFocus - i
-          if (depth < -0.5) return null
-          if (1 - depth * 0.3 < 0.04) return null
-
-          const isFocused = i === Math.round(effectiveFocus)
+          // Cull cards far from focus — pure JS optimisation, irrelevant to the
+          // drag itself (which updates the CSS var directly without re-rendering).
+          if (Math.abs(focusIndex - i) > 5) return null
+          const isFocused = i === focusIndex
 
           return (
             <div
