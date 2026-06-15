@@ -14,7 +14,7 @@ export const DIFFICULTY_CONFIG = {
   lite: {
     bank:     { freeMisses: 3, missCost: 0 },
     category: { freeMisses: 3, missCost: 2, correctGuessBonus: 15 },
-    ranking:  { absentCost: 0 },
+    ranking:  { absentCost: 0, submissionMissCost: 1 },
     hints: {
       revealBankItem: 5,
       revealRankPositionKnown: 10,
@@ -26,7 +26,7 @@ export const DIFFICULTY_CONFIG = {
   medium: {
     bank:     { freeMisses: 3, missCost: 1 },
     category: { freeMisses: 3, missCost: 5, correctGuessBonus: 15 },
-    ranking:  { absentCost: 1 },
+    ranking:  { absentCost: 1, submissionMissCost: 1 },
     hints: {
       revealBankItem: 5,
       revealRankPositionKnown: 10,
@@ -38,7 +38,7 @@ export const DIFFICULTY_CONFIG = {
   challenge: {
     bank:     { freeMisses: 3, missCost: 2 },
     category: { freeMisses: 3, missCost: 8, correctGuessBonus: 15 },
-    ranking:  { absentCost: 2 },
+    ranking:  { absentCost: 2, submissionMissCost: 1 },
     hints: {
       revealBankItem: 8,
       revealRankPositionKnown: 15,

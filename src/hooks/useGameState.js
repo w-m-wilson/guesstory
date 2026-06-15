@@ -1,7 +1,7 @@
 import { useReducer, useCallback, useEffect, useRef } from 'react';
 import { createBankMatcher, matchCategory } from '../utils/matcher.js';
 import { generateFeedback, isWin } from '../utils/mastermind.js';
-import { getBankMissCost, getCategoryMissCost, getCategoryBonus, getRankingAbsentCost, getHintCost } from '../utils/scoring.js';
+import { getBankMissCost, getCategoryMissCost, getCategoryBonus, getRankingAbsentCost, getRankingSubmissionMissCost, getHintCost } from '../utils/scoring.js';
 import { GAME_CONFIG, DIFFICULTY_CONFIG } from '../config.js';
 
 // ---------------------------------------------------------------------------
@@ -178,7 +178,8 @@ function reducer(state, action) {
       const won = isWin(feedback);
       const wrongCount = feedback.filter(f => f === 'absent' || f === 'empty').length;
       const absentCost = getRankingAbsentCost(state.difficulty);
-      const cost = won ? 0 : Math.min(state.coins, wrongCount * absentCost);
+      const submissionMissCost = getRankingSubmissionMissCost(state.difficulty);
+      const cost = won ? 0 : Math.min(state.coins, wrongCount * absentCost + submissionMissCost);
       const newCoins = Math.max(0, state.coins - cost);
       const newStatus = won ? 'won' : (newCoins === 0 ? 'abandoned' : 'playing');
 

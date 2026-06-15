@@ -22,6 +22,10 @@ export function getRankingAbsentCost(difficulty = 'medium') {
   return cfg(difficulty).ranking.absentCost;
 }
 
+export function getRankingSubmissionMissCost(difficulty = 'medium') {
+  return cfg(difficulty).ranking.submissionMissCost ?? 0;
+}
+
 export function getHintCost(hintType, difficulty = 'medium') {
   return cfg(difficulty).hints[hintType] ?? 0;
 }
