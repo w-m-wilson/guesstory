@@ -105,6 +105,7 @@ function ScoreExplainerPopup({ feedback, onClose }) {
 
 const PX_PER_CARD  = 52   // px of drag to advance one card
 const WHEEL_THRESH = 60   // accumulated deltaY before advancing one card
+const DRAG_THRESH  = 6    // px of movement before we commit to a drag (vs. tap)
 
 const CHAMFER_CLIP = 'var(--chamfer-6)'
 const CHAMFER_CLIP_SM = 'var(--chamfer-3)'
@@ -167,28 +168,38 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
     try { navigator.vibrate?.(8) } catch { /* ignore */ }
   }
 
-  // drag DOWN (dy > 0) → older cards into focus
+  // Lazy gesture: we don't preventDefault or capture the pointer until movement
+  // crosses DRAG_THRESH. Below that, the touch behaves like a normal tap so the
+  // child card's onClick still fires. iOS Safari suppresses synthesised clicks
+  // when pointerdown.preventDefault() runs, so this matters for tap-to-restore.
   function handlePointerDown(e) {
     if (total <= 1) return
     dragStartY.current = e.clientY
-    setIsDragging(true)
-    e.currentTarget.setPointerCapture(e.pointerId)
-    e.preventDefault()
   }
 
-  // During drag we write the live focus straight to the CSS variable on the stack,
-  // skipping React entirely — only the browser's style recalc runs per pointer event.
   function handlePointerMove(e) {
     if (dragStartY.current === null) return
-    const offset = -(e.clientY - dragStartY.current) / PX_PER_CARD
+    const dy = e.clientY - dragStartY.current
+    if (!isDragging) {
+      if (Math.abs(dy) < DRAG_THRESH) return
+      // Commit to a drag: dismiss any open keyboard (prevents iOS viewport
+      // reflow mid-gesture), claim the pointer, and suppress default scroll.
+      if (typeof document !== 'undefined') document.activeElement?.blur?.()
+      try { e.currentTarget.setPointerCapture(e.pointerId) } catch { /* ignore */ }
+      setIsDragging(true)
+    }
+    e.preventDefault()
+    const offset = -dy / PX_PER_CARD
     const ef = clamp(focusIndex + offset)
     stackRef.current?.style.setProperty('--effective-focus', String(ef))
   }
 
   function handlePointerUp(e) {
-    if (!isDragging) return
-    const dy = e.clientY - (dragStartY.current ?? e.clientY)
+    const started = dragStartY.current
     dragStartY.current = null
+    try { e.currentTarget.releasePointerCapture?.(e.pointerId) } catch { /* ignore */ }
+    if (!isDragging) return  // tap — let child onClick handle it
+    const dy = e.clientY - (started ?? e.clientY)
     setIsDragging(false)
     setFocusIndex(prev => {
       const next = clamp(Math.round(prev - dy / PX_PER_CARD))
@@ -232,8 +243,8 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
         }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
-        onPointerUp={isDragging ? handlePointerUp : undefined}
-        onPointerCancel={isDragging ? handlePointerUp : undefined}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
         onWheel={total > 1 ? handleWheel : undefined}
       >
         {rankHistory.map(({ slots, feedback }, i) => {
