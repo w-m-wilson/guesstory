@@ -308,7 +308,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
           // Reserve room for the active bar so the focused card doesn't sit
           // under it. Stays constant whether LiveRow is rendered or not so
           // the stack doesn't reflow when the user clears all slots.
-          '--stack-bottom': hasLiveSlot ? '52px' : '8px',
+          '--stack-bottom': hasLiveSlot ? '48px' : '8px',
           // The SpringValue writes --effective-focus straight to the DOM each
           // frame; React never re-renders for visual updates.
           '--effective-focus': focus,
