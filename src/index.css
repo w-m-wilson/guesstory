@@ -476,7 +476,11 @@ body {
      than focus (depth<0) via the `min(0, depth*1000)` cutoff. NO opacity
      transition — the spring drives --effective-focus per frame, so any CSS
      transition fights it and produces the visible flicker on release. */
-  opacity: max(0, calc(min(1, 1 - var(--depth-pos) * 0.22) + min(0, var(--depth) * 1000)));
+  /* Above the bar (depth>0): gentle fade with distance. Below the bar
+     (depth in [-1, 0)): fully visible — the card slides downward through the
+     window and gets occluded by LiveRow's opaque background. Beyond depth=-1
+     (fully past LiveRow): hard-hide so it doesn't clip into anything below. */
+  opacity: max(0, calc(min(1, 1 - var(--depth-pos) * 0.22) - max(0, calc(-1 * var(--depth) - 1)) * 1000));
   z-index: calc(20 - round(var(--depth)));
   cursor: pointer;
   will-change: transform, opacity;
