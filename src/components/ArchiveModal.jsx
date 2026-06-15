@@ -142,7 +142,7 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
                 subColor = 'var(--color-text-faint)'
                 wrapFilter = 'var(--shadow-raised)'
               } else {
-                cardBg = 'linear-gradient(to bottom, color-mix(in srgb, black 28%, var(--color-action)) 0%, color-mix(in srgb, black 18%, var(--color-action)) 50%, color-mix(in srgb, black 28%, var(--color-action)) 100%)'
+                cardBg = 'var(--elev-pressed-bg)'
                 cardBorder = 'none'
                 cardShadow = 'var(--inset-pressed)'
                 textColor = 'var(--color-action-text)'
@@ -156,6 +156,7 @@ export default function ArchiveModal({ activeDate, onSelect, onClose }) {
                   onClick={() => { onSelect(p.date); close() }}
                   className="relative w-full flex flex-col items-center justify-center py-5 transition-all active:scale-95"
                   style={{
+                    '--surface-tint': 'var(--color-action)',
                     background: cardBg,
                     border: cardBorder,
                     boxShadow: cardShadow,

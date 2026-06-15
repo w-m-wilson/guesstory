@@ -117,9 +117,9 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
                     ? 'var(--color-border)'
                     : item
                       ? 'var(--elev-raised-bg)'
-                      : 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)',
+                      : 'var(--elev-empty-bg)',
                   border: 'none',
-                  boxShadow: item && !isDragging ? 'none' : !item ? 'inset 0 1px 3px rgba(0,0,0,0.15)' : 'none',
+                  boxShadow: !item ? 'var(--inset-empty)' : 'none',
                   minHeight: '32px',
                   opacity: isDragging ? 0.85 : 1,
                   transition: 'box-shadow 0.15s, border-color 0.15s, opacity 0.1s',

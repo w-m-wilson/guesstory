@@ -78,21 +78,28 @@
     var(--color-bg-elevated) 49%,
     color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%
   );
+  /* Three-stop dark band — lighter middle, darker edges — on a tinted base.
+     Override `--surface-tint` (e.g. `--color-action`) per call site.
+     This is the canonical "pressed" recipe for placed pills, completed cards,
+     and pressed action buttons. */
+  --surface-tint: var(--color-pill);
   --elev-pressed-bg: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--color-action) 18%, var(--color-bg)) 0%,
-    color-mix(in srgb, var(--color-action) 10%, var(--color-bg)) 100%
+    color-mix(in srgb, black 28%, var(--surface-tint)) 0%,
+    color-mix(in srgb, black 18%, var(--surface-tint)) 50%,
+    color-mix(in srgb, black 28%, var(--surface-tint)) 100%
   );
   --elev-empty-bg: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--color-text) 8%, var(--color-bg)) 0%,
-    color-mix(in srgb, var(--color-text) 5%, var(--color-bg)) 100%
+    color-mix(in srgb, var(--color-text) 22%, var(--color-bg)) 0%,
+    color-mix(in srgb, var(--color-text) 16%, var(--color-bg)) 50%,
+    color-mix(in srgb, var(--color-text) 20%, var(--color-bg)) 100%
   );
 
   /* Inset shadows that go inside the chamfered child for pressed/empty states.
      These are clipped by clip-path but stay subtle enough to read correctly. */
   --inset-pressed: inset 0 2px 4px rgba(0,0,0,0.28);
-  --inset-empty:   inset 0 1px 3px rgba(0,0,0,0.12);
+  --inset-empty:   inset 0 1px 3px rgba(0,0,0,0.22);
 }
 
 /* ── Surface utilities ──

@@ -9,6 +9,7 @@ const CHAMFER_CLASS = { pill: 'bit-pill', btn: 'bit-btn' }
 export default function PressedPill({
   as = 'button',
   chamfer = 'btn',
+  tint,
   className = '',
   style,
   children,
@@ -16,10 +17,11 @@ export default function PressedPill({
 }) {
   const Inner = as
   const innerClass = `${CHAMFER_CLASS[chamfer] ?? CHAMFER_CLASS.btn} ${className}`.trim()
+  const tintStyle = tint ? { '--surface-tint': tint } : null
   return (
     <Inner
       className={innerClass}
-      style={{ background: 'var(--elev-pressed-bg)', boxShadow: 'var(--inset-pressed)', border: 'none', ...style }}
+      style={{ background: 'var(--elev-pressed-bg)', boxShadow: 'var(--inset-pressed)', border: 'none', ...tintStyle, ...style }}
       {...rest}
     >
       {children}

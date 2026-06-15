@@ -1,5 +1,8 @@
 import { useState, useRef, useEffect, useMemo } from 'react'
 import ConfirmMatch from './ConfirmMatch.jsx'
+import RaisedPill from './primitives/RaisedPill.jsx'
+import PressedPill from './primitives/PressedPill.jsx'
+import EmptySlot from './primitives/EmptySlot.jsx'
 // Heuristic: does this guess look like a category answer typed in the wrong field?
 // Category format is "[things] ranked by [metric]" — key signals are ranking/metric words.
 function looksLikeCategory(guess) {
@@ -148,10 +151,10 @@ export default function BankPanel({
                       width: '7px',
                       height: '7px',
                       background: consumed && !isAnimating
-                        ? 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)'
+                        ? 'var(--elev-empty-bg)'
                         : 'var(--color-text-strong)',
                       border: `1px solid ${consumed && !isAnimating ? 'color-mix(in srgb, var(--color-text) 22%, var(--color-bg))' : 'var(--color-text-strong)'}`,
-                      boxShadow: consumed && !isAnimating ? 'inset 0 1px 2px rgba(0,0,0,0.18)' : 'none',
+                      boxShadow: consumed && !isAnimating ? 'var(--inset-empty)' : 'none',
                       opacity: 1,
                     }}
                   />
@@ -212,10 +215,10 @@ export default function BankPanel({
                   transition: 'box-shadow 0.2s ease, background 0.2s ease',
                 }
               })() : {
-                background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)',
+                background: 'var(--elev-empty-bg)',
                 color: 'var(--color-text)',
                 border: 'none',
-                boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.15)',
+                boxShadow: 'var(--inset-empty)',
                 fontSize: '16px',
                 transition: 'box-shadow 0.2s ease, background 0.2s ease',
               }}
@@ -261,45 +264,54 @@ export default function BankPanel({
                   if (item) {
                     const placed = placedRanks.has(item.rank)
                     const nudge = tutorialStep === 2 && !placed
-                    const pill = (
-                      <button
-                        onClick={() => placed ? onRemoveSlot(rankToSlotIndex[item.rank]) : onPlaceItem(item)}
-                        className="fade-in flex items-center gap-1.5 px-3 py-1.5 bit-pill text-sm font-medium whitespace-nowrap"
-                        style={{
-                          background: placed
-                            ? 'linear-gradient(to bottom, color-mix(in srgb, black 28%, var(--color-pill)) 0%, color-mix(in srgb, black 18%, var(--color-pill)) 50%, color-mix(in srgb, black 28%, var(--color-pill)) 100%)'
-                            : 'var(--elev-raised-bg)',
-                          color: placed ? 'var(--color-pill-text)' : 'var(--color-text)',
-                          border: 'none',
-                          boxShadow: placed ? 'var(--inset-pressed)' : 'none',
-                          transform: 'none',
-                        }}
-                      >
+                    const onClick = () => placed ? onRemoveSlot(rankToSlotIndex[item.rank]) : onPlaceItem(item)
+                    const innerClass = 'fade-in flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium whitespace-nowrap'
+                    const contents = (
+                      <>
                         {item.seeded && <span className="text-xs" style={{ color: placed ? 'var(--color-pill-text)' : 'var(--color-text-faint)' }}>★</span>}
                         {item.display ?? item.name}
                         {placed && <span className="text-xs opacity-70">✕</span>}
-                      </button>
+                      </>
                     )
-                    const wrapFilter = placed ? undefined : { filter: 'var(--shadow-raised)' }
-                    return nudge
-                      ? <span key={item.rank} className="pill-trace-wrap" style={wrapFilter}>{pill}</span>
-                      : <span key={item.rank} style={wrapFilter}>{pill}</span>
+                    if (placed) {
+                      return (
+                        <PressedPill
+                          key={item.rank}
+                          chamfer="pill"
+                          onClick={onClick}
+                          className={innerClass}
+                          style={{ color: 'var(--color-pill-text)' }}
+                        >
+                          {contents}
+                        </PressedPill>
+                      )
+                    }
+                    return (
+                      <RaisedPill
+                        key={item.rank}
+                        chamfer="pill"
+                        onClick={onClick}
+                        className={innerClass}
+                        style={{ color: 'var(--color-text)' }}
+                        wrapClassName={nudge ? 'pill-trace-wrap' : ''}
+                      >
+                        {contents}
+                      </RaisedPill>
+                    )
                   }
                   const ghostLetter = ghostLetters?.[globalIdx]
                   return (
-                    <div
+                    <EmptySlot
                       key={`ghost-${globalIdx}`}
-                      className="px-3 py-1.5 bit-pill text-sm font-medium whitespace-nowrap"
+                      chamfer="pill"
+                      className="px-3 py-1.5 text-sm font-medium whitespace-nowrap"
                       style={{
-                        background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 22%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 16%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 20%, var(--color-bg)) 100%)',
-                        border: 'none',
-                        boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.12)',
                         color: ghostLetter ? 'var(--color-text-faint)' : 'transparent',
                         userSelect: 'none',
                       }}
                     >
                       {ghostLetter ?? '———'}
-                    </div>
+                    </EmptySlot>
                   )
                 })}
               </div>

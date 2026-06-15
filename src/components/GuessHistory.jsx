@@ -10,6 +10,25 @@ function sortFeedbackForDots(feedback) {
   })
 }
 
+function feedbackChipStyle(f) {
+  if (f === 'correct') {
+    return {
+      background: 'color-mix(in srgb, var(--color-dot-correct) 85%, var(--color-bg))',
+      boxShadow: 'inset 0 2px 5px rgba(0,0,0,0.38)',
+    }
+  }
+  if (f === 'present') {
+    return {
+      background: 'color-mix(in srgb, var(--color-dot-present) 42%, var(--color-bg-elevated))',
+      boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.24)',
+    }
+  }
+  return {
+    background: 'var(--elev-empty-bg)',
+    boxShadow: 'var(--inset-empty)',
+  }
+}
+
 function ScoreExplainerPopup({ feedback, onClose }) {
   const sortedFeedback = sortFeedbackForDots(feedback)
   const correctCount = feedback.filter(f => f === 'correct').length
@@ -61,28 +80,13 @@ function ScoreExplainerPopup({ feedback, onClose }) {
           role="img"
           aria-label={`Score feedback: ${correctCount} in the right spot, ${presentCount} in the top five but wrong spot, ${absentCount} not in the top five`}
         >
-          {sortedFeedback.map((f, i) => {
-            const isCorrect = f === 'correct'
-            const isPresent = f === 'present'
-            const chipBg = isCorrect
-              ? 'color-mix(in srgb, var(--color-dot-correct) 85%, var(--color-bg))'
-              : isPresent
-                ? 'color-mix(in srgb, var(--color-dot-present) 42%, var(--color-bg-elevated))'
-                : 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)'
-            const chipShadow = isCorrect
-              ? 'inset 0 2px 5px rgba(0,0,0,0.38)'
-              : isPresent
-                ? 'inset 0 2px 4px rgba(0,0,0,0.24)'
-                : 'inset 0 1px 3px rgba(0,0,0,0.18)'
-            return (
-              <div key={i} style={{
-                width: '28px', height: '28px',
-                clipPath: CHAMFER_CLIP_SM,
-                background: chipBg,
-                boxShadow: chipShadow,
-              }} />
-            )
-          })}
+          {sortedFeedback.map((f, i) => (
+            <div key={i} style={{
+              width: '28px', height: '28px',
+              clipPath: CHAMFER_CLIP_SM,
+              ...feedbackChipStyle(f),
+            }} />
+          ))}
         </div>
         <p id="score-explainer-title" className="text-sm font-semibold mb-2" style={{ color: 'var(--color-text-strong)' }}>What this score means</p>
         <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--color-text)' }}>{message}</p>
@@ -358,28 +362,13 @@ function AttemptRow({ slots, feedback, attemptNumber, isFocused, onShowExplainer
           className="flex items-center shrink-0 gap-[3px]"
           aria-label="What does this score mean?"
         >
-          {sortedFeedback.map((f, i) => {
-            const isCorrect = f === 'correct'
-            const isPresent = f === 'present'
-            const chipBg = isCorrect
-              ? 'color-mix(in srgb, var(--color-dot-correct) 85%, var(--color-bg))'
-              : isPresent
-                ? 'color-mix(in srgb, var(--color-dot-present) 42%, var(--color-bg-elevated))'
-                : 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)'
-            const chipShadow = isCorrect
-              ? 'inset 0 2px 5px rgba(0,0,0,0.38)'
-              : isPresent
-                ? 'inset 0 2px 4px rgba(0,0,0,0.24)'
-                : 'inset 0 1px 3px rgba(0,0,0,0.18)'
-            return (
-              <div key={i} style={{
-                width: '18px', height: '20px',
-                clipPath: CHAMFER_CLIP_SM,
-                background: chipBg,
-                boxShadow: chipShadow,
-              }} />
-            )
-          })}
+          {sortedFeedback.map((f, i) => (
+            <div key={i} style={{
+              width: '18px', height: '20px',
+              clipPath: CHAMFER_CLIP_SM,
+              ...feedbackChipStyle(f),
+            }} />
+          ))}
         </button>
       </div>
     </>
@@ -389,10 +378,10 @@ function AttemptRow({ slots, feedback, attemptNumber, isFocused, onShowExplainer
 function LiveRow({ slots }) {
   return (
     <div style={{
-      background: 'linear-gradient(to bottom, color-mix(in srgb, var(--color-text) 14%, var(--color-bg)) 0%, color-mix(in srgb, var(--color-text) 9%, var(--color-bg)) 50%, color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%)',
+      background: 'var(--elev-empty-bg)',
       clipPath: CHAMFER_CLIP,
       border: '1px solid color-mix(in srgb, var(--color-text) 22%, var(--color-bg))',
-      boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.18)',
+      boxShadow: 'var(--inset-empty)',
       padding: '5px 8px',
       margin: '0 12px', display: 'flex', alignItems: 'center', gap: '6px', opacity: 0.7,
     }}>
