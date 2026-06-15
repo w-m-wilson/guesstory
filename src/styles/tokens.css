@@ -74,8 +74,7 @@
   --elev-raised-bg: linear-gradient(
     to bottom,
     var(--color-bg-raised) 0%,
-    var(--color-bg-raised) 48%,
-    var(--color-bg-elevated) 49%,
+    var(--color-bg-raised) 75%,
     color-mix(in srgb, black 10%, var(--color-bg-elevated)) 100%
   );
   /* Three-stop dark band — lighter middle, darker edges — on a tinted base.
