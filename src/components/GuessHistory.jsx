@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useDrag, useWheel } from '@use-gesture/react'
 import { useSpring, animated } from '@react-spring/web'
@@ -145,6 +145,8 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
   totalRef.current = total
   const [prevTotal, setPrevTotal] = useState(total)
 
+  // Factory form keeps the spring instance stable across renders. We never
+  // call api.start() during render — only from event handlers and effects.
   const [{ focus }, api] = useSpring(() => ({
     focus: focusIndex,
     config: SPRING_CONFIG,
@@ -157,6 +159,13 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
     },
   }))
 
+  // Re-target the spring whenever React-tracked focusIndex changes (new guess
+  // bumps it; click-to-restore sets it). Effect, not render-time, so R19's
+  // double-render in dev doesn't fire imperative API calls twice.
+  useEffect(() => {
+    api.start({ focus: focusIndex })
+  }, [focusIndex, api])
+
   // Adjust state during render when total changes — preferred over useEffect+setState
   // (https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes).
   if (prevTotal !== total) {
@@ -164,7 +173,6 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
     if (total > 0) {
       setFocusIndex(total - 1)
       lastTickRef.current = total - 1
-      api.start({ focus: total - 1 })
     }
     if (!isTutorial && !readFirstRealFeedbackExplainerSeen()) {
       if (total === 1) {
@@ -181,8 +189,6 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
     setExplainerFeedback(null)
     if (!isTutorial) markFirstRealFeedbackExplainerSeen()
   }
-
-  if (total === 0 && !hasLiveSlot) return null
 
   function clamp(v) { return Math.max(0, Math.min(total - 1, v)) }
 
@@ -211,8 +217,6 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
     {
       axis: 'y',
       filterTaps: true,
-      pointer: { touch: true },
-      preventScroll: true,
       rubberband: 0.15,
       bounds: () => ({
         top:    -(total - 1 - focusIndex) * PX_PER_CARD,
@@ -240,6 +244,11 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
     },
     { target: stackRef, eventOptions: { passive: false } },
   )
+
+  // Early-return AFTER every hook call so the hook order stays stable across
+  // renders. Returning null before useDrag/useWheel would change the hook
+  // count once hasLiveSlot flips, which crashes React.
+  if (total === 0 && !hasLiveSlot) return null
 
   return (
     <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>

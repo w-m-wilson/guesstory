@@ -463,7 +463,9 @@ body {
   opacity: max(0, calc(min(1, 1 - var(--depth) * 0.3) + min(0, var(--depth) * 1000)));
   z-index: calc(20 - round(var(--depth)));
   cursor: pointer;
-  filter: drop-shadow(0 calc(2px * var(--focus-strength)) 1px var(--color-raised-shadow));
+  /* No filter: any drop-shadow (even 0px) forces a compositing layer that
+     subpixel-blurs the card text. The background highlight (driven by
+     --focus-strength inside AttemptRow) carries the focus cue on its own. */
   will-change: transform;
   /* No transform transition: react-spring drives --effective-focus per frame,
      so the cascade recomputes the translate continuously. A CSS transition
