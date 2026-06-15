@@ -451,9 +451,11 @@ body {
   position: absolute;
   left: 12px;
   right: 12px;
-  bottom: 8px;
+  bottom: var(--stack-bottom, 8px);
   transform: translateY(calc(var(--depth) * -32px));
-  opacity: max(0, 1 - var(--depth) * 0.3);
+  /* Fade older cards (depth>0) gently; hard-hide newer cards (depth<0) so they
+     don't peek below the focused row into the active bar's territory. */
+  opacity: max(0, calc(min(1, 1 - var(--depth) * 0.3) + min(0, var(--depth) * 1000)));
   z-index: calc(20 - round(var(--depth)));
   cursor: pointer;
   filter: none;
@@ -467,6 +469,13 @@ body {
   filter: drop-shadow(0 2px 1px var(--color-raised-shadow));
 }
 [data-dragging] .attempt-card {
+  transition: none;
+}
+/* Cards newer than the focused row must vanish instantly — never animate
+   through visible opacity values, which would flash them in the gap between
+   the rank board and the active bar on a fast scroll/snap-back. */
+.attempt-card[data-ahead] {
+  opacity: 0;
   transition: none;
 }
 

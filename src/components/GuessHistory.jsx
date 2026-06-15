@@ -224,19 +224,20 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
   }
 
   return (
-    <div
-      style={{ position: 'absolute', inset: 0, zIndex: 0 }}
-      className="flex flex-col"
-    >
+    <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
       <div
         ref={stackRef}
-        className="flex-1 min-h-0 relative"
+        className="absolute inset-0"
         data-dragging={isDragging || undefined}
         style={{
           overflow: 'hidden',
           cursor: total > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
           touchAction: 'none',
           userSelect: 'none',
+          // Reserve room for the active bar so the focused card doesn't sit
+          // under it. Stays constant whether LiveRow is rendered or not so
+          // the stack doesn't reflow when the user clears all slots.
+          '--stack-bottom': hasLiveSlot ? '52px' : '8px',
           // Skip writing the CSS var during a drag; handlePointerMove writes it
           // straight to the DOM so React doesn't overwrite each pointer event.
           '--effective-focus': isDragging ? undefined : focusIndex,
@@ -258,6 +259,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
               key={i}
               className="attempt-card"
               data-focused={isFocused || undefined}
+              data-ahead={i > focusIndex || undefined}
               style={{ '--card-index': i }}
               onClick={() => {
                 if (!isFocused) { setFocusIndex(i); hapticTick() }
@@ -278,7 +280,10 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
       </div>
 
       {hasLiveSlot && (
-        <div className="shrink-0 z-20" style={{ background: 'var(--color-bg)', marginTop: '-4px', marginBottom: '8px' }}>
+        <div
+          className="absolute left-0 right-0"
+          style={{ bottom: '8px', zIndex: 40, background: 'var(--color-bg)' }}
+        >
           <LiveRow slots={rankSlots} />
         </div>
       )}
