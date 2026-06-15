@@ -91,9 +91,9 @@
   );
   --elev-empty-bg: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--color-text) 22%, var(--color-bg)) 0%,
-    color-mix(in srgb, var(--color-text) 16%, var(--color-bg)) 50%,
-    color-mix(in srgb, var(--color-text) 20%, var(--color-bg)) 100%
+    color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 0%,
+    color-mix(in srgb, var(--color-text) 8%, var(--color-bg)) 50%,
+    color-mix(in srgb, var(--color-text) 12%, var(--color-bg)) 100%
   );
 
   /* Inset shadows that go inside the chamfered child for pressed/empty states.

@@ -17,214 +17,207 @@ html, body {
   --color-sol-base3:  #FDF6E3;
 }
 
+/* ── Seed-based recipe layer ──
+   Themes in this group declare ~6 seed colors; recipes derive the
+   bg ladder, faint text, border, and shadow. To tune a theme's
+   character, edit its seeds (or its local --elev-mix / --faint-mix
+   / --shadow-strength overrides) — not the individual --color-*
+   tokens. */
+:root,
+[data-theme="guesstory-light"],
+[data-theme="guesstory-dark"],
+[data-theme="bailly-light"],
+[data-theme="bailly-dark"],
+[data-theme="gruvbox-light"],
+[data-theme="gruvbox-dark"],
+[data-theme="solarized-light"],
+[data-theme="solarized-dark"],
+[data-theme="minimal-light"],
+[data-theme="minimal-dark"] {
+  --elev-mix:         22%;
+  --raised-mix:       14%;
+  --border-mix:       12%;
+  --faint-mix:        65%;
+  --shadow-strength:  35%;
+
+  --color-bg:           var(--seed-bg);
+  --color-bg-elevated:  color-mix(in srgb, var(--seed-bg), var(--seed-surface, var(--seed-fg)) var(--elev-mix));
+  --color-bg-raised:    color-mix(in srgb, var(--color-bg-elevated), var(--seed-surface, var(--seed-fg)) var(--raised-mix));
+  --color-border:       color-mix(in srgb, var(--seed-bg), var(--seed-surface, var(--seed-fg)) var(--border-mix));
+  --color-text:         var(--seed-fg);
+  --color-text-strong:  var(--seed-fg);
+  --color-text-faint:   color-mix(in srgb, var(--seed-fg) var(--faint-mix), var(--seed-bg));
+  --color-action:       var(--seed-action);
+  --color-action-text:  var(--seed-on-action);
+  --color-pill:         var(--seed-pill, var(--seed-action));
+  --color-pill-text:    var(--seed-on-pill, var(--seed-on-action));
+  --color-miss:         var(--seed-miss);
+  --color-raised-shadow: color-mix(in srgb, var(--seed-shadow-tint) var(--shadow-strength), var(--color-bg-elevated));
+}
+
 /* ── Guesstory light ── */
 :root,
 [data-theme="guesstory-light"] {
-  --color-bg:           #fdf8ee;  /* near-white cream */
-  --color-bg-elevated:  #e8d8be;  /* warm tan — clear step above bg */
-  --color-bg-raised:    #f2e5cf;  /* highlight face of raised buttons */
-  --color-raised-shadow: color-mix(in srgb, black 35%, var(--color-bg-elevated));
-  --color-text:         #88705e;  /* warm taupe-brown — readable, not stark */
-  --color-text-strong:  #675848;  /* grey-brown — labels only */
-  --color-text-faint:   #c0b89e;  /* warm khaki — annotations */
-  --color-border:       #e5ddc8;  /* very light tan — whisper lines */
-  --color-action:       #776050;  /* muted leather — submit button, primary CTA */
-  --color-action-text:  #fdf6e3;  /* cream on walnut */
-  --color-pill:         var(--color-action);     /* default: same as action */
-  --color-pill-text:    var(--color-action-text);
-  --color-dot-correct:  #4c5728;  /* muted olive green — right */
-  --color-dot-present:  #9e844e;  /* warm amber — wrong spot */
-  --color-dot-absent:   #cec8b4;  /* warm faint — not in top 5 */
-  --color-miss:         #9b5040;  /* muted brick/clay — miss feedback */
+  --seed-bg:          #fdf8ee;
+  --seed-fg:          #88705e;
+  --seed-action:      #776050;
+  --seed-on-action:   #fdf6e3;
+  --seed-miss:        #9b5040;
+  --seed-shadow-tint: black;
+  --color-dot-correct: #4c5728;
+  --color-dot-present: #9e844e;
+  --color-dot-absent:  #cec8b4;
 }
 
 /* ── Guesstory dark ── */
 [data-theme="guesstory-dark"] {
-  --color-bg:           #0d0905;  /* deep espresso */
-  --color-bg-elevated:  #221508;  /* candlelit lift — more separation */
-  --color-bg-raised:    #2b1d0a;  /* barely lighter — subtle top face */
-  --color-raised-shadow: color-mix(in srgb, black 55%, var(--color-bg-elevated));
+  --seed-bg:          #0d0905;
+  --seed-fg:          #c9bc9a;
+  --seed-action:      #c8b990;
+  --seed-on-action:   #0d0905;
+  --seed-pill:        #4a3218;
+  --seed-on-pill:     var(--seed-fg);
+  --seed-miss:        #b06858;
+  --seed-shadow-tint: var(--seed-fg);
+  --shadow-strength:  55%;
   --color-raised-highlight: rgba(255,255,255,0.07);
-  --color-text:         #c9bc9a;  /* aged parchment */
-  --color-text-strong:  #e2d7bb;  /* warm off-white */
-  --color-text-faint:   #7a6a48;  /* muted saddle — annotations */
-  --color-border:       #2a1e10;  /* dark warm edge */
-  --color-action:       #c8b990;  /* muted parchment — primary CTA (submit button) */
-  --color-action-text:  #0d0905;  /* espresso on parchment */
-  --color-pill:         #4a3218;  /* warm leather — placed pills, distinct from CTA */
-  --color-pill-text:    #c8b990;  /* parchment on leather */
-  --color-dot-correct:  #8a9a50;  /* olive — lifted for dark bg */
-  --color-dot-present:  #b87838;  /* warm amber */
-  --color-dot-absent:   #2a1e10;  /* border tone — absent */
-  --color-miss:         #b06858;  /* muted clay — miss feedback */
+  --color-dot-correct: #8a9a50;
+  --color-dot-present: #b87838;
+  --color-dot-absent:  #2a1e10;
 }
 
 
 /* ── Gruvbox light ── */
 [data-theme="gruvbox-light"] {
-  --color-bg:           #F2EAD5;
-  --color-bg-elevated:  #C8B896;  /* gruvbox bg2 zone — clear step from sandy bg */
-  --color-bg-raised:    #D8C8A8;  /* highlight face */
-  --color-raised-shadow: color-mix(in srgb, black 35%, var(--color-bg-elevated));
-  --color-text:         #665C54;
-  --color-text-strong:  #3C3836;
-  --color-text-faint:   #928374;
-  --color-border:       #D8C8A8;  /* between bg and elevated */
-  --color-action:       #3C3836;
-  --color-action-text:  #F2EAD5;
-  --color-dot-correct:  #3C3836;
-  --color-dot-present:  #928374;
-  --color-dot-absent:   #CEC4AC;
-  --color-miss:         #9d5040;
+  --seed-bg:          #F2EAD5;
+  --seed-fg:          #665C54;
+  --seed-action:      #3C3836;
+  --seed-on-action:   #F2EAD5;
+  --seed-miss:        #9d5040;
+  --seed-shadow-tint: black;
+  --color-dot-correct: #3C3836;
+  --color-dot-present: #928374;
+  --color-dot-absent:  #CEC4AC;
 }
 
 /* ── Gruvbox dark ── */
 [data-theme="gruvbox-dark"] {
-  --color-bg:           #282828;
-  --color-bg-elevated:  #504945;  /* gruvbox bg2 — bigger jump than bg1 (#3C3836) */
-  --color-bg-raised:    #585048;  /* highlight face */
-  --color-raised-shadow: color-mix(in srgb, black 55%, var(--color-bg-elevated));
+  --seed-bg:          #282828;
+  --seed-fg:          #BDAE93;
+  --seed-action:      #EBDBB2;
+  --seed-on-action:   #282828;
+  --seed-miss:        #cc6655;
+  --seed-shadow-tint: var(--seed-fg);
+  --shadow-strength:  55%;
   --color-raised-highlight: rgba(255,255,255,0.07);
-  --color-text:         #BDAE93;
-  --color-text-strong:  #EBDBB2;
-  --color-text-faint:   #928374;
-  --color-border:       #504945;
-  --color-action:       #EBDBB2;
-  --color-action-text:  #282828;
-  --color-dot-correct:  #EBDBB2;
-  --color-dot-present:  #928374;
-  --color-dot-absent:   #504945;
-  --color-miss:         #cc6655;
+  --color-dot-correct: #EBDBB2;
+  --color-dot-present: #928374;
+  --color-dot-absent:  #504945;
 }
 
 /* ── Solarized light ── */
 [data-theme="solarized-light"] {
-  --color-bg:           #FDF6E3;
-  --color-bg-elevated:  #D5CEBC;  /* deeper than base2 — palette only has 2 bg steps, so we go below */
-  --color-bg-raised:    #E5DEC9;  /* highlight face */
-  --color-raised-shadow: color-mix(in srgb, black 35%, var(--color-bg-elevated));
-  --color-text:         #657B83;
-  --color-text-strong:  #586E75;
-  --color-text-faint:   #93A1A1;
-  --color-border:       #E2DBC8;  /* between bg and elevated */
-  --color-action:       #586E75;
-  --color-action-text:  #FDF6E3;
-  --color-dot-correct:  #586E75;
-  --color-dot-present:  #93A1A1;
-  --color-dot-absent:   #D3CDB8;
-  --color-miss:         #cb4b16;
+  --seed-bg:          #FDF6E3;
+  --seed-fg:          #657B83;
+  --seed-action:      #586E75;
+  --seed-on-action:   #FDF6E3;
+  --seed-miss:        #cb4b16;
+  --seed-shadow-tint: black;
+  --color-dot-correct: #586E75;
+  --color-dot-present: #93A1A1;
+  --color-dot-absent:  #D3CDB8;
 }
 
 /* ── Solarized dark ── */
 [data-theme="solarized-dark"] {
-  --color-bg:           #002B36;
-  --color-bg-elevated:  #0F4555;  /* meaningful teal lift — between base02 and base01 */
-  --color-bg-raised:    #145060;  /* highlight face */
-  --color-raised-shadow: color-mix(in srgb, black 55%, var(--color-bg-elevated));
+  --seed-bg:          #002B36;
+  --seed-fg:          #839496;
+  --seed-action:      #93A1A1;
+  --seed-on-action:   #002B36;
+  --seed-miss:        #dc7060;
+  --seed-shadow-tint: var(--seed-fg);
+  --shadow-strength:  55%;
   --color-raised-highlight: rgba(255,255,255,0.07);
-  --color-text:         #839496;
-  --color-text-strong:  #93A1A1;
-  --color-text-faint:   #586E75;
-  --color-border:       #073642;
-  --color-action:       #93A1A1;
-  --color-action-text:  #002B36;
-  --color-dot-correct:  #EEE8D5;
-  --color-dot-present:  #93A1A1;
-  --color-dot-absent:   #073642;
-  --color-miss:         #dc7060;
+  --color-dot-correct: #EEE8D5;
+  --color-dot-present: #93A1A1;
+  --color-dot-absent:  #073642;
 }
 
 /* ── Minimal light ── */
 [data-theme="minimal-light"] {
-  --color-bg:           #FFFFFF;
-  --color-bg-elevated:  #E0E0E0;  /* meaningful gray step — old #F2F2F2 was barely visible */
-  --color-bg-raised:    #EBEBEB;  /* highlight face */
-  --color-raised-shadow: color-mix(in srgb, black 35%, var(--color-bg-elevated));
-  --color-text:         #555555;
-  --color-text-strong:  #111111;
-  --color-text-faint:   #AAAAAA;
-  --color-border:       #E8E8E8;
-  --color-action:       #111111;
-  --color-action-text:  #FFFFFF;
-  --color-dot-correct:  #111111;
-  --color-dot-present:  #888888;
-  --color-dot-absent:   #DDDDDD;
-  --color-miss:         #aa4444;
+  --seed-bg:          #FFFFFF;
+  --seed-fg:          #555555;
+  --seed-action:      #111111;
+  --seed-on-action:   #FFFFFF;
+  --seed-miss:        #aa4444;
+  --seed-shadow-tint: black;
+  --color-dot-correct: #111111;
+  --color-dot-present: #888888;
+  --color-dot-absent:  #DDDDDD;
 }
 
 /* ── Minimal dark ── */
 [data-theme="minimal-dark"] {
-  --color-bg:           #111111;
-  --color-bg-elevated:  #2C2C2C;  /* clearer step — old #1E1E1E blended into bg */
-  --color-bg-raised:    #333333;  /* highlight face */
-  --color-raised-shadow: color-mix(in srgb, black 55%, var(--color-bg-elevated));
+  --seed-bg:          #111111;
+  --seed-fg:          #BBBBBB;
+  --seed-action:      #FFFFFF;
+  --seed-on-action:   #111111;
+  --seed-miss:        #cc6655;
+  --seed-shadow-tint: var(--seed-fg);
+  --shadow-strength:  55%;
   --color-raised-highlight: rgba(255,255,255,0.07);
-  --color-text:         #BBBBBB;
-  --color-text-strong:  #FFFFFF;
-  --color-text-faint:   #666666;
-  --color-border:       #2A2A2A;
-  --color-action:       #FFFFFF;
-  --color-action-text:  #111111;
-  --color-dot-correct:  #FFFFFF;
-  --color-dot-present:  #888888;
-  --color-dot-absent:   #2A2A2A;
-  --color-miss:         #cc6655;
+  --color-dot-correct: #FFFFFF;
+  --color-dot-present: #888888;
+  --color-dot-absent:  #2A2A2A;
 }
 
 /* ── Bailly light (rose & sage) ── */
 [data-theme="bailly-light"] {
-  --color-bg:           #FEF8FA;
-  --color-bg-elevated:  #F5B8CE;
-  --color-bg-raised:    #F9CDD9;
-  --color-raised-shadow: color-mix(in srgb, black 35%, var(--color-bg-elevated));
-  --color-text:         #6B3D52;
-  --color-text-strong:  #4A1F35;
-  --color-text-faint:   #BA849A;
-  --color-border:       #EFA0BB;
-  --color-action:       #4A1F35;
-  --color-action-text:  #FEF8FA;
-  --color-dot-correct:  #4A1F35;
-  --color-dot-present:  #BA849A;
-  --color-dot-absent:   #F5C8D8;
-  --color-miss:         #9b4060;
+  --seed-bg:          #FEF8FA;
+  --seed-fg:          #6B3D52;
+  --seed-surface:     #D6557A;  /* chroma-rich rose drives surface tints */
+  --seed-action:      #4A1F35;
+  --seed-on-action:   #FEF8FA;
+  --seed-miss:        #9b4060;
+  --seed-shadow-tint: black;
+  --color-dot-correct: #4A1F35;
+  --color-dot-present: #BA849A;
+  --color-dot-absent:  #F5C8D8;
 }
 
 /* ── Bailly dark ── */
 [data-theme="bailly-dark"] {
-  --color-bg:           #270D1A;
-  --color-bg-elevated:  #3C1628;
-  --color-bg-raised:    #451e30;
-  --color-raised-shadow: color-mix(in srgb, black 55%, var(--color-bg-elevated));
+  --seed-bg:          #270D1A;
+  --seed-fg:          #E0A8BC;
+  --seed-surface:     #E689A8;  /* chroma-rich rose drives surface tints */
+  --seed-action:      #F5D0DF;
+  --seed-on-action:   #270D1A;
+  --seed-miss:        #c06080;
+  --seed-shadow-tint: var(--seed-fg);
+  --shadow-strength:  55%;
   --color-raised-highlight: rgba(255,255,255,0.07);
-  --color-text:         #E0A8BC;
-  --color-text-strong:  #F5D0DF;
-  --color-text-faint:   #7A4560;
-  --color-border:       #3C1628;
-  --color-action:       #F5D0DF;
-  --color-action-text:  #270D1A;
-  --color-dot-correct:  #F5D0DF;
-  --color-dot-present:  #7A4560;
-  --color-dot-absent:   #3C1628;
-  --color-miss:         #c06080;
+  --color-dot-correct: #F5D0DF;
+  --color-dot-present: #7A4560;
+  --color-dot-absent:  #3C1628;
 }
 
-/* System dark fallback before JS sets data-theme */
+/* System dark fallback before JS sets data-theme — seed override
+   feeds the recipe layer above (:root is in the recipe selector list). */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --color-bg:           #0d0905;
-    --color-bg-elevated:  #221508;
-    --color-text:         #c9bc9a;
-    --color-text-strong:  #e2d7bb;
-    --color-text-faint:   #7a6a48;
-    --color-border:       #2a1e10;
-    --color-action:       #c8b990;
-    --color-action-text:  #0d0905;
-    --color-pill:         #4a3218;
-    --color-pill-text:    #c8b990;
-    --color-dot-correct:  #8a9a50;
-    --color-dot-present:  #b87838;
-    --color-dot-absent:   #2a1e10;
-    --color-miss:         #b06858;
+    --seed-bg:          #0d0905;
+    --seed-fg:          #c9bc9a;
+    --seed-action:      #c8b990;
+    --seed-on-action:   #0d0905;
+    --seed-pill:        #4a3218;
+    --seed-on-pill:     var(--seed-fg);
+    --seed-miss:        #b06858;
+    --seed-shadow-tint: var(--seed-fg);
+    --shadow-strength:  55%;
+    --color-raised-highlight: rgba(255,255,255,0.07);
+    --color-dot-correct: #8a9a50;
+    --color-dot-present: #b87838;
+    --color-dot-absent:  #2a1e10;
   }
 }
 

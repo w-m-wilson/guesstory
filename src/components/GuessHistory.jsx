@@ -19,7 +19,7 @@ function feedbackChipStyle(f) {
   }
   if (f === 'present') {
     return {
-      background: 'color-mix(in srgb, var(--color-dot-present) 42%, var(--color-bg-elevated))',
+      background: 'color-mix(in srgb, var(--color-dot-present) 70%, var(--color-bg))',
       boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.24)',
     }
   }
@@ -333,7 +333,7 @@ const AttemptRow = memo(function AttemptRow({ slots, feedback, attemptNumber, is
   return (
     <>
       <div style={{
-        background: isFocused ? 'var(--color-bg-elevated)' : 'transparent',
+        background: isFocused ? 'var(--color-bg-raised)' : 'transparent',
         clipPath: CHAMFER_CLIP,
         padding: '5px 8px',
         display: 'flex', alignItems: 'center', gap: '6px',
