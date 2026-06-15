@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { modalScrimBackground } from '../utils/modalScrim.js'
 import ChamferedSurface from './primitives/ChamferedSurface.jsx'
@@ -103,9 +103,7 @@ function ScoreExplainerPopup({ feedback, onClose }) {
   )
 }
 
-const CARD_SPACING = 32   // px between card bottom edges
 const PX_PER_CARD  = 52   // px of drag to advance one card
-const BOTTOM_PAD   = 8    // px from area bottom to front card bottom
 const WHEEL_THRESH = 60   // accumulated deltaY before advancing one card
 
 const CHAMFER_CLIP = 'var(--chamfer-6)'
@@ -212,11 +210,13 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
     >
       <div
         className="flex-1 min-h-0 relative"
+        data-dragging={isDragging || undefined}
         style={{
           overflow: 'hidden',
           cursor: total > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
           touchAction: 'none',
           userSelect: 'none',
+          '--effective-focus': effectiveFocus,
         }}
         onPointerDown={handlePointerDown}
         onPointerMove={isDragging ? handlePointerMove : undefined}
@@ -228,28 +228,16 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
           // depth 0 = foreground (bottom), positive = older (above, receding over the hill)
           const depth = effectiveFocus - i
           if (depth < -0.5) return null
-          const opacity = Math.max(0, 1 - depth * 0.3)
-          if (opacity < 0.04) return null
+          if (1 - depth * 0.3 < 0.04) return null
 
-          const bottomPx = BOTTOM_PAD + depth * CARD_SPACING
           const isFocused = i === Math.round(effectiveFocus)
 
           return (
             <div
               key={i}
-              style={{
-                position: 'absolute',
-                left: '12px', right: '12px',
-                bottom: `${bottomPx}px`,
-                opacity,
-                zIndex: Math.round(20 - depth),
-                transition: isDragging
-                  ? 'none'
-                  : 'bottom 0.38s cubic-bezier(0.22,1,0.36,1), transform 0.38s cubic-bezier(0.22,1,0.36,1), opacity 0.28s ease',
-                cursor: isFocused ? 'default' : 'pointer',
-                pointerEvents: opacity < 0.04 ? 'none' : 'auto',
-                filter: isFocused ? 'drop-shadow(0 2px 1px var(--color-raised-shadow))' : 'none',
-              }}
+              className="attempt-card"
+              data-focused={isFocused || undefined}
+              style={{ '--card-index': i }}
               onClick={() => {
                 if (!isFocused) setFocusIndex(i)
                 else onPickHistoryRow?.(slots)
@@ -337,7 +325,7 @@ function HistoryRankNamesTrack({ slots, variant }) {
   )
 }
 
-function AttemptRow({ slots, feedback, attemptNumber, isFocused, onShowExplainer }) {
+const AttemptRow = memo(function AttemptRow({ slots, feedback, attemptNumber, isFocused, onShowExplainer }) {
   const sortedFeedback = sortFeedbackForDots(feedback)
   const correctCount = feedback.filter(f => f === 'correct').length
   const accentColor  = correctCount === 5
@@ -373,7 +361,7 @@ function AttemptRow({ slots, feedback, attemptNumber, isFocused, onShowExplainer
       </div>
     </>
   )
-}
+})
 
 function LiveRow({ slots }) {
   return (

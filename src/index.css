@@ -452,6 +452,34 @@ body {
   gap: 0.5rem;
 }
 
+/* ── Guess history drag stack ──
+   The container exposes --effective-focus; each card carries its --card-index.
+   All per-card visual properties derive from depth = effective-focus - card-index.
+   Pointer-move updates touch only the container's --effective-focus; the cascade
+   handles per-card recomputation natively. */
+.attempt-card {
+  --depth: calc(var(--effective-focus) - var(--card-index));
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: calc(8px + var(--depth) * 32px);
+  opacity: max(0, 1 - var(--depth) * 0.3);
+  z-index: calc(20 - round(var(--depth)));
+  cursor: pointer;
+  filter: none;
+  transition:
+    bottom 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.28s ease;
+}
+.attempt-card[data-focused] {
+  cursor: default;
+  filter: drop-shadow(0 2px 1px var(--color-raised-shadow));
+}
+[data-dragging] .attempt-card {
+  transition: none;
+}
+
 @keyframes coinPulse {
   0%   { transform: scale(1); }
   35%  { transform: scale(1.3); }
