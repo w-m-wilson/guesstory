@@ -105,11 +105,13 @@ function ScoreExplainerPopup({ feedback, onClose }) {
   )
 }
 
-const PX_PER_CARD  = 40   // px of drag to advance one card
+const PX_PER_CARD  = 38   // px of drag to advance one card
 const WHEEL_THRESH = 48   // accumulated deltaY before advancing one card
-// Snappy settle: high tension + critically-damped friction. Keeps the spring
-// feeling crisp on low-refresh-rate displays where every frame counts.
-const SPRING_CONFIG = { tension: 520, friction: 32, clamp: false, precision: 0.005 }
+// Underdamped on purpose: a touch of overshoot reads as inertia and gives the
+// stack a "weighty" feel. Critically-damped (no overshoot) feels fast but
+// dead. precision keeps the spring from idling on sub-pixel oscillation,
+// which is what produces the per-frame style-recalc flicker on weak GPUs.
+const SPRING_CONFIG = { tension: 380, friction: 26, clamp: false, precision: 0.01 }
 
 const CHAMFER_CLIP = 'var(--chamfer-6)'
 const CHAMFER_CLIP_SM = 'var(--chamfer-3)'
@@ -263,6 +265,12 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
           cursor: total > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
           touchAction: 'none',
           userSelect: 'none',
+          // Eye-level perspective on the focused row — viewer is OUTSIDE the
+          // wheel, watching it curve away. Origin at 100% put us underneath
+          // it, which read as a ceiling/dome above the head.
+          perspective: '1400px',
+          perspectiveOrigin: '50% 85%',
+          transformStyle: 'preserve-3d',
           // Reserve room for the active bar so the focused card doesn't sit
           // under it. Stays constant whether LiveRow is rendered or not so
           // the stack doesn't reflow when the user clears all slots.
@@ -283,7 +291,6 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
               key={i}
               className="attempt-card"
               data-focused={isFocused || undefined}
-              data-ahead={i > focusIndex || undefined}
               style={{ '--card-index': i }}
               onClick={() => {
                 if (!isFocused) { setFocusIndex(i); hapticTick() }
@@ -297,8 +304,8 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
 
         {/* Fade older cards into the rank section above */}
         <div aria-hidden="true" style={{
-          position: 'absolute', top: 0, left: 0, right: 0, height: '22%',
-          background: 'linear-gradient(to bottom, var(--color-bg) 25%, transparent)',
+          position: 'absolute', top: 0, left: 0, right: 0, height: '55%',
+          background: 'linear-gradient(to bottom, var(--color-bg) 30%, color-mix(in srgb, var(--color-bg) 70%, transparent) 65%, transparent)',
           pointerEvents: 'none', zIndex: 30,
         }} />
       </animated.div>

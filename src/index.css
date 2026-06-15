@@ -452,37 +452,39 @@ body {
      Drives focus-only styling (drop-shadow) so the bottom-most visible card
      always looks focused mid-drag — not just the React-settled card. */
   --abs-depth: max(var(--depth), calc(-1 * var(--depth)));
-  --focus-strength: max(0, calc(1 - var(--abs-depth)));
+  /* Smoothstep over a widened window: clamp |depth| to [0,1.4] then apply
+     3x^2 − 2x^3. Derivative=0 at both ends, so the focus highlight eases
+     into and out of each card instead of ramping linearly with kinks at
+     depth=0 and depth=±1. The 1.4 window lets the neighboring card retain
+     a faint glow during the swap, smoothing the visual handoff. */
+  --focus-t: min(1, calc(var(--abs-depth) / 1.4));
+  --focus-strength: calc(1 - var(--focus-t) * var(--focus-t) * (3 - 2 * var(--focus-t)));
   position: absolute;
   left: 12px;
   right: 12px;
   bottom: var(--stack-bottom, 8px);
-  transform: translate3d(0, calc(var(--depth) * -32px), 0);
-  /* Fade older cards (depth>0) gently; hard-hide newer cards (depth<0) so they
-     don't peek below the focused row into the active bar's territory.
-     Shallow 0.14 falloff keeps the stack legible deep into history — the
-     prior 0.3 made cards beyond depth=2 ghostly during a normal swipe. */
-  opacity: max(0, calc(min(1, 1 - var(--depth) * 0.14) + min(0, var(--depth) * 1000)));
+  /* Convex drum: cards sit on the outside of a cylinder whose axis runs
+     horizontally behind the focused row. Each card rotates around its own
+     center AND recedes in Z, so the stack curves away from the viewer
+     instead of folding overhead. The y-translate is reduced because the
+     rotation+recession already accounts for vertical foreshortening. */
+  --depth-pos: max(0, var(--depth));
+  transform: translate3d(0, calc(var(--depth) * -30px), calc(var(--depth-pos) * -14px))
+             rotateX(calc(var(--depth-pos) * 8deg));
+  transform-origin: 50% 50%;
+  /* Opacity falls off so only ~3–4 cards read at once; hard-hide cards newer
+     than focus (depth<0) via the `min(0, depth*1000)` cutoff. NO opacity
+     transition — the spring drives --effective-focus per frame, so any CSS
+     transition fights it and produces the visible flicker on release. */
+  opacity: max(0, calc(min(1, 1 - var(--depth-pos) * 0.22) + min(0, var(--depth) * 1000)));
   z-index: calc(20 - round(var(--depth)));
   cursor: pointer;
-  /* No filter: any drop-shadow (even 0px) forces a compositing layer that
-     subpixel-blurs the card text. The background highlight (driven by
-     --focus-strength inside AttemptRow) carries the focus cue on its own. */
-  will-change: transform;
-  /* No transform transition: react-spring drives --effective-focus per frame,
-     so the cascade recomputes the translate continuously. A CSS transition
-     here would double-animate and lag the spring. */
-  transition: opacity 0.28s ease;
+  will-change: transform, opacity;
+  /* Everything visual derives from --depth, which the spring updates every
+     frame. No CSS transitions — they would double-animate the spring. */
 }
 .attempt-card[data-focused] {
   cursor: default;
-}
-/* Cards newer than the focused row must vanish instantly — never animate
-   through visible opacity values, which would flash them in the gap between
-   the rank board and the active bar on a fast scroll/snap-back. */
-.attempt-card[data-ahead] {
-  opacity: 0;
-  transition: none;
 }
 
 /* ── Miss pip ──
