@@ -105,9 +105,11 @@ function ScoreExplainerPopup({ feedback, onClose }) {
   )
 }
 
-const PX_PER_CARD  = 52   // px of drag to advance one card
-const WHEEL_THRESH = 60   // accumulated deltaY before advancing one card
-const SPRING_CONFIG = { tension: 320, friction: 34, clamp: false }
+const PX_PER_CARD  = 40   // px of drag to advance one card
+const WHEEL_THRESH = 48   // accumulated deltaY before advancing one card
+// Snappy settle: high tension + critically-damped friction. Keeps the spring
+// feeling crisp on low-refresh-rate displays where every frame counts.
+const SPRING_CONFIG = { tension: 520, friction: 32, clamp: false, precision: 0.005 }
 
 const CHAMFER_CLIP = 'var(--chamfer-6)'
 const CHAMFER_CLIP_SM = 'var(--chamfer-3)'
@@ -208,7 +210,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
         api.start({ focus: focusIndex + delta, immediate: true })
       } else {
         // Velocity is unsigned px/ms; multiply by direction to recover sign.
-        const projectedCards = -dy * vy * 110 / PX_PER_CARD
+        const projectedCards = -dy * vy * 200 / PX_PER_CARD
         const next = clamp(Math.round(focusIndex + delta + projectedCards))
         setFocusIndex(next)
         api.start({ focus: next, immediate: false, config: SPRING_CONFIG })
@@ -295,8 +297,8 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
 
         {/* Fade older cards into the rank section above */}
         <div aria-hidden="true" style={{
-          position: 'absolute', top: 0, left: 0, right: 0, height: '38%',
-          background: 'linear-gradient(to bottom, var(--color-bg) 15%, transparent)',
+          position: 'absolute', top: 0, left: 0, right: 0, height: '22%',
+          background: 'linear-gradient(to bottom, var(--color-bg) 25%, transparent)',
           pointerEvents: 'none', zIndex: 30,
         }} />
       </animated.div>

@@ -457,10 +457,12 @@ body {
   left: 12px;
   right: 12px;
   bottom: var(--stack-bottom, 8px);
-  transform: translateY(calc(var(--depth) * -32px));
+  transform: translate3d(0, calc(var(--depth) * -32px), 0);
   /* Fade older cards (depth>0) gently; hard-hide newer cards (depth<0) so they
-     don't peek below the focused row into the active bar's territory. */
-  opacity: max(0, calc(min(1, 1 - var(--depth) * 0.3) + min(0, var(--depth) * 1000)));
+     don't peek below the focused row into the active bar's territory.
+     Shallow 0.14 falloff keeps the stack legible deep into history — the
+     prior 0.3 made cards beyond depth=2 ghostly during a normal swipe. */
+  opacity: max(0, calc(min(1, 1 - var(--depth) * 0.14) + min(0, var(--depth) * 1000)));
   z-index: calc(20 - round(var(--depth)));
   cursor: pointer;
   /* No filter: any drop-shadow (even 0px) forces a compositing layer that
