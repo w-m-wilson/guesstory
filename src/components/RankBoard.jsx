@@ -1,23 +1,11 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useState } from 'react'
 
 export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMoveSlot, onSubmit, tutorialStep }) {
   const filledCount = rankSlots.filter(Boolean).length
-  const hasAnySlot = filledCount > 0
   const hasMinItems = filledCount >= 5
   const allFilled = rankSlots.every(Boolean)
   const [dragIndex, setDragIndex] = useState(null)
-  const [submitReadyKey, setSubmitReadyKey] = useState(0)
-  const prevAllFilled = useRef(false)
   const pressRef = useRef({ dragging: false })
-
-  // Pulse the submit button once when all slots fill for the first time
-  useEffect(() => {
-    if (allFilled && !prevAllFilled.current) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSubmitReadyKey(k => k + 1)
-    }
-    prevAllFilled.current = allFilled
-  }, [allFilled])
 
   function startDrag(fromIndex, { onTap } = {}) {
     pressRef.current.dragging = true
@@ -184,10 +172,9 @@ export default function RankBoard({ rankSlots, lockedSlots, onRemoveSlot, onMove
 
       {/* Submit */}
       <button
-        key={submitReadyKey}
         onClick={onSubmit}
         disabled={!hasMinItems}
-        className={`mt-4 w-full py-1.5 bit-btn text-sm font-semibold disabled:opacity-30${allFilled && submitReadyKey > 0 ? ' submit-ready' : ''}${tutorialStep === 3 && allFilled ? ' tutorial-pulse' : ''}`}
+        className={`mt-4 w-full py-1.5 bit-btn text-sm font-semibold disabled:opacity-30${allFilled ? ' submit-ready' : ''}${tutorialStep === 3 && allFilled ? ' tutorial-pulse' : ''}`}
         style={{
           background: hasMinItems ? 'var(--color-action)' : 'var(--color-border)',
           color: hasMinItems ? 'var(--color-action-text)' : 'var(--color-text-faint)',

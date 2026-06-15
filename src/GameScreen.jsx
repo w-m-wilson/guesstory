@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 
 const PRIMERS = {
   step2: {
@@ -113,7 +113,6 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onOpen
   const pickerTriggerRef = useRef(null)
   const [endScreenDismissed, setEndScreenDismissed] = useState(false)
   const [bonusGuessDone, setBonusGuessDone] = useState(false)
-  const [bankPanelHeight, setBankPanelHeight] = useState(0)
   const [selectorDismissed, setSelectorDismissed] = useState(() => {
     if (isTutorial) return true
     if (localStorage.getItem(`guesstory-difficulty-${puzzle.id}`)) return true
@@ -126,7 +125,6 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onOpen
     } catch {}
     return false
   })
-  const bankPanelRef = useRef(null)
 
   const initialDifficulty = isTutorial
     ? 'medium'
@@ -195,18 +193,6 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onOpen
     if (hailMaryTaken) setEndScreenDismissed(false)
   }, [hailMaryTaken])
 
-  useLayoutEffect(() => {
-    const node = bankPanelRef.current
-    if (!node) return
-
-    const update = () => setBankPanelHeight(node.offsetHeight)
-    update()
-
-    const ro = new ResizeObserver(update)
-    ro.observe(node)
-    return () => ro.disconnect()
-  }, [])
-
   if (!game) return null
 
   const { state, guessBankItem, confirmPending, cancelPending,
@@ -255,15 +241,8 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onOpen
         />
       )}
 
-      <div style={{ position: 'relative', flex: 1, minHeight: 0 }}>
-        <GuessHistory
-          rankHistory={state.rankHistory}
-          rankSlots={state.rankSlots}
-          onPickHistoryRow={loadRankingSlots}
-          topInset={bankPanelHeight}
-          isTutorial={!!isTutorial}
-        />
-        <div ref={bankPanelRef} style={{ position: 'relative', zIndex: 10 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+        <div style={{ position: 'relative', zIndex: 10 }}>
           <BankPanel
             discoveredList={discoveredList}
             ghostLetters={ghostLetters}
@@ -280,6 +259,14 @@ export default function GameScreen({ puzzle, onOpenIntro, onOpenSettings, onOpen
             onCancel={cancelPending}
             onPlaceItem={placeItem}
             onRemoveSlot={removeSlot}
+          />
+        </div>
+        <div style={{ position: 'relative', flex: 1, minHeight: 0 }}>
+          <GuessHistory
+            rankHistory={state.rankHistory}
+            rankSlots={state.rankSlots}
+            onPickHistoryRow={loadRankingSlots}
+            isTutorial={!!isTutorial}
           />
         </div>
       </div>

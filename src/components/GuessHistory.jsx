@@ -127,7 +127,7 @@ function markFirstRealFeedbackExplainerSeen() {
   } catch { /* ignore */ }
 }
 
-export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow, topInset = 0, isTutorial = false }) {
+export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow, isTutorial = false }) {
   const hasLiveSlot = rankSlots?.some(Boolean)
   const total = rankHistory.length
 
@@ -207,7 +207,7 @@ export default function GuessHistory({ rankHistory, rankSlots, onPickHistoryRow,
 
   return (
     <div
-      style={{ position: 'absolute', top: topInset, bottom: 0, left: 0, right: 0, zIndex: 0 }}
+      style={{ position: 'absolute', inset: 0, zIndex: 0 }}
       className="flex flex-col"
     >
       <div
