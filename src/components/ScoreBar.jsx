@@ -55,9 +55,9 @@ export default function ScoreBar({ coins, gameOver, difficulty = 'medium', hideD
   const canSwitch = !hideDifficulty && easierOptions.length > 0
 
   return (
-    <div>
+    <div className="shrink-0">
       <div
-        className="relative flex items-center justify-between px-4 py-3 shrink-0"
+        className="relative flex items-center justify-between px-4 py-3"
       >
         {/* Coin display + difficulty badge */}
         <div className="flex items-center gap-2 relative">
