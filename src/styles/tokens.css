@@ -121,5 +121,5 @@
 .shadow-popover-up { filter: var(--shadow-popover-up); will-change: filter, opacity, transform; }
 .shadow-dialog     { filter: var(--shadow-dialog);     will-change: filter, opacity, transform; }
 .shadow-sheet      { filter: var(--shadow-sheet);      will-change: filter, opacity, transform; }
-.shadow-raised     { filter: var(--shadow-raised); }
-.shadow-raised-lg  { filter: var(--shadow-raised-lg); }
+.shadow-raised     { filter: var(--shadow-raised);    will-change: filter; }
+.shadow-raised-lg  { filter: var(--shadow-raised-lg); will-change: filter; }
